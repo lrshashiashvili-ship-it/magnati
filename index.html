@@ -967,6 +967,76 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
 .aprow.no{opacity:.6}
 .hud .acts{flex-wrap:wrap;justify-content:center;gap:6px}
 .hud{width:fit-content!important;max-width:min(80%,560px)!important}
+
+/* ===== v52: illustrated menu backdrop + premium dark buttons ===== */
+#homebg{position:fixed;inset:0;z-index:74;overflow:hidden;background:#04030A;pointer-events:none}
+#homebg[hidden]{display:none}
+.hb-sky{position:absolute;inset:0;background:
+  radial-gradient(120% 70% at 50% 100%,rgba(120,40,60,.45),transparent 60%),
+  radial-gradient(90% 60% at 80% 10%,rgba(40,50,120,.35),transparent 60%),
+  linear-gradient(180deg,#05040E 0%,#0B0A1F 45%,#1A0F22 75%,#2A1420 100%)}
+.hb-moon{position:absolute;right:12%;top:9%;width:min(16vw,140px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 40% 40%,#FFF6DA 0%,#F3DFA8 45%,#C9A867 100%);box-shadow:0 0 60px 18px rgba(255,226,160,.25),0 0 160px 60px rgba(255,210,130,.10)}
+.hb-moon::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 60%,rgba(150,120,70,.25) 0 8%,transparent 9%),radial-gradient(circle at 62% 35%,rgba(150,120,70,.2) 0 6%,transparent 7%),radial-gradient(circle at 58% 70%,rgba(150,120,70,.18) 0 5%,transparent 6%)}
+.hb-city{position:absolute;left:-2%;right:-2%;bottom:0;height:68vh;animation:hbdrift 40s ease-in-out infinite alternate}
+.hb-city .pano{position:absolute;inset:0;width:100%;height:100%}
+.hb-city .psun,.hb-city .pmoon{opacity:0}
+.hb-city .pstars{opacity:.9}
+@keyframes hbdrift{from{transform:scale(1.04) translateX(-1%)}to{transform:scale(1.08) translateX(1%)}}
+.hb-sparks i{position:absolute;width:calc(4px*var(--s));height:calc(4px*var(--s));border-radius:50%;background:#FFD98A;box-shadow:0 0 8px 2px rgba(255,200,110,.6);opacity:0;animation:hbspark 14s linear infinite}
+@keyframes hbspark{0%{opacity:0;transform:translateY(0)}15%{opacity:.9}80%{opacity:.5}100%{opacity:0;transform:translateY(-22vh)}}
+.hb-shade{position:absolute;inset:0;background:radial-gradient(ellipse 55% 60% at 50% 48%,rgba(4,3,10,.78) 0%,rgba(4,3,10,.45) 55%,rgba(4,3,10,.15) 100%),linear-gradient(180deg,rgba(0,0,0,.35),transparent 30%,transparent 70%,rgba(0,0,0,.55))}
+.home{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+
+.home .hb{position:relative;overflow:hidden;background:linear-gradient(180deg,#1C1A22 0%,#111017 55%,#0B0A10 100%)!important;
+  border:1px solid rgba(214,172,92,.42)!important;color:#F4E6C4;
+  box-shadow:inset 0 1px 0 rgba(255,240,200,.10),inset 0 -1px 0 rgba(0,0,0,.6),0 12px 28px rgba(0,0,0,.65)!important;transition:transform .15s,border-color .2s,box-shadow .2s}
+.home .hb::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,transparent 30%,rgba(255,226,160,.13) 45%,transparent 60%);transform:translateX(-120%);transition:transform .7s ease}
+.home .hb:hover{transform:translateY(-2px);border-color:rgba(246,214,140,.85)!important;box-shadow:inset 0 1px 0 rgba(255,240,200,.14),0 0 0 1px rgba(246,214,140,.25),0 14px 34px rgba(0,0,0,.7),0 0 24px rgba(232,183,88,.18)!important}
+.home .hb:hover::before{transform:translateX(120%)}
+.home .hb:active{transform:translateY(0) scale(.99)}
+.home .hb:focus-visible{outline:2px solid #F6DA8E;outline-offset:2px}
+.home .hb span{background:radial-gradient(circle at 35% 25%,#3A3020 0%,#17130C 70%)!important;box-shadow:inset 0 0 0 1px rgba(246,214,140,.55),0 2px 8px rgba(0,0,0,.6)}
+.home .hb b{color:#F6E3B0;letter-spacing:.01em}
+.home .hb small{color:#A49C8C!important}
+.home .hb:not(.sm){border-left:3px solid #D9A84E!important}
+.home .hb[data-act="resume"]{border-color:rgba(120,220,160,.55)!important;border-left-color:#5BD18F!important}
+.hlogo{filter:drop-shadow(0 4px 18px rgba(0,0,0,.8)) drop-shadow(0 0 22px rgba(232,183,88,.25))}
+.hsub{color:#D9B66E!important;text-shadow:0 2px 6px #000}
+.hprof{color:#C9BFA8!important;text-shadow:0 1px 4px #000}
+@media (prefers-reduced-motion:reduce){.hb-city,.hb-sparks i{animation:none}}
+
+/* ===== v53: premium dark + gold everywhere (no purple) ===== */
+:root{--bg:#000;--panel:#0E0D12;--panel2:#17161D;--line:#3A3428;--muted:#A79F8F;--cream:#F3E9D2;--acc1:#E8B758}
+.panel,.side .panel{background:linear-gradient(180deg,#17161D 0%,#0E0D12 100%)!important;border:1px solid rgba(214,172,92,.30)!important;
+  box-shadow:inset 0 1px 0 rgba(255,240,200,.06),0 14px 34px rgba(0,0,0,.7)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.side .ph,.ph{border-bottom-color:rgba(214,172,92,.16)!important}
+.pcard,.prow,.lmem,.seat,.og,.mysum div,.aprow,.rgrid section,.acard{background:rgba(255,240,200,.035)!important;border-color:rgba(214,172,92,.16)!important}
+.og.full{background:linear-gradient(90deg,color-mix(in srgb,var(--gc) 18%,transparent),rgba(255,240,200,.03))!important}
+.pcard.cur{border-color:rgba(232,183,88,.8)!important;background:linear-gradient(90deg,rgba(232,183,88,.16),rgba(255,240,200,.02) 75%)!important}
+.tag.turn{background:rgba(232,183,88,.2)!important;color:#F6DA8E!important}
+.wbar{background:rgba(255,240,200,.08)!important}
+.setbox,.rulesbox,.tradebox,.lbbox,.deed,.sdeed,.victory,.toast,.netwait{background:linear-gradient(180deg,#1A1820 0%,#0D0C11 100%)!important;border-color:rgba(214,172,92,.45)!important}
+.sdeed .ph-scene::after,.deed .ph-scene::after{background:linear-gradient(180deg,rgba(13,12,17,0) 45%,#15141A 100%)!important}
+.seg,.seat input,.tp,.ain,.tcash input,.brow input,.lrow input,.tabs,.setbox .seg,.atxt,.aedrow input,#fcode,input[type=text],input[type=email],input[type=password]{background:#0A090D!important;border-color:#3A3428!important}
+.seg button[aria-pressed="true"]{background:#1F1C17!important;color:#F6DA8E!important;box-shadow:0 0 0 1px rgba(232,183,88,.45)!important}
+.chips2 button{background:#0E0D12!important;border-color:#3A3428!important;color:#E8DCC2!important}
+.chips2 button[aria-pressed="true"]{background:#221E16!important;border-color:#E8B758!important;color:#F6DA8E!important}
+.sw i{background:#3A3630}
+.tb{background:linear-gradient(180deg,#1C1A22,#0E0D12)!important;border:1px solid rgba(214,172,92,.35)!important;color:#EADFC6!important;box-shadow:inset 0 1px 0 rgba(255,240,200,.07),0 6px 16px rgba(0,0,0,.5)}
+.tb:hover{border-color:rgba(246,214,140,.8)!important;color:#F6DA8E!important}
+.tb[aria-pressed="true"]{color:#F6DA8E!important;border-color:rgba(232,183,88,.7)!important;background:linear-gradient(180deg,#2A2418,#141009)!important}
+.tb.exit{background:linear-gradient(180deg,#2A1418,#140A0C)!important;border-color:rgba(226,86,108,.55)!important;color:#FFC7CF!important}
+.tb.exit.sure{background:#C23A4C!important;color:#fff!important}
+.desk{background:radial-gradient(120% 90% at 70% 0%,#1A1E33 0%,#0D0F1C 50%,#06070D 100%)!important}
+.mtabs{background:rgba(6,5,9,.96)!important;border-top-color:rgba(214,172,92,.35)!important}
+.mtabs button{background:linear-gradient(180deg,#1C1A22,#0E0D12)!important;border-color:rgba(214,172,92,.35)!important}
+@media (max-width:899px){.colL,.colR{background:#0B0A0E!important}}
+.overlay{background:rgba(0,0,0,.6)!important}
+.bhint{background:rgba(67,216,138,.08)!important}
+.ph h2{background:linear-gradient(90deg,#FFE7A8,#E8B758)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.oi.on .oib,.oib:hover{background:rgba(255,240,200,.07)!important}
+.cp[aria-pressed="true"]{border-color:#F6DA8E}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -3000,10 +3070,19 @@ function accountHTML(){
     ${ADM.hasAdmins===false?'<button class="btn ghost wide" data-act="adclaim">🛡 ადმინის უფლების აღება</button><p class="note">მხოლოდ ერთხელ: პირველი, ვინც დააჭერს, ადმინი ხდება.</p>':''}${ADM.note&&!ADM.open?`<p class="tnote">${esc(ADM.note)}</p>`:''}
     <button class="btn ghost wide" data-act="acclogout">ანგარიშიდან გასვლა</button></div>`;
 }
+function homeBg(on){
+  let b=document.getElementById('homebg');
+  if(!b){if(!on)return;b=document.createElement('div');b.id='homebg';b.setAttribute('aria-hidden','true');
+    const r=rng(9);let sp='';for(let k=0;k<26;k++)sp+=`<i style="left:${(r()*100).toFixed(1)}%;top:${(20+r()*75).toFixed(1)}%;animation-delay:${(-r()*14).toFixed(1)}s;animation-duration:${(10+r()*10).toFixed(1)}s;--s:${(r()*.8+.5).toFixed(2)}"></i>`;
+    b.innerHTML=`<div class="hb-sky"></div><div class="hb-moon"></div><div class="hb-city">${panorama()}</div><div class="hb-sparks">${sp}</div><div class="hb-shade"></div>`;
+    document.body.appendChild(b)}
+  b.hidden=!on;
+}
 function renderHome(){
   let d=document.getElementById('home');
   renderAccount();
   const show=!S&&APP.screen==='home'&&!NET.code&&!needAccount();
+  homeBg(show||needAccount());
   if(!show){if(d)d.hidden=true;return}
   if(!d){d=document.createElement('div');d.id='home';d.className='home';document.body.appendChild(d)}
   d.hidden=false;
