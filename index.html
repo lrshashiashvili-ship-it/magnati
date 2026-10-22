@@ -184,7 +184,8 @@ body{font-family:var(--body);font-size:14px;line-height:1.45;
 .bar{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap}
 .toggles{display:flex;gap:6px;flex-wrap:wrap}
 .tg{font:inherit;font-size:12.5px;font-weight:600;display:grid;place-items:center;width:36px;height:36px;padding:0;border-radius:50%;cursor:pointer;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--line)}
-.tg .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.tg{position:relative}.tg .lbl{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);padding:4px 9px;border-radius:8px;background:#F6DA8E;color:#2A1806;font-size:12px;font-weight:800;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:30;box-shadow:0 6px 16px rgba(0,0,0,.4)}
+.tg:hover .lbl,.tg:focus-visible .lbl{opacity:1}
 .tg svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tg[aria-pressed="true"]{color:#2A1806;background:var(--gold);border-color:var(--gold)}
 .tg:focus-visible{outline:2px solid var(--gold-hi);outline-offset:2px}
@@ -382,6 +383,15 @@ body{font-family:var(--body);font-size:14px;line-height:1.45;
 .aedrow td{background:rgba(232,183,88,.08)}.aedrow input{font:inherit;width:90px;padding:.3em .5em;border-radius:7px;border:1px solid #2A3A72;background:#060B1C;color:#F1E8D2;margin:0 8px 0 4px}
 .asearch input{width:260px}.atxt{width:100%;min-height:90px;box-sizing:border-box;font:inherit;padding:10px;border-radius:10px;border:1px solid #2A3A72;background:#060B1C;color:#F1E8D2}
 .tg.adm{font-size:16px}
+.alive{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;background:rgba(61,190,124,.1);border:1px solid rgba(61,190,124,.35);margin-bottom:10px;font-size:14px}
+.alive i{width:10px;height:10px;border-radius:50%;background:#3DBE7C;box-shadow:0 0 0 0 rgba(61,190,124,.7);animation:livep 1.6s infinite}.alive b{color:#3DBE7C;letter-spacing:.08em}.alive span{font-size:22px;font-weight:800;color:#F6DA8E}
+@keyframes livep{70%{box-shadow:0 0 0 10px rgba(61,190,124,0)}100%{box-shadow:0 0 0 0 rgba(61,190,124,0)}}
+.achart{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;height:120px;align-items:end;padding:6px;border-radius:10px;background:rgba(255,255,255,.04)}
+.achart>div{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.achart i{display:block;width:70%;min-height:2px;background:linear-gradient(180deg,#F6DA8E,#C8922E);border-radius:4px 4px 0 0;position:relative}
+.achart i em{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-style:normal;font-size:10px;color:#F6DA8E}
+.achart u{position:absolute;bottom:16px;right:8%;width:22%;background:#3DBE7C;border-radius:3px 3px 0 0;text-decoration:none}
+.achart span{font-size:10px;color:#94A1C8;margin-top:3px}
 #annbar{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:95;display:flex;align-items:center;gap:10px;max-width:min(680px,calc(100vw - 24px));padding:10px 12px 10px 16px;border-radius:14px;background:linear-gradient(180deg,#F6DA8E,#D9A646);color:#2A1806;font-weight:700;box-shadow:0 12px 30px rgba(0,0,0,.5)}
 #annbar[hidden]{display:none}#annbar>div{flex:1}#annbar .btn{color:#2A1806;box-shadow:inset 0 0 0 1.5px rgba(42,24,6,.4)}
 .acctbox{width:min(100%,400px)}.atabs{margin:0 0 14px;background:rgba(0,0,0,.35)}
@@ -392,7 +402,10 @@ body{font-family:var(--body);font-size:14px;line-height:1.45;
 .acc1{display:flex;align-items:center;gap:10px}.acc1 .av{width:34px;height:34px;border-radius:50%;background:#33406a;display:grid;place-items:center}.acc1 .av svg{width:20px;height:24px}
 .acc1 b{display:block;font-size:15px}.acc1 small{color:#94A1C8;font-size:12px}
 .pfull{font-size:12.5px;font-weight:700;margin-bottom:3px}
-.hmrow.three{grid-template-columns:1fr 1fr 1fr}.hprof{margin-top:14px;color:#A8B3D6;font-size:13px}
+.alink{display:block;margin:12px auto 0;background:none;border:0;color:#9CC2FF;font:inherit;font-size:13px;font-weight:700;cursor:pointer;text-decoration:underline}
+.aok{color:#7BE0A8;font-weight:700;font-size:13.5px;margin:10px 0 0}
+.hmrow.three{grid-template-columns:1fr 1fr 1fr}.hmrow .hb.sm{grid-template-columns:30px 1fr;justify-content:start}
+.hbtns>.hb.sm{grid-template-columns:30px 1fr}.hprof{margin-top:14px;color:#A8B3D6;font-size:13px}
 .ph h2 small{font-family:var(--body);font-size:12px;color:var(--muted);font-weight:600}
 .stepsel{display:flex;flex-direction:column;gap:6px;font-size:13px;color:#A8B3D6}
 .chips2{display:flex;flex-wrap:wrap;gap:6px}.chips2 button{font:inherit;font-size:12.5px;font-weight:700;padding:.4em .8em;border-radius:99px;border:1px solid #2A3A72;background:#0C111D;color:#C9D3EE;cursor:pointer}
@@ -413,10 +426,11 @@ body{font-family:var(--body);font-size:14px;line-height:1.45;
 .hlogo{font-family:var(--display);font-weight:900;font-size:clamp(30px,8vw,52px);line-height:1.05;background:linear-gradient(180deg,#FFF3C8,#E8B758 55%,#B8862A);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 14px rgba(232,183,88,.35))}
 .hsub{color:#5CC7CF;letter-spacing:.3em;font-size:12px;margin:8px 0 26px}
 .hbtns{display:flex;flex-direction:column;gap:10px}
-.hb{display:grid;grid-template-columns:42px 1fr;grid-template-rows:auto auto;align-items:center;text-align:left;gap:0 10px;font:inherit;padding:14px 18px;border-radius:16px;cursor:pointer;color:#F1E8D2;background:rgba(255,255,255,.06);border:1px solid rgba(217,178,84,.35);transition:transform .15s,background .15s}
+.hb{width:100%;box-sizing:border-box;display:grid;grid-template-columns:42px 1fr;grid-template-rows:auto auto;align-items:center;text-align:left;gap:0 10px;font:inherit;padding:14px 18px;border-radius:16px;cursor:pointer;color:#F1E8D2;background:rgba(255,255,255,.06);border:1px solid rgba(217,178,84,.35);transition:transform .15s,background .15s}
 .hb:hover{transform:translateY(-2px);background:rgba(255,255,255,.1)}
 .hb span{grid-row:1/3;font-size:26px;text-align:center}.hb b{font-size:16px}.hb small{color:#A8B3D6;font-size:12.5px}
-.hb.gold{background:linear-gradient(180deg,#F6DA8E,#D9A646);color:#2A1806;border-color:#FFE7A8}.hb.gold small{color:#5A3D0E}
+.hb{background:linear-gradient(180deg,rgba(32,52,118,.92),rgba(18,32,82,.92));border-color:rgba(246,218,142,.45)}.hb:hover{background:linear-gradient(180deg,rgba(44,68,146,.95),rgba(24,42,104,.95));border-color:#F6DA8E}
+.hb span{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(246,218,142,.14)}.hb.sm span{width:30px;height:30px;border-radius:9px;font-size:16px}
 .hmrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hb.sm{grid-template-columns:28px 1fr;padding:11px 14px}.hb.sm span{font-size:18px;grid-row:auto}.hb.sm b{font-size:14px}
 .setbox{width:min(100%,460px);max-height:calc(100dvh - 32px);overflow:auto;background:linear-gradient(180deg,#16285F,#0E1A40);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:0 30px 80px rgba(0,0,0,.6);color:#F1E8D2}
 .setbox .rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}.setbox h2{margin:0;font-family:var(--display);color:#F6DA8E;font-size:21px}
@@ -457,7 +471,10 @@ html.light .mtabs{background:#fff;border-color:#C9D2E8}
 .mycode{display:flex;align-items:center;gap:8px;margin-top:8px;padding:6px 8px;border-radius:10px;background:rgba(246,218,142,.07);border:1px dashed rgba(246,218,142,.4);font-size:12.5px}
 .mycode span{color:var(--muted);flex:1}.mycode b{font-family:var(--display);letter-spacing:.14em;color:var(--gold-hi);font-size:16px}
 .lh small{color:var(--muted);font-weight:600}
-.lmem.fr>span:not(.av){display:flex;align-items:center;gap:5px;font-size:12px}
+.lmem.fr{display:grid;grid-template-columns:28px minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:10px;row-gap:0}
+.lmem.fr .av{grid-row:1/3}.lmem.fr>b{grid-column:2;font-size:13.5px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lmem.fr>span:not(.av){grid-column:2;display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted)}
+.lmem.fr>.btn,.lmem.fr>.tag{grid-column:3;grid-row:1/3;align-self:center;margin:0}
 .dot{width:8px;height:8px;border-radius:50%;background:#5A6482;display:inline-block}.lmem.fr.on .dot{background:#3DBE7C;box-shadow:0 0 6px #3DBE7C}
 #toasts{position:fixed;top:12px;right:12px;z-index:90;display:flex;flex-direction:column;gap:8px;max-width:min(380px,calc(100vw - 24px))}
 .toast{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:linear-gradient(180deg,#1C3170,#12214E);border:1px solid var(--gold-hi);box-shadow:0 12px 30px rgba(0,0,0,.5);font-size:13.5px;animation:toastin .3s ease-out}
@@ -817,6 +834,107 @@ details.rulesbox summary{cursor:pointer;font-family:var(--display);font-weight:8
 }
 
 html.rm *{animation:none!important;transition:none!important}html.rm .delta{display:none}
+/* ===== v47: livelier palette ===== */
+:root{--bg:#120A35;--panel:#1A1550;--panel2:#241C66;--line:#3D3A8F;--muted:#A9B1E0;--acc1:#2EE6D6;--acc2:#FF5FA2;--acc3:#8B6CFF}
+html,body{background:#120A35}
+body{background:
+  radial-gradient(900px 600px at 8% -5%,rgba(46,230,214,.22),transparent 60%),
+  radial-gradient(900px 650px at 100% 105%,rgba(255,95,162,.24),transparent 60%),
+  radial-gradient(800px 600px at 92% 0%,rgba(139,108,255,.30),transparent 62%),
+  radial-gradient(700px 500px at 0% 100%,rgba(255,176,59,.14),transparent 60%),
+  linear-gradient(160deg,#1B0E4A 0%,#11185A 45%,#2A0F4E 100%);background-attachment:fixed}
+.panel{background:linear-gradient(180deg,rgba(52,42,138,.62),rgba(28,22,86,.72));border:1px solid rgba(160,148,255,.28);box-shadow:0 18px 40px rgba(8,4,30,.45),inset 0 1px 0 rgba(255,255,255,.08);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.ph h2{background:linear-gradient(90deg,#FFE7A8,#FFC36B);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pcard,.prow,.lmem,.seat{background:rgba(255,255,255,.05)}
+.pcard.cur{border-color:rgba(46,230,214,.7);background:linear-gradient(90deg,rgba(46,230,214,.18),rgba(139,108,255,.06))}
+.tag.turn{background:rgba(46,230,214,.2);color:#8FF5EA}
+.desk{background:radial-gradient(120% 90% at 70% 0%,#3A2D9A 0%,#1D1F72 45%,#140F48 100%)}
+.home{background:radial-gradient(ellipse at 50% 30%,rgba(60,40,150,.80),rgba(14,6,40,.94))}
+.hb{background:linear-gradient(180deg,rgba(70,56,170,.9),rgba(40,30,120,.9));border-color:rgba(160,148,255,.45)}
+.hb:hover{background:linear-gradient(180deg,rgba(88,72,200,.95),rgba(52,40,150,.95))}
+.hb span{background:rgba(46,230,214,.16)}
+.hsub{color:var(--acc1)}
+.setbox,.rulesbox,.tradebox,.lbbox{background:linear-gradient(180deg,#2A2178,#17124A)!important;border-color:rgba(160,148,255,.35)!important}
+.seg,.seat input,.tp,.ain,.tcash input,.brow input{background:#140F44}
+.btn.teal,.btn:not(.gold):not(.ghost):not(.red){}
+.log li:first-child{color:#fff}
+
+/* ===== v47: clear toolbar ===== */
+.tbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;justify-content:stretch}
+.tb{display:flex;align-items:center;gap:7px;min-width:0;font:inherit;font-size:12.5px;font-weight:700;color:#E8E6FF;padding:8px 10px;border-radius:12px;cursor:pointer;
+  background:rgba(255,255,255,.06);border:1px solid rgba(160,148,255,.3);transition:background .15s,transform .1s}
+.tb:hover{background:rgba(255,255,255,.12)}.tb:active{transform:scale(.97)}
+.tb:focus-visible{outline:2px solid var(--acc1);outline-offset:2px}
+.tb svg{flex:none;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb[aria-pressed="true"]{color:#8FF5EA;border-color:rgba(46,230,214,.55);background:rgba(46,230,214,.12)}
+.tb.exit{background:rgba(255,95,162,.14);border-color:rgba(255,95,162,.5);color:#FFC2DB}
+.tb.exit.sure{background:#E2457E;color:#fff;border-color:#E2457E;grid-column:1/-1}
+.tb.exit.sure span{white-space:normal}
+
+/* ===== v47: my district marker (independent of colors) ===== */
+.cell.mine{box-shadow:inset 0 0 0 calc(var(--u)*.35) #fff,inset 0 0 0 calc(var(--u)*.7) rgba(10,8,30,.9),inset 0 0 0 calc(var(--u)*1.1) var(--pc),0 0 0 2px #fff,0 0 calc(var(--u)*1.8) rgba(255,255,255,.75)!important;z-index:3}
+.cell.mine .cname{color:#fff;text-shadow:0 1px 3px #000}
+.cell.mine .cprice{background:#fff;color:#1A1240;box-shadow:0 0 0 1.5px var(--pc)}
+.mineb{background:#fff;box-shadow:0 0 0 2px var(--pc),0 2px 6px rgba(0,0,0,.6)}
+.minet{position:absolute;z-index:4;left:calc(var(--u)*.4);top:calc(var(--u)*.4);font-size:max(6px,calc(var(--u)*.95));font-weight:900;line-height:1;padding:.25em .45em;border-radius:999px;background:#fff;color:#1A1240;box-shadow:0 1px 4px rgba(0,0,0,.6);pointer-events:none;letter-spacing:.02em}
+.cell.mine.sel{box-shadow:inset 0 0 0 calc(var(--u)*.35) #fff,inset 0 0 0 calc(var(--u)*.7) rgba(10,8,30,.9),inset 0 0 0 calc(var(--u)*1.1) var(--pc),0 0 0 3px var(--gold-hi),0 0 20px rgba(246,218,142,.8)!important}
+.cell.nb::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;border-radius:inherit;animation:nbring 2.4s ease-out forwards}
+@keyframes nbring{0%{box-shadow:inset 0 0 0 0 rgba(255,255,255,0),0 0 0 0 rgba(255,255,255,.9);background:rgba(255,255,255,.55)}
+  20%{background:rgba(255,255,255,.15);box-shadow:inset 0 0 0 4px #fff,0 0 0 6px rgba(255,255,255,.6)}
+  60%{background:transparent;box-shadow:inset 0 0 0 2px rgba(255,255,255,.6),0 0 0 14px rgba(255,255,255,0)}
+  100%{background:transparent;box-shadow:none}}
+.cell.nb{animation:nbpop .6s cubic-bezier(.2,.9,.3,1.5)}
+@keyframes nbpop{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+
+/* ===== v47: simple "my property" panel ===== */
+.mypanel .ph{margin-bottom:8px}
+.mysum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+.mysum div{display:flex;flex-direction:column;align-items:center;padding:7px 4px;border-radius:12px;background:rgba(255,255,255,.06)}
+.mysum b{font-size:17px;font-weight:800;color:#fff;line-height:1.15}
+.mysum small{font-size:11px;color:var(--muted);font-weight:600}
+.myacts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
+.myacts .btn{width:100%}
+.og{position:relative;margin:0 0 10px;padding:8px 10px 8px 14px;border-radius:12px;background:rgba(255,255,255,.045)}
+.og::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:5px;border-radius:0 4px 4px 0;background:var(--gc)}
+.og.full{background:linear-gradient(90deg,color-mix(in srgb,var(--gc) 22%,transparent),rgba(255,255,255,.04))}
+.og header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.ogn{font-size:12.5px;font-weight:800;color:#fff;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ogd{display:flex;gap:3px}.ogd i{width:9px;height:9px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--gc)}.ogd i.y{background:var(--gc)}
+.ogs{margin-left:auto;font-size:11px;font-weight:800;color:var(--muted);white-space:nowrap}
+.og.full .ogs{color:#8FF5EA}
+.oi{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:5px 6px;border-radius:8px;cursor:pointer;font-size:13.5px}
+.oi:hover,.oi.on{background:rgba(255,255,255,.09)}
+.oi:focus-visible{outline:2px solid var(--acc1)}
+.oin{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.oif{font-size:10px;letter-spacing:-1px;white-space:nowrap}.oif em{font-style:normal;font-size:10.5px;letter-spacing:0;color:#FFA3C4;font-weight:700}
+.oir{font-weight:800;color:var(--gold-hi)}
+.oi.m .oin{opacity:.6;text-decoration:line-through}
+.om{display:flex;align-items:center;gap:6px;padding:2px 0 2px 6px;opacity:.75}
+.omb{all:unset;box-sizing:border-box;flex:1;min-width:0;display:flex;align-items:baseline;gap:8px;cursor:pointer;font-size:12.5px;padding:3px 0}
+.omb .oin{font-weight:500;color:var(--muted)}.omb .oin::before{content:"○ "}
+.oiw{margin-left:auto;font-size:11px;color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.oiw i{width:8px;height:8px;border-radius:50%;background:var(--pc)}
+.om:hover{opacity:1}
+.btn.xs{font-size:11px;padding:.3em .7em}
+
+.homebox{min-width:0}.hmrow,.hmrow.three{grid-template-columns:repeat(3,minmax(0,1fr))}.hmrow:not(.three){grid-template-columns:repeat(2,minmax(0,1fr))}.hb{min-width:0}
+@media (max-width:520px){.hmrow.three .hb.sm{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;text-align:center}.hmrow.three .hb.sm b{font-size:12.5px}}
+.tbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-flow:row}
+
+.tb{flex-direction:column;justify-content:center;gap:4px;padding:8px 2px 7px;font-size:11px;text-align:center}
+.tb svg{width:20px;height:20px}
+.tb span{max-width:100%;line-height:1.15}
+.tb.exit.sure{grid-column:auto}
+.tb.exit.sure span{font-size:10px}
+
+.side .panel{background:linear-gradient(180deg,rgba(52,42,138,.6),rgba(30,24,92,.72))!important;border:1px solid rgba(160,148,255,.28)!important;box-shadow:0 18px 40px rgba(8,4,30,.45),inset 0 1px 0 rgba(255,255,255,.08)!important}
+.side .ph{border-bottom-color:rgba(160,148,255,.18)!important}
+.pcard{background:rgba(255,255,255,.055)!important;border:1px solid rgba(160,148,255,.18)!important}
+.pcard.cur{border-color:rgba(46,230,214,.75)!important;background:linear-gradient(90deg,rgba(46,230,214,.18),rgba(255,255,255,.04) 75%)!important}
+.wbar{background:rgba(255,255,255,.1)!important}
+.prow{background:rgba(255,255,255,.055)!important;border-color:rgba(160,148,255,.18)!important}
+.tb{font-size:11.5px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1051,13 +1169,13 @@ const CARDS=[
 
 /* ================= AUDIO ================= */
 const AU={ctx:null,music:false,sfx:true,mg:null,sg:null,timer:null,next:0,ix:0,drone:null,gen:0};
-let PREF={view3d:false,zoom:0,theme:'dark',anim:true,mvol:.6,svol:.8,step:'tap',fx:false};const ZOOMS=[1,1.45,1.9,2.4];let SHEET=null;
+let PREF={view3d:false,zoom:0,theme:'dark',anim:true,mvol:.6,svol:.8,step:'tap',gfx:true,ui:true};const ZOOMS=[1,1.45,1.9,2.4];let SHEET=null;
 try{const pr=JSON.parse(localStorage.getItem('tm-audio')||'{}');AU.wantMusic=!!pr.music;AU.sfx=pr.sfx!==false;PREF.view3d=false;PREF.zoom=Math.min(3,Math.max(0,pr.zoom|0));
-if(typeof pr.mvol==='number')PREF.mvol=pr.mvol;if(typeof pr.svol==='number')PREF.svol=pr.svol;if(pr.step)PREF.step=pr.step;if(typeof pr.fx==='boolean')PREF.fx=pr.fx}catch(e){}
+if(typeof pr.mvol==='number')PREF.mvol=pr.mvol;if(typeof pr.svol==='number')PREF.svol=pr.svol;if(pr.step)PREF.step=pr.step;if(typeof pr.gfx==='boolean')PREF.gfx=pr.gfx;if(typeof pr.ui==='boolean')PREF.ui=pr.ui}catch(e){}
 function applyPrefs(){RM=!PREF.anim;const h=document.documentElement;h.classList.toggle('rm',RM);h.classList.toggle('light',PREF.theme==='light');
   if(AU.ctx&&AU.mv){AU.mv.gain.value=PREF.mvol;AU.sv.gain.value=PREF.svol}}
 applyPrefs();
-function savePrefs(){try{localStorage.setItem('tm-audio',JSON.stringify({music:AU.music,sfx:AU.sfx,v3:PREF.view3d,zoom:PREF.zoom,theme:PREF.theme,anim:PREF.anim,mvol:PREF.mvol,svol:PREF.svol,step:PREF.step,fx:PREF.fx}))}catch(e){}}
+function savePrefs(){try{localStorage.setItem('tm-audio',JSON.stringify({music:AU.music,sfx:AU.sfx,v3:PREF.view3d,zoom:PREF.zoom,theme:PREF.theme,anim:PREF.anim,mvol:PREF.mvol,svol:PREF.svol,step:PREF.step,gfx:PREF.gfx,ui:PREF.ui}))}catch(e){}}
 function actx(){
   if(!AU.ctx){
     const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;
@@ -1145,12 +1263,15 @@ const SFX={
   build:t=>{noise(t,.05,.45,AU.sg,300,2);noise(t+.14,.05,.45,AU.sg,360,2);pluck(659,t+.28,.35,AU.sg,.16)},
   win:t=>[523,659,784,1046,1318].forEach((f,k)=>pluck(f,t+k*.12,.7,AU.sg,.22)),
   lose:t=>[330,294,262,196].forEach((f,k)=>pluck(f,t+k*.18,.6,AU.sg,.2)),
-  pick:t=>pluck(880,t,.2,AU.sg,.14),
+  pick:t=>{noise(t,.014,.32,AU.sg,5200,5);tone(2900,t,.022,'sine',.045,AU.sg,2100)},
+  invite:t=>{[784,988,1175,1568].forEach((f,k)=>pluck(f,t+k*.09,.5,AU.sg,.2));tone(1568,t+.4,.5,'sine',.06,AU.sg)},
 };
 const STEPS={tap:{n:'კაკუნი',f:t=>SFX.step(t)},wood:{n:'ხე',f:t=>{noise(t,.045,.4,AU.sg,850,3);tone(210,t,.07,'triangle',.09,AU.sg)}},
   coin:{n:'მონეტა',f:t=>tone(1568,t,.07,'triangle',.08,AU.sg)},bell:{n:'ზარი',f:t=>pluck(1175,t,.22,AU.sg,.08)},
   drop:{n:'წვეთი',f:t=>tone(520,t,.09,'sine',.09,AU.sg,980)},off:{n:'გამორთული',f:()=>{}}};
-function sfx(n){if(!AU.sfx)return;if(n==='step'){if(PREF.step==='off')return}else if(!PREF.fx&&n!=='pick')return;const c=actx();if(!c)return;
+const UI_SND=new Set(['pick','invite']);
+let lastPick=0;
+function sfx(n){if(!AU.sfx)return;if(n==='pick'){const t=performance.now();if(t-lastPick<90)return;lastPick=t}if(UI_SND.has(n)){if(!PREF.ui)return}else if(!PREF.gfx)return;if(n==='step'&&PREF.step==='off')return;const c=actx();if(!c)return;
   try{n==='step'?(STEPS[PREF.step]||STEPS.tap).f(c.currentTime+.01):SFX[n](c.currentTime+.01)}catch(e){}}
 if(AU.wantMusic){const go=()=>{document.removeEventListener('pointerdown',go);if(!AU.music)startMusic();renderSide()};document.addEventListener('pointerdown',go)}
 
@@ -1177,7 +1298,8 @@ async function fbInit(cfg){
   const V='10.12.2',B=`https://www.gstatic.com/firebasejs/${V}/`;
   const [app,fs,au]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-firestore.js'),import(B+'firebase-auth.js')]);
   const a=app.initializeApp(cfg),auth=au.getAuth(a);
-  const u=await new Promise((res,rej)=>{let started=false;const un=au.onAuthStateChanged(auth,x=>{if(x){un();res(x)}else if(!started){started=true;au.signInAnonymously(auth).catch(rej)}},rej)});
+  let u=await new Promise((res,rej)=>{const un=au.onAuthStateChanged(auth,x=>{un();res(x)},rej)});
+  if(u&&u.isAnonymous){try{await au.signOut(auth)}catch(e){}u=null}
   const fdb=fs.getFirestore(a);
   const wd=s=>({id:s.id,exists:s.exists(),data:()=>s.exists()?s.data():undefined,metadata:s.metadata});
   const wq=q=>{const docs=q.docs.map(wd);return {docs,size:docs.length,empty:!docs.length,docChanges:()=>[],metadata:q.metadata}};
@@ -1193,11 +1315,13 @@ async function fbInit(cfg){
     collection:c=>cr(path+'/'+c)});
   const cr=path=>Object.assign(mq(path,[]),{path,doc:id=>dr(path+'/'+(id||fs.doc(fs.collection(fdb,path)).id)),add:async d=>{const r=await fs.addDoc(fs.collection(fdb,path),d);return dr(path+'/'+r.id)}});
   const api={
-    async register(nick,pw){const email=await nickEmail(nick),cred=au.EmailAuthProvider.credential(email,pw);
-      if(auth.currentUser&&auth.currentUser.isAnonymous)await au.linkWithCredential(auth.currentUser,cred);else await au.createUserWithEmailAndPassword(auth,email,pw);return auth.currentUser.uid},
-    async login(nick,pw){const email=await nickEmail(nick);await au.signInWithEmailAndPassword(auth,email,pw);return auth.currentUser.uid},
+    async register(email,pw){const c=await au.createUserWithEmailAndPassword(auth,email.trim(),pw);return c.user.uid},
+    async login(id,pw){const email=String(id).includes('@')?String(id).trim():await nickEmail(id);await au.signInWithEmailAndPassword(auth,email,pw);return auth.currentUser.uid},
+    async reset(email){await au.sendPasswordResetEmail(auth,email.trim())},
+    async addEmail(email){await au.verifyBeforeUpdateEmail(auth.currentUser,email.trim())},
+    email(){return auth.currentUser&&auth.currentUser.email||''},
     async logout(){await au.signOut(auth)}};
-  return {db:{doc:dr,collection:cr},uid:u.uid,anon:u.isAnonymous,api};
+  return {db:{doc:dr,collection:cr},uid:u?u.uid:null,api};
 }
 (async()=>{
   await new Promise(r=>setTimeout(r,0));
@@ -1209,7 +1333,8 @@ async function fbInit(cfg){
         if(uid&&!NET.myName){try{const me=await user.me();if(me&&me.name)NET.myName=me.name.split(' ')[0].slice(0,14)}catch(e){}}}
       NET.mode='artifact';
     }else if(window.FB_CONFIG&&window.FB_CONFIG.apiKey){
-      const r=await fbInit(window.FB_CONFIG);db=r.db;uid=r.uid;NET.mode='site';NET.auth=r.api;NET.anon=r.anon;
+      const r=await fbInit(window.FB_CONFIG);db=r.db;uid=r.uid;NET.mode='site';NET.auth=r.api;
+      if(!uid){NET.db=db;NET.needLogin=true;APP.screen='home';render();return}
     }
     if(!db||!uid){NET.unavailable=true;if(!S)renderSide();return}
     NET.db=db;NET.uid=uid;NET.ready=true;
@@ -1220,7 +1345,7 @@ async function fbInit(cfg){
 })();
 
 /* ---- friends: a profile per player with a short friend code, a personal inbox for requests and invites ---- */
-const SOC={profile:null,friends:[],inbox:[],frUnsub:null,frKey:'',note:'',addCode:'',sent:{}};
+const SOC={seenIds:new Set(),inboxReady:false,profile:null,friends:[],inbox:[],frUnsub:null,frKey:'',note:'',addCode:'',sent:{}};
 const randCode=n=>Array.from({length:n},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');
 async function socialStart(){
   const ref=NET.db.doc('users/'+NET.uid);
@@ -1235,9 +1360,10 @@ async function socialStart(){
   NET.db.collection(`users/${NET.uid}/inbox`).onSnapshot(q=>{
     const now=Date.now();SOC.inbox=q.docs.map(d=>Object.assign({id:d.id},d.data())).filter(x=>x&&now-(x.at||0)<20*60e3).sort((a,b)=>a.at-b.at);
     q.docs.forEach(d=>{const x=d.data();if(x&&now-(x.at||0)>=20*60e3)NET.db.doc(`users/${NET.uid}/inbox/${d.id}`).delete().catch(()=>{})});
+    {const fresh=SOC.inbox.filter(x=>!SOC.seenIds.has(x.id));SOC.inbox.forEach(x=>SOC.seenIds.add(x.id));if(fresh.length&&SOC.inboxReady)sfx('invite');SOC.inboxReady=true}
     socialRender(true);
   },()=>{});
-  socialBeat();setInterval(socialBeat,45000);
+  socialBeat();setInterval(socialBeat,30000);countVisit();
 }
 let socLastRoom;
 function socialBeat(){if(!NET.ready||!SOC.profile)return;socLastRoom=NET.code||null;NET.db.doc('users/'+NET.uid).update({seen:Date.now(),room:socLastRoom,playing:!!(NET.on&&S)}).catch(()=>{})}
@@ -1447,10 +1573,11 @@ function openAdmin(){
   if(!d.parentNode)document.body.appendChild(d);d.hidden=false;
   ADM.unsubs.push(NET.db.collection('users').onSnapshot(q=>{ADM.users=q.docs.map(x=>x.data()).filter(u=>u&&u.uid);renderAdmin()},()=>{}));
   ADM.unsubs.push(NET.db.collection('games').onSnapshot(q=>{ADM.games=q.docs.map(x=>x.data()).filter(Boolean);renderAdmin()},()=>{}));
-  ADM.unsubs.push(NET.db.doc('stats/global').onSnapshot(s=>{ADM.stats=s.exists?s.data():{};renderAdmin()},()=>{}));
+  ADM.unsubs.push(NET.db.collection('stats').onSnapshot(q=>{ADM.days={};q.docs.forEach(x=>{if(x.id==='global')ADM.stats=x.data()||{};else if(x.id.startsWith('day-'))ADM.days[x.id]=x.data()||{}});renderAdmin()},()=>{}));
+  ADM.tick=setInterval(()=>{if(ADM.open&&ADM.tab==='over'){ADM._t=Date.now();renderAdmin()}},5000);
   renderAdmin();
 }
-function closeAdmin(){ADM.open=false;ADM.unsubs.forEach(u=>{try{u()}catch(e){}});ADM.unsubs=[];const d=document.getElementById('admov');if(d)d.hidden=true}
+function closeAdmin(){ADM.open=false;clearInterval(ADM.tick);ADM.unsubs.forEach(u=>{try{u()}catch(e){}});ADM.unsubs=[];const d=document.getElementById('admov');if(d)d.hidden=true}
 const ago=t=>{if(!t)return '—';const s=(Date.now()-t)/1000;return s<100?'ახლა':s<3600?Math.round(s/60)+' წთ':s<86400?Math.round(s/3600)+' სთ':Math.round(s/86400)+' დღე'};
 function renderAdmin(){
   const d=document.getElementById('admov');if(!d||d.hidden)return;
@@ -1464,7 +1591,11 @@ function renderAdmin(){
   let b='';
   if(ADM.tab==='over'){
     const card=(n,l,s)=>`<div class="acard"><b>${n}</b><span>${l}</span>${s?`<small>${s}</small>`:''}</div>`;
-    b=`<div class="acards">${card(reg.length,'რეგისტრირებული',`+${guests.length} სტუმარი`)}${card(online.length,'ონლაინ ახლა')}${card(playing.size,'თამაშობს ახლა')}${card(today.length,'დღეს შემოვიდა',`ახალი: ${newToday.length}`)}${card(week.length,'ამ კვირაში')}${card(lob.length,'ღია ოთახი')}${card(play.length,'მიმდინარე თამაში')}${card(ADM.stats.online||0,'დასრულებული ონლაინ',`კომპ.: ${ADM.stats.solo||0}`)}</div>
+    const days=[...Array(14)].map((_,k)=>{const t=Date.now()-(13-k)*86400e3,dk=dayKey(t),d=ADM.days&&ADM.days[dk]||{};return {l:new Date(t).getDate(),v:d.visits||0,r:d.regs||0}});
+    const mx=Math.max(1,...days.map(x=>x.v));const td=ADM.days&&ADM.days[dayKey()]||{};
+    b=`<div class="alive"><i></i><b>LIVE</b> ახლა საიტზეა <span>${online.length}</span> ანგარიში${playing.size?` · თამაშობს ${playing.size}`:''}</div>
+      <div class="acards">${card(ADM.stats.visits||0,'შემოსვლა სულ',`დღეს: ${td.visits||0}`)}${card(reg.length,'რეგისტრირებული',`დღეს: ${td.regs||0} · სტუმარი ${guests.length}`)}`+`${card(online.length,'ონლაინ ახლა')}${card(playing.size,'თამაშობს ახლა')}${card(today.length,'დღეს შემოვიდა',`ახალი: ${newToday.length}`)}${card(week.length,'ამ კვირაში')}${card(lob.length,'ღია ოთახი')}${card(play.length,'მიმდინარე თამაში')}${card(ADM.stats.online||0,'დასრულებული ონლაინ',`კომპ.: ${ADM.stats.solo||0}`)}</div>
+      <h4>ბოლო 14 დღე: შემოსვლები და რეგისტრაციები</h4><div class="achart">${days.map(x=>`<div title="${x.v} შემოსვლა, ${x.r} რეგისტრაცია"><i style="height:${Math.round(x.v/mx*100)}%"><em>${x.v||''}</em></i>${x.r?`<u style="height:${Math.round(x.r/mx*100)}%"></u>`:''}<span>${x.l}</span></div>`).join('')}</div>
       <h4>ახლა ონლაინ</h4><div class="achips">${online.length?online.map(u=>`<span class="achip"><i class="dot on"></i>${esc(u.name||'?')}${playing.has(u.uid)?' 🎲':u.room?' · '+esc(u.room):''}</span>`).join(''):'<span class="note">არავინ</span>'}</div>
       <h4>ტოპ 5</h4>${rankTable(U.slice().sort((a,b)=>(b.xp||0)-(a.xp||0)).slice(0,5))}`;
   }else if(ADM.tab==='users'){
@@ -1539,6 +1670,9 @@ async function adminAct(a,el){
     if(!g||!g.exists){ADM.note='კოდი ვერ მოიძებნა.';return renderAdmin()}const u=g.data().uid;if(!ADM.admins.includes(u))await NET.db.doc('config/admins').set({uids:[...ADM.admins,u]});ADM.note='ადმინი დაემატა.';renderAdmin()}
   else if(a==='admrm'){await NET.db.doc('config/admins').set({uids:ADM.admins.filter(x=>x!==uid)})}
 }
+const dayKey=(t=Date.now())=>{const d=new Date(t);return 'day-'+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')};
+async function bumpDoc(path,k){try{const r=NET.db.doc(path),g=await r.get(),d=g.exists?g.data():{};await r.set(Object.assign({},d,{[k]:(d[k]||0)+1,at:Date.now()}))}catch(e){}}
+function countVisit(){try{if(sessionStorage.getItem('tm-visit'))return;sessionStorage.setItem('tm-visit','1')}catch(e){}bumpDoc('stats/global','visits');bumpDoc('stats/'+dayKey(),'visits')}
 async function bumpStat(k){try{const r=NET.db.doc('stats/global'),g=await r.get(),d=g.exists?g.data():{};await r.set(Object.assign({},d,{[k]:(d[k]||0)+1,at:Date.now()}))}catch(e){}}
 
 async function netAbandon(code){
@@ -1611,10 +1745,13 @@ function netApply(d){
   S=ns;
   if(first){const t=document.getElementById('tk');if(t)t.innerHTML='';overlayKey=null;lastCash=S.players.map(p=>p.cash);buildBoard()}
   else if(old&&old.players.length===S.players.length&&!RM){
-    S.players.forEach((p,i)=>{const o=old.players[i];if(!o||o.pos===p.pos||p.out)return;
-      const dist=(p.pos-o.pos+N)%N;let cells=[];
-      const wait=Math.max(0,1150-(Date.now()-(NET.rollAt||0)));
-      if(dist>0&&dist<=14){for(let k=1;k<=dist;k++)cells.push((o.pos+k)%N);const sm=dist>9?205:235;animatePath(i,cells,{stepMs:sm,delay:wait});cells.forEach((c,k)=>setTimeout(()=>sfx('step'),wait+sm*(k+.9)))}else animatePath(i,[p.pos],{jump:true,delay:wait})});
+    const mv=S.mv,wait=Math.max(0,1150-(Date.now()-(NET.rollAt||0)));
+    if(mv&&(!old.mv||old.mv.id!==mv.id)&&S.players[mv.p]&&!S.players[mv.p].out){
+      const i=mv.p;let cells=[];
+      if(mv.k==='walk'){for(let k=1;k<=mv.n;k++)cells.push((mv.from+k)%N);animatePath(i,cells,{stepMs:STEP_MS,delay:wait});cells.forEach((c,k)=>setTimeout(()=>sfx('step'),wait+STEP_MS*(k+.9)))}
+      else if(mv.k==='back'){for(let k=1;k<=mv.n;k++)cells.push((mv.from-k+N)%N);animatePath(i,cells,{stepMs:260})}
+      else animatePath(i,[S.players[i].pos],{jump:true,delay:mv.k==='jump'?0:wait});
+    }
   }
   NET.applying=true;
   try{render();if(rolled){setDice(true);sfx('dice')}}finally{NET.applying=false}
@@ -1831,7 +1968,7 @@ async function doFly(){
   if(F.fee>0){st(p).rentOut+=F.fee;S.stats[F.payee].rentIn+=F.fee;pay(p,F.fee,S.players[F.payee])}
   log(p,`Ⓜ ${p.name} მეტროთი: ${CELLS[F.from].st} → ${CELLS[F.to].st}${F.fee?` (ბილეთი ${F.fee}₾${F.payee!=null?' → '+S.players[F.payee].name:''})`:' (საკუთარი სადგური)'}`);
   say(`Ⓜ ${p.name} მეტროთი მიდის: <b>${CELLS[F.to].st}</b>`);sfx('card');
-  p.pos=F.to;p.metroAt=F.to;if(NET.on)netPushNow();
+  S.mv={id:((S.mv&&S.mv.id)||0)+1,p:pi,from:p.pos,n:0,k:'jump'};p.pos=F.to;p.metroAt=F.to;if(NET.on)netPushNow();
   try{await animatePath(pi,[F.to],{jump:true});say(`Ⓜ ${p.name} ჩავიდა: <b>${CELLS[F.to].st}</b>.${F.payee!=null?' ბილეთში ქირაც შედის.':''}`);render();afterLand()}
   catch(e){console.error(e);S.phase=p.ai?'end':'roll';render();if(p.ai)setTimeout(nextTurn,600)}
 }
@@ -1855,10 +1992,6 @@ async function rollTurn(){
       if(p.jail>=3){log(p,`${p.name} იხდის ${JAILFEE}₾-ს და ტოვებს საცობს`);fine(p,JAILFEE);p.inJail=false;p.jail=0;if(p.out)return afterLand()}
       else{say(`${p.name} ისევ საცობშია (${p.jail}/3).`);return toEnd()}
     }
-  }else if(dbl){
-    S.dbl++;
-    if(S.dbl>=3){say('სამი დუბლი ზედიზედ! პირდაპირ საცობში.');log(p,`${p.name}: სამი დუბლი, საცობი`);sendJam(p);return toEnd()}
-    S.again=true;
   }else S.again=false;
   say(`${p.name}: ${a} + ${b}`);renderDesk();
   await walk(p,a+b);
@@ -1898,19 +2031,21 @@ function animatePath(pi,cells,opt={}){
     a1.onfinish=()=>{el.style.transition='';placeTokens();res()};
   });
 }
+const STEP_MS=190;
 async function walk(p,n){
   const pi=pidx(p),cells=[];let pos=p.pos;p.metroAt=null;
   for(let k=0;k<n;k++){pos=(pos+1)%N;cells.push(pos)}
-  const stepMs=n>9?205:235,z=cells.indexOf(0);
+  const stepMs=STEP_MS,z=cells.indexOf(0);
+  S.mv={id:((S.mv&&S.mv.id)||0)+1,p:pi,from:p.pos,n,k:'walk'};
   p.pos=cells[cells.length-1];if(NET.on)netPushNow();
   cells.forEach((c,k)=>setTimeout(()=>sfx('step'),RM?0:Math.max(0,stepMs*(k+.9))));
-  let paid=false;const passGo=()=>{if(paid)return;paid=true;gain(p,PASS);st(p).pass+=PASS;log(p,`${p.name} გაიარა სტარტი: +${PASS}₾`);if(needsAid(p)){p.cash+=AID.amt;st(p).pass+=AID.amt;log(p,`${p.name}-ს ჩამორჩენისთვის სტარტის დახმარება: +${AID.amt}₾`)}renderSide()};
+  let paid=false;const passGo=()=>{if(paid)return;paid=true;gain(p,PASS);st(p).pass+=PASS;log(p,`${p.name} გაიარა სტარტი: +${PASS}₾`);renderSide()};
   if(z>=0)setTimeout(passGo,RM?0:stepMs*(z+1)-40);
   await animatePath(pi,cells,{stepMs});
   if(z>=0)passGo();
 }
 async function walkTo(p,t){await walk(p,(t-p.pos+N)%N)}
-function sendJam(p){p.pos=JAM;p.inJail=true;p.jail=0;S.again=false;sfx('jail');animatePath(pidx(p),[JAM],{jump:true});render()}
+function sendJam(p){S.mv={id:((S.mv&&S.mv.id)||0)+1,p:pidx(p),from:p.pos,n:0,k:'jump'};p.pos=JAM;p.inJail=true;p.jail=0;S.again=false;sfx('jail');animatePath(pidx(p),[JAM],{jump:true});render()}
 
 async function land(p){
   const i=p.pos,c=CELLS[i],pi=pidx(p);
@@ -1948,7 +2083,7 @@ async function land(p){
     say(`${c.n}: <b>${tx}₾</b> ბიუჯეტში${big?` (${why})`:''}.`);log(p,`${p.name} იხდის ${tx}₾ (${c.n}${big?`, ${why}`:''})`);st(p).taxes+=tx;fine(p,tx);
   }else if(c.t==='obs'){
     if(c.k==='police'){say(`საგზაო პოლიციამ ${p.name} დააჯარიმა: <b>${c.amt}₾</b>.`);log(p,`${p.name}: პოლიციის ჯარიმა ${c.amt}₾`);sfx('jail');st(p).taxes+=c.amt;fine(p,c.amt)}
-    else if(c.k==='pothole'){say(`${p.name} ორმოში ჩავარდა და ${c.v} უჯრით უკან დაბრუნდა.`);log(p,`${p.name}: ორმო, ${c.v} უჯრა უკან`);sfx('pay');render();await sleep(450);{const cells=[];let q=p.pos;for(let k=0;k<c.v;k++){q=(q+N-1)%N;cells.push(q)}p.pos=q;await animatePath(pi,cells,{stepMs:300})}await sleep(150);await land(p);return}
+    else if(c.k==='pothole'){say(`${p.name} ორმოში ჩავარდა და ${c.v} უჯრით უკან დაბრუნდა.`);log(p,`${p.name}: ორმო, ${c.v} უჯრა უკან`);sfx('pay');render();await sleep(450);{const cells=[];let q=p.pos;for(let k=0;k<c.v;k++){q=(q+N-1)%N;cells.push(q)}S.mv={id:((S.mv&&S.mv.id)||0)+1,p:pi,from:p.pos,n:c.v,k:'back'};p.pos=q;if(NET.on)netPushNow();await animatePath(pi,cells,{stepMs:260})}await sleep(150);await land(p);return}
     else if(c.k==='blocked'){p.skip=1;say(`ქუჩა გადაკეტილია! ${p.name} შემდეგ სვლას გამოტოვებს.`);log(p,`${p.name}: გადაკეტილი ქუჩა, ერთი სვლის გამოტოვება`);sfx('jail')}
   }else if(c.t==='card'){
     const card=CARDS[S.deck[S.deckI%S.deck.length]];S.deckI++;
@@ -2329,19 +2464,30 @@ function cellHTML(i){
   const c=CELLS[i],o=S&&S.own[i],corner=['start','jam','rest','gojam'].includes(c.t),prop=c.t==='p'||c.t==='tr';
   const want=S&&prop&&c.t==='p'&&!S.players[viewer()].ai&&lastPieces(viewer()).has(i);
   const vi0=S?viewer():-1,mine=!!(o&&S&&o.o===vi0&&!S.players[vi0].ai);
-  let cls='cell'+cornerCls(i)+sideCls(i)+(want?' want':'')+(mine?' mine':'')+(corner?' corner':'')+(['card','tax','obs'].includes(c.t)?' special':'')+(c.t==='obs'?' obs':'')+(prop?' prop':'')+(o&&o.m?' m':'')+(o?' own':'')+(S&&S.sel===i?' sel':'');
+  let cls='cell'+cornerCls(i)+sideCls(i)+(want?' want':'')+(mine?' mine':'')+(mine&&NEWBUY[i]&&Date.now()-NEWBUY[i]<2600?' nb':'')+(corner?' corner':'')+(['card','tax','obs'].includes(c.t)?' special':'')+(c.t==='obs'?' obs':'')+(prop?' prop':'')+(o&&o.m?' m':'')+(o?' own':'')+(S&&S.sel===i?' sel':'');
   let style=`grid-row:${rc(i)[0]};grid-column:${rc(i)[1]};--gc:${gcol(c)};`+(corner?`--c1:${c.c1};--c2:${c.c2};`:'')+(o?`--pc:${S.players[o.o].col};`:'');
   let inner='';
   if(prop){
     const fl='';
     const price=o?(o.m?'—':`${rentOf(i)}₾`):`${c.price}₾`;
-    inner=`<div class="band">${fl}</div><div class="scene">${scene(c.sc)}</div><div class="cname">${c.sn||c.n}</div><div class="cprice">${price}</div>${want?'<span class="wantb">აკლია</span>':''}${mine?`<span class="mineb">${tokSvg(S.players[o.o].tok)}</span>`:''}`;
+    inner=`<div class="band">${fl}</div><div class="scene">${scene(c.sc)}</div><div class="cname">${c.sn||c.n}</div><div class="cprice">${price}</div>${want?'<span class="wantb">აკლია</span>':''}${mine?`<span class="mineb">${tokSvg(S.players[o.o].tok)}</span><span class="minet">შენი</span>`:''}`;
   }else if(['card','tax','obs'].includes(c.t)){
     inner=`<div class="ico">${icon(c.ic)}</div><div class="cname">${c.sn||c.n}</div><div class="cprice">${c.t==='tax'?'−'+c.amt+'₾'+(c.rate||c.cashRate?'+':''):(c.sub||'')}</div>`;
   }else inner=`<div class="ico">${icon(c.ic)}</div><div class="cname">${c.n}</div><div class="cprice${c.t==='rest'&&S&&S.pot?' pot':''}">${c.t==='rest'&&S?`ჯეკპოტი ${S.pot||0}₾`:(c.sub||'')}</div>`;
   return [cls,style,inner];
 }
+const NEWBUY={};let PREV_OWN=null;
+function trackBuys(){
+  if(!S){PREV_OWN=null;return}
+  const vi=viewer(),now=CELLS.map((_,i)=>S.own[i]?S.own[i].o:-1);
+  if(PREV_OWN&&PREV_OWN.length===now.length){
+    const ch=now.filter((o,i)=>o!==PREV_OWN[i]).length;
+    if(ch&&ch<=3)now.forEach((o,i)=>{if(o===vi&&PREV_OWN[i]!==vi){NEWBUY[i]=Date.now();setTimeout(()=>{if(S)renderCells()},2700)}});
+  }
+  PREV_OWN=now;
+}
 function renderCells(){
+  trackBuys();
   if(!document.getElementById('c0'))buildBoard();
   document.getElementById('board').classList.toggle('focus',typeof hlCell!=='undefined'&&hlCell!=null);
   CELLS.forEach((_,i)=>{
@@ -2696,14 +2842,14 @@ function keepScroll(ids,fn){const tops={};ids.forEach(id=>{const e=document.getE
 function rulesHTML(){
   const T=[
    ['🎯','მიზანი',`ყიდულობ უბნებს, აშენებ სართულებს და სხვებს ქირას ახდევინებ. იგებს ის, ვინც ბოლომდე არ გაკოტრდება. ყველა იწყებს ${START}₾-ით.`],
-   ['🎲','სვლა',`გააგორე ორი კამათელი და იარე. დუბლზე კიდევ ერთხელ აგორებ, სამი დუბლი ზედიზედ კი საცობში გგზავნის. სტარტის გავლისას იღებ ${PASS}₾-ს.`],
+   ['🎲','სვლა',`გააგორე ორი კამათელი და იარე. ერთ სვლაზე კამათელს ერთხელ აგორებ. დუბლი მხოლოდ საცობიდან გამოსასვლელად გამოგადგება. სტარტის გავლისას იღებ ${PASS}₾-ს.`],
    ['🏠','უბნები და ქირა','თავისუფალ უბანზე დადგომისას შეგიძლია იყიდო ან გამოტოვო. სხვის უბანზე ქირას იხდი. ერთი ფერის ყველა უბანი თუ შენია, ქირა ორმაგდება და სართულების აშენება შეგიძლია. უბნების სიაში „აკლია" გიჩვენებს, რომელი უბანი გაკლია ფერის დასასრულებლად. შენი უბნები დაფაზე შენი ფერით ანათებს და შენი ფიგურის ნიშანი აქვს.'],
    ['🏗️','სართულები','სართულები ფერში თანაბრად შენდება, მაქსიმუმ 4. ყოველი შემდეგი სართული უფრო ძვირია. გაყიდვისას ნახევარს იბრუნებ. უბნის დაგირავება ფულს გაძლევს, მაგრამ ქირას აღარ იღებ.'],
    ['Ⓜ️','მეტრო',`ოთხი სადგურია, თითო დაფის თითოეული მხარის შუაში. რაც მეტი სადგური გაქვს, მით მეტია ქირა: ${TR_RENT.join(' / ')}₾. ორი ხაზია: სამგორი ↔ მარჯანიშვილი და თავისუფლება ↔ უნივერსიტეტი. ხაზი მხოლოდ მაშინ იხსნება, როცა ერთი მოთამაშე მის ორივე სადგურს ფლობს. მფლობელი უფასოდ მგზავრობს, სხვები მას ${FLY.ride}₾-ს უხდიან. ჩასვლის სადგურზე ქირა აღარ იხდება. გადასვლა კამათლის ნაცვლად შეიძლება, თუ სვლას სადგურზე იწყებ. მეტროთი ჩასული ეგრევე უკან ვერ დაბრუნდება: ჯერ კამათლით უნდა იაროს და სადგურზე ხელახლა დადგეს. სტარტის ბონუსი მეტროთი არ ერიცხება.`],
    ['⚠️','დაბრკოლებები','პოლიცია აჯარიმებს, ორმო უკან გაბრუნებს, გადაკეტილი ქუჩა სვლას გაგაცდენინებს. საცობიდან გამოსასვლელად დუბლი უნდა გააგორო ან '+JAILFEE+'₾ გადაიხადო.'],
    ['💰','ჯეკპოტი','ყველა ჯარიმა და გადასახადი ბოტანიკურ ბაღში გროვდება. ვინც იქ დადგება, მთელ ჯეკპოტს იღებს.'],
    ['🧾','გადასახადები','დაფაზე 6 გადასახადია: დასუფთავება 80₾, კომუნალური 150₾ ან ქონების 4%, მიწის გადასახადი 120₾ ან ქონების 2%, საშემოსავლო 150₾ ან ნაღდი ფულის 10%, ფუფუნება 250₾ ან ქონების 7%, ქონების გადასახადი 200₾ ან ქონების 5%. ყველგან იხდი იმას, რომელიც მეტია. ყველა გადასახადი ჯეკპოტში მიდის.'],
-   ['⚖️','ბალანსი',`ვინც ლიდერზე ორჯერ ღარიბია, მე-${AID.from} რაუნდიდან სტარტზე დამატებით ${AID.amt}₾-ს იღებს. ამასთან, პროცენტული გადასახადები მდიდარს უფრო ძვირი უჯდება.`],
+   ['⚖️','ბალანსი',`პროცენტული გადასახადები მდიდარს უფრო ძვირი უჯდება, ასე რომ ლიდერი ძალიან ვერ გაიქცევა.`],
    ['🏦','ბანკი',`სესხი მხოლოდ გაკოტრების წინ გაიცემა, როცა ვალში ხარ. საჭიროა მინიმუმ ${LOAN.minProps} დაუგირავებელი უბანი. მაქსიმუმ ქონების ${pct(LOAN.share)}%, არაუმეტეს ${LOAN.cap}₾, საკომისიო ${pct(LOAN.fee)}%. პროცენტი ${pct(LOAN.rate)}%-ით იწყება და ყოველ სვლაზე +${pct(LOAN.step)}% იზრდება. ყოველ შენს სვლაზე ბანკი ჩამოგაჭრის ${LOAN.instLo}-${LOAN.instHi}₾-ს.`],
    ['🔨','აუქციონი','შენს უბანს აუქციონზე გაიტან და საწყის ფასს თავად აწესებ. დანარჩენები რიგრიგობით უმატებენ ან პასს ამბობენ. ბოლოს შენ წყვეტ, მიყიდი თუ არა საუკეთესო ფსონს.'],
    ['🤝','ვაჭრობა','მე-2 რაუნდიდან, რაუნდში ერთი შეთავაზება, შენი სვლის ნებისმიერ მომენტში. შეგიძლია გაცვალო უბნები და ფული. თუ კომპიუტერი უარს გეტყვის, ამავე ფანჯარაში შეცვალე და ხელახლა გაუგზავნე. სართულებიან ფერს ვერ გაცვლი.'],
@@ -2716,53 +2862,79 @@ function rulesHTML(){
 }
 function showRules(){let d=document.getElementById('rulesov');if(!d){d=document.createElement('div');d.id='rulesov';d.className='overlay rulesov';document.body.appendChild(d)}d.innerHTML=rulesHTML();d.hidden=false;sfx('pick')}
 function hideRules(){const d=document.getElementById('rulesov');if(d)d.hidden=true}
-addEventListener('keydown',e=>{if(e.key==='Escape'){hideRules();hideSettings();hideBoard();if(ADM.open)closeAdmin()}if(e.key==='Enter'&&e.target&&e.target.dataset&&e.target.dataset.acc){ACC.tab==='reg'?accRegister():accLogin()}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){hideRules();hideSettings();hideBoard();if(ADM.open)closeAdmin()}if(e.key==='Enter'&&e.target&&e.target.dataset&&e.target.dataset.acc&&e.target.dataset.acc!=='addEmail'){ACC.tab==='reg'?accRegister():ACC.tab==='reset'?accReset():accLogin()}});
 document.addEventListener('click',e=>{const id=e.target&&e.target.id;if(id==='rulesov')hideRules();if(id==='setov')hideSettings();if(id==='lbov')hideBoard();if(id==='admov')closeAdmin()});
-const ACC={tab:'reg',first:'',last:'',nick:'',pw:'',note:'',busy:false};
-const needAccount=()=>NET.ready&&!!SOC.profile&&(SOC.profile.banned||(NET.mode==='site'&&!SOC.profile.registered));
-const AERR={'auth/email-already-in-use':'ეს ნიკნეიმი უკვე დაკავებულია. აირჩიე სხვა.','auth/credential-already-in-use':'ეს ნიკნეიმი უკვე დაკავებულია. აირჩიე სხვა.',
-  'auth/weak-password':'პაროლი მინიმუმ 6 სიმბოლო უნდა იყოს.','auth/wrong-password':'ნიკნეიმი ან პაროლი არასწორია.','auth/invalid-credential':'ნიკნეიმი ან პაროლი არასწორია.',
+const ACC={tab:'reg',first:'',last:'',nick:'',email:'',id:'',pw:'',note:'',ok:'',busy:false,addEmail:''};
+const needAccount=()=>!!(NET.needLogin||(NET.ready&&SOC.profile&&(SOC.profile.banned||(NET.mode==='site'&&!SOC.profile.registered))));
+const AERR={'auth/email-already-in-use':'ამ ელფოსტით ანგარიში უკვე არსებობს. სცადე შესვლა.','auth/invalid-email':'ელფოსტა არასწორია.','auth/missing-email':'ჩაწერე ელფოსტა.','auth/requires-recent-login':'ეს მოქმედება ახალ შესვლას მოითხოვს: გამოდი და ხელახლა შედი.',
+  'auth/weak-password':'პაროლი მინიმუმ 6 სიმბოლო უნდა იყოს.','auth/wrong-password':'ელფოსტა ან პაროლი არასწორია.','auth/invalid-credential':'ელფოსტა ან პაროლი არასწორია.',
   'auth/user-not-found':'ასეთი ანგარიში არ არსებობს.','auth/operation-not-allowed':'რეგისტრაცია ჯერ არ არის ჩართული (Firebase-ში Email/Password).','auth/too-many-requests':'ბევრი მცდელობა. ცოტა ხანში სცადე.','auth/network-request-failed':'ინტერნეტი არ არის.'};
 function renderAccount(){
   let d=document.getElementById('acct');const show=needAccount();
   if(!show){if(d)d.hidden=true;return}
   if(!d){d=document.createElement('div');d.id='acct';d.className='home';document.body.appendChild(d)}
   d.hidden=false;
-  if(SOC.profile.banned){const h=`<div class="homebox acctbox"><div class="hlogo">თბილისელი მაგნატი</div><p class="aerr" style="font-size:16px">🚫 შენი ანგარიში დაბლოკილია.</p><p class="anote">დაუკავშირდი ადმინს.</p><button class="btn ghost wide" data-act="acclogout">ანგარიშიდან გასვლა</button></div>`;if(d._h!==h){d._h=h;d.innerHTML=h}return}
-  const f=(k,ph,t)=>`<input class="ain" id="acc_${k}" data-acc="${k}" type="${t||'text'}" placeholder="${ph}" value="${esc(ACC[k])}" maxlength="${k==='pw'?40:20}" autocomplete="${t==='password'?(ACC.tab==='reg'?'new-password':'current-password'):'off'}">`;
-  const html=`<div class="homebox acctbox"><div class="hlogo">თბილისელი მაგნატი</div><div class="hsub">✦ ქალაქი შენს ხელშია ✦</div>
-    <div class="seg atabs"><button data-act="acctab" data-v="reg" aria-pressed="${ACC.tab==='reg'}">რეგისტრაცია</button><button data-act="acctab" data-v="login" aria-pressed="${ACC.tab==='login'}">შესვლა</button></div>
-    ${ACC.tab==='reg'?`<div class="afields">${f('first','სახელი')}${f('last','გვარი')}${f('nick','ნიკნეიმი (ჩანს თამაშში)')}${f('pw','პაროლი (მინ. 6 სიმბოლო)','password')}</div>
+  if(SOC.profile&&SOC.profile.banned){const h=`<div class="homebox acctbox"><div class="hlogo">თბილისელი მაგნატი</div><p class="aerr" style="font-size:16px">🚫 შენი ანგარიში დაბლოკილია.</p><p class="anote">დაუკავშირდი ადმინს.</p><button class="btn ghost wide" data-act="acclogout">ანგარიშიდან გასვლა</button></div>`;if(d._h!==h){d._h=h;d.innerHTML=h}return}
+  const f=(k,ph,t)=>`<input class="ain" id="acc_${k}" data-acc="${k}" type="${t||'text'}" placeholder="${ph}" value="${esc(ACC[k])}" maxlength="${k==='pw'?40:k==='email'||k==='id'?80:20}" autocomplete="${t==='password'?(ACC.tab==='reg'?'new-password':'current-password'):t==='email'?'email':'off'}">`;
+  const body=ACC.tab==='reg'?`<div class="afields">${f('first','სახელი')}${f('last','გვარი')}${f('nick','ნიკნეიმი (ჩანს თამაშში)')}${f('email','ელფოსტა','email')}${f('pw','პაროლი (მინ. 6 სიმბოლო)','password')}</div>
       <button class="btn gold wide" data-act="accreg" ${ACC.busy?'disabled':''}>${ACC.busy?'…':'რეგისტრაცია'}</button>
-      <p class="anote">ნიკნეიმით და პაროლით სხვა მოწყობილობიდანაც შეხვალ. შენი ლეველი და მეგობრები შენთან დარჩება.</p>`
-    :`<div class="afields">${f('nick','ნიკნეიმი')}${f('pw','პაროლი','password')}</div>
-      <button class="btn gold wide" data-act="acclogin" ${ACC.busy?'disabled':''}>${ACC.busy?'…':'შესვლა'}</button>`}
-    ${ACC.note?`<p class="aerr">${esc(ACC.note)}</p>`:''}</div>`;
+      <p class="anote">ელფოსტით და პაროლით ნებისმიერი მოწყობილობიდან შეხვალ. ელფოსტა პაროლის აღსადგენადაც გამოდგება და სხვებს არ უჩანთ.</p>`
+    :ACC.tab==='login'?`<div class="afields">${f('id','ელფოსტა ან ნიკნეიმი')}${f('pw','პაროლი','password')}</div>
+      <button class="btn gold wide" data-act="acclogin" ${ACC.busy?'disabled':''}>${ACC.busy?'…':'შესვლა'}</button>
+      <button class="alink" data-act="acctab" data-v="reset">პაროლი დაგავიწყდა?</button>`
+    :`<p class="anote" style="margin:0 0 10px">ჩაწერე რეგისტრაციის ელფოსტა. გამოგიგზავნით ბმულს, რომლითაც ახალ პაროლს დააყენებ.</p>
+      <div class="afields">${f('email','ელფოსტა','email')}</div>
+      <button class="btn gold wide" data-act="accreset" ${ACC.busy?'disabled':''}>${ACC.busy?'…':'ბმულის გაგზავნა'}</button>
+      <button class="alink" data-act="acctab" data-v="login">← შესვლაზე დაბრუნება</button>`;
+  const html=`<div class="homebox acctbox"><div class="hlogo">თბილისელი მაგნატი</div><div class="hsub">✦ ქალაქი შენს ხელშია ✦</div>
+    <div class="seg atabs"><button data-act="acctab" data-v="reg" aria-pressed="${ACC.tab==='reg'}">რეგისტრაცია</button><button data-act="acctab" data-v="login" aria-pressed="${ACC.tab!=='reg'}">შესვლა</button></div>
+    ${body}${ACC.note?`<p class="aerr">${esc(ACC.note)}</p>`:''}${ACC.ok?`<p class="aok">${esc(ACC.ok)}</p>`:''}</div>`;
   if(d._h!==html){const ae=document.activeElement,aid=ae&&ae.id;d._h=html;d.innerHTML=html;if(aid){const e=document.getElementById(aid);if(e){e.focus();try{e.setSelectionRange(e.value.length,e.value.length)}catch(x){}}}}
 }
+const nickId=async n=>(await nickEmail(n)).split('@')[0];
+const isEmail=e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e).trim());
 async function accRegister(){
-  const first=ACC.first.trim(),last=ACC.last.trim(),nick=ACC.nick.trim();
+  const first=ACC.first.trim(),last=ACC.last.trim(),nick=ACC.nick.trim(),email=ACC.email.trim();ACC.ok='';
   if(!first||!last){ACC.note='ჩაწერე სახელი და გვარი.';return renderAccount()}
   if(nick.length<3){ACC.note='ნიკნეიმი მინიმუმ 3 სიმბოლო უნდა იყოს.';return renderAccount()}
+  if(!isEmail(email)){ACC.note='ჩაწერე სწორი ელფოსტა.';return renderAccount()}
   if(ACC.pw.length<6){ACC.note='პაროლი მინიმუმ 6 სიმბოლო უნდა იყოს.';return renderAccount()}
   ACC.busy=true;ACC.note='';renderAccount();
-  try{await NET.auth.register(nick,ACC.pw);
-    NET.myName=nick.slice(0,14);netSavePrefs();
-    await NET.db.doc('users/'+NET.uid).update({first:first.slice(0,20),last:last.slice(0,20),name:nick.slice(0,14),login:nick,registered:true});
-    ACC.pw='';ACC.busy=false;APP.screen='home';render();
+  try{
+    const nid=await nickId(nick);
+    const t=await NET.db.doc('nicks/'+nid).get().catch(()=>null);
+    if(t&&t.exists){ACC.busy=false;ACC.note='ეს ნიკნეიმი უკვე დაკავებულია. აირჩიე სხვა.';return renderAccount()}
+    const uid=await NET.auth.register(email,ACC.pw);
+    let code=randCode(6);for(let k=0;k<5;k++){if(!(await NET.db.doc('codes/'+code).get()).exists)break;code=randCode(6)}
+    await NET.db.doc('nicks/'+nid).set({uid,nick});
+    await NET.db.doc('users/'+uid).set({uid,name:nick.slice(0,14),first:first.slice(0,20),last:last.slice(0,20),login:nick,registered:true,regAt:Date.now(),created:Date.now(),seen:Date.now(),
+      tok:NET.myTok,code,room:null,friends:[],xp:0,wins:0,games:0,solo:0});
+    await NET.db.doc('codes/'+code).set({uid});
+    await bumpDoc('stats/global','regs');await bumpDoc('stats/'+dayKey(),'regs');
+    NET.myName=nick.slice(0,14);netSavePrefs();location.reload();
   }catch(e){ACC.busy=false;ACC.note=AERR[e&&e.code]||('შეცდომა: '+(e&&(e.code||e.message)||e));renderAccount()}
 }
 async function accLogin(){
-  if(!ACC.nick.trim()||!ACC.pw){ACC.note='ჩაწერე ნიკნეიმი და პაროლი.';return renderAccount()}
+  ACC.ok='';
+  if(!ACC.id.trim()||!ACC.pw){ACC.note='ჩაწერე ელფოსტა და პაროლი.';return renderAccount()}
   ACC.busy=true;ACC.note='';renderAccount();
-  try{await NET.auth.login(ACC.nick,ACC.pw);try{localStorage.removeItem('tm-net')}catch(e){}location.reload()}
+  try{await NET.auth.login(ACC.id,ACC.pw);try{localStorage.removeItem('tm-net')}catch(e){}location.reload()}
   catch(e){ACC.busy=false;ACC.note=AERR[e&&e.code]||('შეცდომა: '+(e&&(e.code||e.message)||e));renderAccount()}
+}
+async function accReset(){
+  ACC.ok='';if(!isEmail(ACC.email)){ACC.note='ჩაწერე სწორი ელფოსტა.';return renderAccount()}
+  ACC.busy=true;ACC.note='';renderAccount();
+  try{await NET.auth.reset(ACC.email);ACC.ok='ბმული გაიგზავნა. შეამოწმე ელფოსტა (Spam-იც) და დააყენე ახალი პაროლი.'}
+  catch(e){ACC.note=e&&e.code==='auth/user-not-found'?'ამ ელფოსტით ანგარიში არ არსებობს.':(AERR[e&&e.code]||('შეცდომა: '+(e&&(e.code||e.message)||e)))}
+  ACC.busy=false;renderAccount();
 }
 function accountHTML(){
   const p=SOC.profile;if(NET.mode!=='site'||!p||!p.registered)return '';
   return `<div class="sgrp"><h3>ანგარიში</h3>
     <div class="acc1"><span class="av">${tokSvg(NET.myTok)}</span><div><b>${esc(p.name||'')}</b><small>${esc((p.first||'')+' '+(p.last||''))} · შესვლის ნიკი: ${esc(p.login||p.name||'')}</small></div></div>
     <label class="vol">ნიკნეიმი თამაშში <input class="ain sm" data-netname="1" id="set_nick" maxlength="14" value="${esc(NET.myName)}"></label>
+    ${(()=>{const em=NET.auth&&NET.auth.email()||'';return em&&!em.endsWith('@magnati.game')?`<p class="note">📧 ${esc(em)}</p>`:`<p class="note">ელფოსტა არ არის მიბმული: პაროლის დავიწყების შემთხვევაში ვერ აღადგენ.</p><label class="vol">ელფოსტა <input class="ain sm" data-acc="addEmail" id="set_mail" type="email" value="${esc(ACC.addEmail)}"></label><button class="btn ghost wide" data-act="accaddmail">ელფოსტის მიბმა</button>`})()}
+    ${ACC.setNote?`<p class="tnote">${esc(ACC.setNote)}</p>`:''}
     ${NET.isAdmin?'<button class="btn gold wide" data-act="admin">🛡 ადმინ პანელი</button>':''}
     ${ADM.hasAdmins===false?'<button class="btn ghost wide" data-act="adclaim">🛡 ადმინის უფლების აღება</button><p class="note">მხოლოდ ერთხელ: პირველი, ვინც დააჭერს, ადმინი ხდება.</p>':''}${ADM.note&&!ADM.open?`<p class="tnote">${esc(ADM.note)}</p>`:''}
     <button class="btn ghost wide" data-act="acclogout">ანგარიშიდან გასვლა</button></div>`;
@@ -2779,8 +2951,8 @@ function renderHome(){
   const html=`<div class="homebox">
     <div class="hlogo">თბილისელი მაგნატი</div><div class="hsub">✦ ქალაქი შენს ხელშია ✦</div>
     <div class="hbtns">
-      ${saved?`<button class="hb gold" data-act="resume"><span>▶</span><b>გაგრძელება</b><small>შენახული თამაში</small></button>`:''}
-      <button class="hb${saved?'':' gold'}" data-act="go_local"><span>🎲</span><b>თამაში კომპიუტერთან</b><small>ან რამდენიმე ადამიანი ერთ ეკრანზე</small></button>
+      ${saved?`<button class="hb" data-act="resume"><span>▶</span><b>გაგრძელება</b><small>შენახული თამაში</small></button>`:''}
+      <button class="hb" data-act="go_local"><span>🎲</span><b>თამაში კომპიუტერთან</b><small>ან რამდენიმე ადამიანი ერთ ეკრანზე</small></button>
       <button class="hb" data-act="go_online"><span>🌐</span><b>ონლაინ მეგობრებთან</b><small>${NET.ready?(inv?`${inv} მოწვევა გელოდება`:'ოთახები, მოწვევა, მეგობრები'):NET.unavailable?'ამ ვერსიაში ხელმისაწვდომი არ არის':'უკავშირდება…'}</small></button>
       <div class="hmrow${NET.ready?' three':''}"><button class="hb sm" data-act="settings"><span>⚙</span><b>პარამეტრები</b></button>${NET.ready?'<button class="hb sm" data-act="lboard"><span>🏆</span><b>რეიტინგი</b></button>':''}<button class="hb sm" data-act="rules"><span>❓</span><b>წესები</b></button></div>
       ${NET.isAdmin?'<button class="hb sm" data-act="admin"><span>🛡</span><b>ადმინ პანელი</b></button>':''}
@@ -2792,13 +2964,15 @@ function settingsHTML(){
   const sw=(act,on,lbl)=>`<button class="sw" data-act="${act}" aria-pressed="${on}"><i></i>${lbl}</button>`;
   return `<div class="setbox" role="dialog" aria-label="პარამეტრები"><div class="rh"><h2>⚙ პარამეტრები</h2><button class="btn sm ghost" data-act="sclose">← უკან</button></div>
 ${accountHTML()}
-    <div class="sgrp"><h3>ხმა</h3>
-      ${sw('music',AU.music,'მუსიკა')}
-      <label class="vol">მუსიკის ხმა <input type="range" min="0" max="100" value="${Math.round(PREF.mvol*100)}" data-vol="m"></label>
-      ${sw('sound',AU.sfx,'ხმის ეფექტები')}
+    <div class="sgrp"><h3>🎲 თამაშის ხმები</h3>
+      ${sw('gfx',PREF.gfx,'კამათელი, ფული, ყიდვა, ბარათები')}
       <div class="stepsel"><span>ფიგურის სვლის ხმა</span><div class="chips2">${Object.entries(STEPS).map(([k,v])=>`<button data-act="stepsnd" data-k="${k}" aria-pressed="${PREF.step===k}">${v.n}</button>`).join('')}</div></div>
-      ${sw('fxall',PREF.fx,'სხვა ეფექტები (ფული, ყიდვა, ბარათები, კამათელი)')}
-      <label class="vol">ეფექტების ხმა <input type="range" min="0" max="100" value="${Math.round(PREF.svol*100)}" data-vol="s"></label>
+      <label class="vol">ხმის სიძლიერე <input type="range" min="0" max="100" value="${Math.round(PREF.svol*100)}" data-vol="s"></label></div>
+    <div class="sgrp"><h3>🔔 მენიუს ხმები</h3>
+      ${sw('uisnd',PREF.ui,'ღილაკები და მოწვევის შეტყობინება')}</div>
+    <div class="sgrp"><h3>🎵 მუსიკა</h3>
+      ${sw('music',AU.music,'ფონური მუსიკა')}
+      <label class="vol">ხმის სიძლიერე <input type="range" min="0" max="100" value="${Math.round(PREF.mvol*100)}" data-vol="m"></label>
       <button class="btn ghost wide" data-act="muteall">${AU.music||AU.sfx?'🔇 ყველა ხმის გამორთვა':'🔊 ხმის ჩართვა'}</button></div>
     <div class="acts"><button class="btn gold" data-act="sclose">შენახვა</button></div></div>`;
 }
@@ -2809,15 +2983,25 @@ function toolbar(){
   const fsOk=document.fullscreenEnabled||document.webkitFullscreenEnabled;
   const isFs=!!(document.fullscreenElement||document.webkitFullscreenElement);
   const loud=AU.music||AU.sfx;
-  return `<div class="bar"><div class="toggles">
-    ${!S?`<button class="tg" data-act="home" title="მთავარი მენიუ"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="lbl">მენიუ</span></button>`:''}
-    <button class="tg" data-act="settings" title="პარამეტრები"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg><span class="lbl">პარამეტრები</span></button>
-    <button class="tg" data-act="muteall" aria-pressed="${loud}" title="${loud?'ხმის გამორთვა':'ხმის ჩართვა'}"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/>${loud?'<path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>':'<path d="M17 9l5 6M22 9l-5 6"/>'}</svg><span class="lbl">ხმა</span></button>
-    ${NET.isAdmin?`<button class="tg adm" data-act="admin" title="ადმინ პანელი">🛡<span class="lbl">ადმინი</span></button>`:''}
-    <button class="tg" data-act="rules" title="როგორ ვითამაშო"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.3a2.8 2.8 0 1 1 3.9 2.6c-.8.4-1.2 1-1.2 1.9v.4"/><circle cx="12" cy="17.3" r=".4"/></svg><span class="lbl">წესები</span></button>
-    ${S?`<button class="tg" data-act="stats" title="სტატისტიკა"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span class="lbl">სტატისტიკა</span></button>`:''}
-    ${fsOk?`<button class="tg" data-act="fs" aria-pressed="${isFs}" title="სრული ეკრანი"><svg viewBox="0 0 24 24">${isFs?'<path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"/>':'<path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/>'}</svg><span class="lbl">სრული ეკრანი</span></button>`:''}</div>
-    ${S?`<button class="btn sm ${confirmNew?'red':'ghost'}" data-act="new">${confirmNew?'დაადასტურე':NET.on?'თამაშიდან გასვლა':'მთავარი მენიუ'}</button>`:''}</div>`;
+  const B=(act,svg,lbl,extra='')=>`<button class="tb" data-act="${act}" ${extra} title="${lbl}"><svg viewBox="0 0 24 24">${svg}</svg><span>${lbl}</span></button>`;
+  const I={home:'<path d="M3 11.5L12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-6h4v6"/>',
+    exit:'<path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4M6 12h10"/>',
+    gear:'<path d="M10.3 3h3.4l.5 2.4 1.6.9 2.3-.8 1.7 2.9-1.8 1.6v1.9l1.8 1.6-1.7 2.9-2.3-.8-1.6.9-.5 2.4h-3.4l-.5-2.4-1.6-.9-2.3.8-1.7-2.9 1.8-1.6V9.9L4.2 8.3l1.7-2.9 2.3.8 1.6-.9z"/><circle cx="12" cy="12" r="2.8"/>',
+    snd:'<path d="M4 9h4l5-4v14l-5-4H4z"/>'+(loud?'<path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>':'<path d="M17 9l5 6M22 9l-5 6"/>'),
+    book:'<path d="M4 5.5C6.5 4 9.5 4 12 5.5v14C9.5 18 6.5 18 4 19.5z"/><path d="M20 5.5C17.5 4 14.5 4 12 5.5v14c2.5-1.5 5.5-1.5 8 0z"/>',
+    stat:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+    fs:isFs?'<path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"/>':'<path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/>',
+    shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>'};
+  let h=`<div class="bar tbar${S?' ingame':''}">`;
+  if(S)h+=`<button class="tb exit${confirmNew?' sure':''}" data-act="new" title="${NET.on?'თამაშიდან გასვლა':'მთავარ მენიუში დაბრუნება'}"><svg viewBox="0 0 24 24">${NET.on?I.exit:I.home}</svg><span>${confirmNew?'დარწმუნდი?':NET.on?'გასვლა':'მენიუ'}</span></button>`;
+  else h+=B('home',I.home,'მენიუ');
+  h+=B('settings',I.gear,'პარამეტრები');
+  h+=B('muteall',I.snd,loud?'ხმა':'ხმა გამორთ.',`aria-pressed="${loud}"`);
+  h+=B('rules',I.book,'წესები');
+  if(S)h+=B('stats',I.stat,'სტატისტიკა');
+  if(fsOk)h+=B('fs',I.fs,isFs?'პატარა':'ეკრანი',`aria-pressed="${isFs}"`);
+  if(NET.isAdmin)h+=B('admin',I.shield,'ადმინი');
+  return h+`</div>`;
 }
 const ACT_PHASES=['roll','end','decide','debt'];
 function myActNow(){const vi=viewer(),me=S.players[vi];return S.turn===vi&&mine(vi)&&!me.ai&&ACT_PHASES.includes(S.phase)&&!me.out&&!S.modal}
@@ -2939,26 +3123,30 @@ function renderSide0(){
   l+=`</ul></div></div>`;
   lastCash=S.players.map(p=>p.cash);
   const mine=propsOf(vi);
-  l+=`<div class="panel grow"><div class="ph"><h2>${humans()>1?esc(me.name)+'-ის ქონება':'ჩემი ქონება'}</h2><span class="hbtns"><button class="btn sm ghost" data-act="bank" ${myAct?'':'disabled'}>ბანკი</button><button class="btn sm${canOffer(vi)?'':' used'}" data-act="trade" title="${canOffer(vi)?'ერთი შეთავაზება ამ რაუნდში':esc(offerWhy(vi))}" ${myAct&&S.players.filter(q=>!q.out).length>1?'':'disabled'}>ვაჭრობა${S.round<2?' 🔒':canOffer(vi)?'':' ✓'}</button></span></div><div class="scroll" id="ownbody" data-k="o">`;
-  if(!mine.length)l+=`<p class="empty">ჯერ არაფერი გაქვს. დადექი თავისუფალ უბანზე და იყიდე. ნაყიდი უბნები აქ გამოჩნდება ფერების მიხედვით.</p>`;
+  const totRent=mine.reduce((a,i)=>a+(S.own[i].m?0:rentOf(i)),0),totFl=mine.reduce((a,i)=>a+(S.own[i].h||0),0);
+  const trOk=myAct&&S.players.filter(q=>!q.out).length>1;
+  l+=`<div class="panel grow mypanel"><div class="ph"><h2>${humans()>1?esc(me.name)+'-ის ქონება':'ჩემი ქონება'}</h2></div>
+    <div class="mysum"><div><b class="num">${mine.length}</b><small>უბანი</small></div><div><b class="num">${totFl}</b><small>სართული</small></div><div><b class="num">${totRent}₾</b><small>ქირა სულ</small></div></div>
+    <div class="myacts"><button class="btn sm ghost" data-act="bank" ${myAct?'':'disabled'}>🏦 ბანკი</button><button class="btn sm${canOffer(vi)?'':' used'}" data-act="trade" title="${canOffer(vi)?'ერთი შეთავაზება ამ რაუნდში':esc(offerWhy(vi))}" ${trOk?'':'disabled'}>🤝 ვაჭრობა${S.round<2?' 🔒':canOffer(vi)?'':' ✓'}</button></div>
+    <div class="scroll" id="ownbody" data-k="o">`;
+  if(!mine.length)l+=`<p class="empty">ჯერ არაფერი გაქვს. დადექი თავისუფალ უბანზე და იყიდე. ნაყიდი უბნები აქ ჯგუფებად გამოჩნდება.</p>`;
   else{
     const groups=[...GROUPS.map((g,gi)=>({n:g.n,c:g.c,cells:groupCells(gi)})),{n:'მეტრო',c:TRC,cells:TRS}];
     groups.forEach(g=>{
       const owned=g.cells.filter(i=>S.own[i]&&S.own[i].o===vi);if(!owned.length)return;
-      const full=owned.length===g.cells.length;
-      const missN=g.cells.length-owned.length,isTr=g.cells===TRS;
-      l+=`<div class="grp" style="--gc:${g.c}"><div class="gh"><i></i>${g.n}<span class="${full?'full':missN===1&&!isTr?'need1':'cnt'}">${full?(isTr?'ყველა სადგური':'სრული ფერი ✓'):isTr?owned.length+'/'+g.cells.length:missN===1?'1 აკლია':owned.length+'/'+g.cells.length}</span></div>`;
-      owned.forEach(i=>{const o=S.own[i];
-        l+=`<button class="prow${S.sel===i?' on':''}" data-act="sel" data-i="${i}"><span class="th">${scene(CELLS[i].sc)}</span><span class="pn">${CELLS[i].n}${o.h?`<span class="flrs">${Array.from({length:o.h},()=>`<i class="${o.h===4?'max':''}"></i>`).join('')}</span>`:''}${o.m?'<span class="mg">დაგირავ.</span>':''}</span><span class="rv">${o.m?'—':rentOf(i)+'₾'}</span></button>`});
-      if(!full&&!isTr){
-        g.cells.filter(i=>!(S.own[i]&&S.own[i].o===vi)).forEach(i=>{
-          const o=S.own[i],c=CELLS[i],ow=o?S.players[o.o]:null,canTr=ow&&!ow.out&&myAct&&canTransfer(o.o,i);
-          l+=`<div class="need${missN===1?' last':''}" data-i="${i}"><button class="need-main" data-act="sel" data-i="${i}"><span class="th ghost">${scene(c.sc)}</span><span class="pn"><small>${missN===1?'ბოლო აკლია':'აკლია'}</small><b>${c.n}</b></span>
-            <span class="nst">${ow?`<span class="ownr" style="--pc:${ow.col}"><i></i>${esc(ow.name)}${o.h?` · ${o.h} სართ.`:''}</span>`:`<span class="free">თავისუფალია · ${c.price}₾</span>`}</span></button>
-            ${canTr?`<button class="btn sm" data-act="tradefor" data-i="${i}">ვაჭრობა</button>`:''}</div>`;
-        });
-      }
-      l+=`</div>`;
+      const full=owned.length===g.cells.length,isTr=g.cells===TRS,missN=g.cells.length-owned.length;
+      const st=full?(isTr?'ყველა ✓':'სრულია ✓'):(missN===1&&!isTr?'1 აკლია':owned.length+' / '+g.cells.length);
+      l+=`<section class="og${full?' full':''}" style="--gc:${g.c}"><header><span class="ogn">${g.n}</span><span class="ogd">${g.cells.map(i=>`<i class="${S.own[i]&&S.own[i].o===vi?'y':''}"></i>`).join('')}</span><span class="ogs">${st}</span></header>`;
+      g.cells.forEach(i=>{
+        const o=S.own[i],c=CELLS[i];
+        if(o&&o.o===vi){
+          l+=`<button class="oi${S.sel===i?' on':''}${o.m?' m':''}" data-act="sel" data-i="${i}"><span class="oin">${c.n}</span><span class="oif">${o.m?'<em>დაგირავებული</em>':o.h?Array.from({length:o.h},()=>'🏠').join(''):''}</span><span class="oir num">${o.m?'—':rentOf(i)+'₾'}</span></button>`;
+        }else if(!isTr){
+          const ow=o?S.players[o.o]:null,canTr=ow&&!ow.out&&myAct&&canTransfer(o.o,i);
+          l+=`<div class="om" data-i="${i}"><button class="omb" data-act="sel" data-i="${i}"><span class="oin">${c.n}</span><span class="oiw">${ow?`<i style="--pc:${ow.col}"></i>${esc(ow.name)}-ს აქვს`:`თავისუფალია · ${c.price}₾`}</span></button>${canTr?`<button class="btn xs" data-act="tradefor" data-i="${i}">ვაჭრობა</button>`:''}</div>`;
+        }
+      });
+      l+=`</section>`;
     });
   }
   l+=`</div></div>`;
@@ -2986,7 +3174,7 @@ function setHl(i){
   if(i!=null){const e=document.getElementById('c'+i);e&&e.classList.add('hl');b&&b.classList.add('focus');placePin(i)}
   else{b&&b.classList.remove('focus');placePin(null)}
 }
-['mouseover','focusin'].forEach(ev=>document.addEventListener(ev,e=>{const el=e.target.closest&&e.target.closest('.prow,.pprow,.tchip,.need');if(el&&S){const i=+el.dataset.i;if(i!==hlCell)setHl(i)}else if(hlCell!=null&&!(e.target.closest&&e.target.closest('.prow,.pprow,.tchip,.need')))setHl(null)}));
+['mouseover','focusin'].forEach(ev=>document.addEventListener(ev,e=>{const el=e.target.closest&&e.target.closest('.prow,.pprow,.tchip,.need,.oi,.om');if(el&&S){const i=+el.dataset.i;if(i!==hlCell)setHl(i)}else if(hlCell!=null&&!(e.target.closest&&e.target.closest('.prow,.pprow,.tchip,.need,.oi,.om')))setHl(null)}));
 document.addEventListener('mouseleave',()=>setHl(null));
 ['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>renderSide()));
 document.addEventListener('input',e=>{
@@ -3004,9 +3192,11 @@ document.addEventListener('input',e=>{
   if(d.acustom&&S&&S.auction)S.auction.custom=t.value;
   if(d.lamt&&S){S.lamt=Math.max(0,Math.floor(+t.value||0));const pv=document.getElementById('lprev');if(pv)pv.innerHTML=loanPreview(cur(),S.lamt)}
 });
+const NOTICK=new Set(['roll','buy','build','sellf','sellbank','mort','unmort','bail','ltake','lrepay','lrepayall','lquick','asell','taccept','muteall','sel','unsel','fly','declare','debtok']);
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-act]');if(!el)return;
   const a=el.dataset.act;
+  if(!NOTICK.has(a)&&!el.disabled)sfx('pick');
   if(a!=='new'&&confirmNew)confirmNew=false;
   if(a==='music'){AU.music?stopMusic():startMusic();renderSide();refreshSettings();return}
   if(a==='settings'){showSettings();sfx('pick');return}
@@ -3014,13 +3204,16 @@ document.addEventListener('click',e=>{
   if(a==='adclaim'){adminClaim();return}
   if(a==='annhide'){try{localStorage.setItem('tm-ann-hide',String(ADM.ann&&ADM.ann.at))}catch(e){}renderAnnounce();return}
   if(['admtab','admclose','aedit','asave','areset','aban','adelu','adelg','awatch','aclean','annsend','annoff','cfgsave','cfgreset','admadd','admrm'].includes(a)){if(NET.isAdmin)adminAct(a,el);return}
-  if(a==='acctab'){ACC.tab=el.dataset.v;ACC.note='';renderAccount();return}
+  if(a==='acctab'){ACC.tab=el.dataset.v;ACC.note='';ACC.ok='';renderAccount();return}
   if(a==='accreg'){accRegister();return}
   if(a==='acclogin'){accLogin();return}
+  if(a==='accreset'){accReset();return}
+  if(a==='accaddmail'){(async()=>{if(!isEmail(ACC.addEmail)){ACC.setNote='ჩაწერე სწორი ელფოსტა.';return refreshSettings()}try{await NET.auth.addEmail(ACC.addEmail);ACC.setNote='ელფოსტაზე გამოგიგზავნეთ დასადასტურებელი ბმული. დადასტურების შემდეგ ამ ელფოსტით შეხვალ.'}catch(e){ACC.setNote=AERR[e&&e.code]||('შეცდომა: '+(e&&(e.code||e.message)||e))}refreshSettings()})();return}
   if(a==='acclogout'){(async()=>{try{if(NET.code)netLeave(true);await NET.auth.logout()}catch(e){}try{localStorage.removeItem('tm-net')}catch(e){}location.reload()})();return}
   if(a==='sclose'){hideSettings();return}
   if(a==='stepsnd'){PREF.step=el.dataset.k;savePrefs();refreshSettings();if(!AU.sfx){AU.sfx=true}[0,240,480].forEach(d=>setTimeout(()=>sfx('step'),d));return}
-  if(a==='fxall'){PREF.fx=!PREF.fx;savePrefs();refreshSettings();if(PREF.fx)sfx('coin');return}
+  if(a==='gfx'){PREF.gfx=!PREF.gfx;if(PREF.gfx)AU.sfx=true;savePrefs();refreshSettings();sfx('coin');return}
+  if(a==='uisnd'){PREF.ui=!PREF.ui;if(PREF.ui)AU.sfx=true;savePrefs();refreshSettings();sfx('invite');return}
   if(a==='theme'){PREF.theme=el.dataset.v;applyPrefs();savePrefs();refreshSettings();return}
   if(a==='anim'){PREF.anim=!PREF.anim;applyPrefs();savePrefs();refreshSettings();return}
   if(a==='muteall'){if(AU.music||AU.sfx){if(AU.music)stopMusic();AU.sfx=false}else{AU.sfx=true;startMusic()}savePrefs();renderSide();refreshSettings();return}
