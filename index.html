@@ -362,6 +362,73 @@ body{font-family:var(--body);font-size:14px;line-height:1.45;
 .tradebox .acts{margin-top:14px;justify-content:flex-start}
 .deed.auct{width:min(100%,420px)}
 .btn.used{opacity:.6}
+.colpick{display:flex;flex-wrap:wrap;gap:6px}
+.cp{width:24px;height:24px;border-radius:50%;border:2px solid transparent;background:var(--c);cursor:pointer;padding:0;box-shadow:0 0 0 1px rgba(0,0,0,.4) inset}
+.cp[aria-pressed="true"]{border-color:var(--cream);box-shadow:0 0 0 2px var(--c),0 0 10px var(--c)}
+.cp:disabled{opacity:.18;cursor:not-allowed}
+.lmem.off{opacity:.55}
+.acctbox{width:min(100%,400px)}.atabs{margin:0 0 14px;background:rgba(0,0,0,.35)}
+.afields{display:flex;flex-direction:column;gap:9px;margin-bottom:12px}
+.ain{font:inherit;font-size:15px;padding:.7em .9em;border-radius:11px;border:1px solid #2A3A72;background:#060B1C;color:#F1E8D2;width:100%;box-sizing:border-box}
+.ain:focus{outline:2px solid #E8B758;outline-offset:1px}.ain.sm{font-size:13.5px;padding:.4em .6em;flex:1}
+.anote{font-size:12.5px;color:#A8B3D6;margin:10px 0 0}.aerr{color:#FF9A8B;font-weight:700;font-size:13.5px;margin:10px 0 0}
+.acc1{display:flex;align-items:center;gap:10px}.acc1 .av{width:34px;height:34px;border-radius:50%;background:#33406a;display:grid;place-items:center}.acc1 .av svg{width:20px;height:24px}
+.acc1 b{display:block;font-size:15px}.acc1 small{color:#94A1C8;font-size:12px}
+.pfull{font-size:12.5px;font-weight:700;margin-bottom:3px}
+.hmrow.three{grid-template-columns:1fr 1fr 1fr}.hprof{margin-top:14px;color:#A8B3D6;font-size:13px}
+.ph h2 small{font-family:var(--body);font-size:12px;color:var(--muted);font-weight:600}
+.stepsel{display:flex;flex-direction:column;gap:6px;font-size:13px;color:#A8B3D6}
+.chips2{display:flex;flex-wrap:wrap;gap:6px}.chips2 button{font:inherit;font-size:12.5px;font-weight:700;padding:.4em .8em;border-radius:99px;border:1px solid #2A3A72;background:#0C111D;color:#C9D3EE;cursor:pointer}
+.chips2 button[aria-pressed="true"]{border-color:#E8B758;color:#F6DA8E;background:#1A2547}
+.prof{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;margin:10px 0;padding:10px;border-radius:12px;border:1px solid var(--line);background:rgba(246,218,142,.06)}
+.lvl{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFE7A8,#C8922E);color:#2A1806;line-height:1}
+.lvl small{font-size:8px;font-weight:800}.lvl b{font-size:18px}
+.pinfo small{font-size:11px;color:var(--muted)}.xpbar{height:6px;border-radius:3px;background:rgba(127,140,180,.25);overflow:hidden;margin-bottom:3px}.xpbar i{display:block;height:100%;background:linear-gradient(90deg,#E8B758,#F6DA8E)}
+.pst{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12px;margin-top:2px}
+.lv{font-family:var(--body);font-size:10.5px;color:var(--muted);font-weight:700}
+.lbbox{width:min(100%,560px)}.lbt{width:100%;border-collapse:collapse;font-size:13.5px}.lbt th{text-align:left;font-size:11.5px;color:#94A1C8;padding:6px;border-bottom:1px solid rgba(255,255,255,.1)}
+.lbt td{padding:6px;border-bottom:1px solid rgba(255,255,255,.05)}.lbt td:first-child,.lbt th:first-child{width:36px;text-align:center}
+.lbt .av{display:inline-grid;place-items:center;width:22px;height:22px;vertical-align:middle;margin-right:6px}.lbt .av svg{width:16px;height:20px}
+.lbt tr.me td{background:rgba(232,183,88,.14)}.lbt tr.fr td{background:rgba(61,190,124,.08)}.lbt small{color:#94A1C8}
+.home{position:fixed;inset:0;z-index:75;display:grid;place-items:center;padding:16px;background:radial-gradient(ellipse at 50% 30%,rgba(22,40,95,.82),rgba(3,5,14,.94));backdrop-filter:blur(6px)}
+.home[hidden]{display:none}
+.homebox{width:min(100%,460px);text-align:center;animation:pop .35s ease-out}
+.hlogo{font-family:var(--display);font-weight:900;font-size:clamp(30px,8vw,52px);line-height:1.05;background:linear-gradient(180deg,#FFF3C8,#E8B758 55%,#B8862A);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 14px rgba(232,183,88,.35))}
+.hsub{color:#5CC7CF;letter-spacing:.3em;font-size:12px;margin:8px 0 26px}
+.hbtns{display:flex;flex-direction:column;gap:10px}
+.hb{display:grid;grid-template-columns:42px 1fr;grid-template-rows:auto auto;align-items:center;text-align:left;gap:0 10px;font:inherit;padding:14px 18px;border-radius:16px;cursor:pointer;color:#F1E8D2;background:rgba(255,255,255,.06);border:1px solid rgba(217,178,84,.35);transition:transform .15s,background .15s}
+.hb:hover{transform:translateY(-2px);background:rgba(255,255,255,.1)}
+.hb span{grid-row:1/3;font-size:26px;text-align:center}.hb b{font-size:16px}.hb small{color:#A8B3D6;font-size:12.5px}
+.hb.gold{background:linear-gradient(180deg,#F6DA8E,#D9A646);color:#2A1806;border-color:#FFE7A8}.hb.gold small{color:#5A3D0E}
+.hmrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hb.sm{grid-template-columns:28px 1fr;padding:11px 14px}.hb.sm span{font-size:18px;grid-row:auto}.hb.sm b{font-size:14px}
+.setbox{width:min(100%,460px);max-height:calc(100dvh - 32px);overflow:auto;background:linear-gradient(180deg,#16285F,#0E1A40);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:0 30px 80px rgba(0,0,0,.6);color:#F1E8D2}
+.setbox .rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}.setbox h2{margin:0;font-family:var(--display);color:#F6DA8E;font-size:21px}
+.sgrp{display:flex;flex-direction:column;gap:9px;padding:12px 0;border-top:1px solid rgba(255,255,255,.08)}.sgrp h3{margin:0;font-size:12px;letter-spacing:.08em;color:#94A1C8}
+.sw{display:flex;align-items:center;gap:10px;font:inherit;font-weight:600;font-size:14px;color:inherit;background:none;border:0;padding:2px 0;cursor:pointer;text-align:left}
+.sw i{width:38px;height:22px;border-radius:99px;background:#3A4562;position:relative;flex:none;transition:background .2s}
+.sw i::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s}
+.sw[aria-pressed="true"] i{background:#3DBE7C}.sw[aria-pressed="true"] i::after{transform:translateX(16px)}
+.vol{display:flex;align-items:center;gap:10px;font-size:13px;color:#A8B3D6}.vol input{flex:1;accent-color:#E8B758}
+.setbox .acts{display:flex;justify-content:center;margin-top:8px}.btn.wide{width:100%}
+.setbox .seg{background:#0C111D}
+/* light theme: side panels and menus turn light, the night board stays dark */
+html.light{color-scheme:light;--bg:#E7EBF5;--panel:#FFFFFF;--panel2:#F5F7FC;--line:#C9D2E8;--cream:#1B2340;--muted:#5A6688;--gold-hi:#94600C;--gold:#B7862A}
+html.light :is(.stage,#hud,.overlay,.sdeed,.rulesbox,.setbox,#toasts,.netwait){color-scheme:dark;--panel:#0A0F22;--panel2:#0F1830;--line:#2A3A72;--cream:#F1E8D2;--muted:#94A1C8;--gold-hi:#F6DA8E;--gold:#D9B254}
+html.light :is(#colL,#colR) :is(.seat input,.lrow input,.seg,.tp){background:#fff;color:#1B2340}
+html.light :is(#colL,#colR) .seg button[aria-pressed="true"]{background:#EEF2FB;color:#94600C}
+html.light :is(#colL,#colR) :is(.pcard,.prow){background:#F7F9FD!important;border-color:#DCE2F0!important}
+html.light :is(#colL,#colR) .btn.ghost{box-shadow:inset 0 0 0 1.5px rgba(27,35,64,.3)}
+html.light :is(#colL,#colR) .panel{background:#fff;box-shadow:0 10px 26px rgba(30,45,90,.12);border-color:rgba(183,134,42,.35)}
+html.light :is(#colL,#colR) .ph{border-bottom-color:#E3E8F3}
+html.light :is(#colL,#colR) .pcard.cur{background:linear-gradient(90deg,rgba(232,183,88,.22),#FFF8E6 70%)!important;border-color:rgba(183,134,42,.7)!important}
+html.light :is(#colL,#colR) .prow:hover{background:#EEF2FB!important}
+html.light :is(#colL,#colR) .wbar{background:#E3E8F3}
+html.light :is(#colL,#colR) :is(.lmem,.seat){background:#F7F9FD}
+html.light :is(#colL,#colR) .need{background:#FBFCFF}
+html.light :is(#colL,#colR) .tag{background:#EEF2FB;color:#3A4566}
+@media (max-width:899px){html.light :is(.colL,.colR){background:#F1F4FA}}
+html.light :is(#colL,#colR) .tg{background:#fff}
+html.light .mtabs{background:#fff;border-color:#C9D2E8}
 .roomcode{display:grid;justify-items:center;gap:2px;padding:12px;border-radius:14px;border:1px dashed var(--gold-hi);background:rgba(246,218,142,.06);margin-bottom:10px;text-align:center}
 .roomcode small{color:var(--muted);font-weight:700}.roomcode b{font-family:var(--display);font-size:38px;letter-spacing:.18em;color:var(--gold-hi)}.roomcode span{font-size:12px;color:var(--muted)}
 .lh{font-size:13px;margin:12px 0 6px;color:var(--cream)}
@@ -834,12 +901,12 @@ const JAM=CELLS.findIndex(c=>c.t==='jam');
 const TR_RENT=[40,100,200,350];
 const FLY={ride:300};
 const START=2000, PASS=250, JAILFEE=75;
-const PCOL=['#E5483A','#3F95EC','#3DBE7C','#B068EE','#F2A93B'];
+const COLORS=['#E5483A','#3F95EC','#3DBE7C','#B068EE','#F2A93B','#E85D9C','#22B8C7','#8D99AE'];
+const PCOL=COLORS.slice(0,5);
 const MAXP=5;
 const AIN=['ნინო','გიორგი','ლევანი','თამარი','დათო'];
 /* animations stay on even when the device asks for reduced motion (players expect to see moves); tm-rm=1 turns them off */
-const RM=(()=>{try{return localStorage.getItem('tm-rm')==='1'}catch(e){return false}})();
-if(RM)document.documentElement.classList.add('rm');
+let RM=false;
 const sleep=ms=>new Promise(r=>setTimeout(r,RM?Math.min(ms,80):ms));
 const r6=()=>1+Math.floor(Math.random()*6);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -937,6 +1004,9 @@ const TOKENS=[
  {n:'ქვევრი',s:'<path d="M14 6h12v3c7 4 11 12 10 21-1 9-7 14-16 16-9-2-15-7-16-16-1-9 3-17 10-21z" fill="url(#tClay)" stroke="#5A2A14" stroke-width="1"/><ellipse cx="20" cy="6" rx="7" ry="2" fill="#4A1E0C"/><path d="M8 24c4 2 8-2 12 0s8 2 12 0" stroke="#F0C59A" stroke-width="1.1" fill="none"/><path d="M10 29c3 1.4 6-1.4 10 0s7 1.4 10 0" stroke="#F0C59A" stroke-width=".7" fill="none" opacity=".7"/><path d="M13 14c-3 4-4 10-3 16" stroke="#fff" stroke-opacity=".3" stroke-width="1.6" fill="none" stroke-linecap="round"/>'},
  {n:'სვანური ქუდი',s:'<path d="M5 36C5 23 12 17 20 17s15 6 15 19z" fill="url(#tFelt)" stroke="#8E8670" stroke-width=".9"/><ellipse cx="20" cy="37" rx="16" ry="4" fill="#A79C84" stroke="#7E7560" stroke-width=".8"/><path d="M8 31c5-3 19-3 24 0" stroke="#B23A48" stroke-width="1.8" fill="none"/><path d="M11 27.6l2 1.6M15 26.6l2 1.6M19 26.2l2 1.6M23 26.6l2 1.6M27 27.6l2 1.6" stroke="#2A3352" stroke-width=".9"/><path d="M20 17v-3" stroke="#3A3226" stroke-width="1.4" stroke-linecap="round"/><path d="M12 23c2-3 5-4 8-4" stroke="#fff" stroke-opacity=".55" stroke-width="1.2" fill="none" stroke-linecap="round"/>'},
 ];
+TOKENS.push(...[['მანქანა','🚗'],['ძაღლი','🐶'],['კატა','🐱'],['გვირგვინი','👑'],['ლომი','🦁'],['ბურთი','⚽'],['რაკეტა','🚀'],['ალმასი','💎']]
+  .map(([n,e])=>({n,emo:1,s:`<text x="20" y="36" font-size="29" text-anchor="middle" font-family="Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,sans-serif">${e}</text>`})));
+const freeOf=(used,list)=>list.find(x=>!used.has(x));
 const tokSvg=(k,cls='')=>`<svg viewBox="0 0 40 48" aria-hidden="true"${cls?` class="${cls}"`:''}>${TOKENS[k].s}</svg>`;
 
 /* ================= CARDS ================= */
@@ -964,9 +1034,13 @@ const CARDS=[
 
 /* ================= AUDIO ================= */
 const AU={ctx:null,music:false,sfx:true,mg:null,sg:null,timer:null,next:0,ix:0,drone:null,gen:0};
-let PREF={view3d:false,zoom:0};const ZOOMS=[1,1.45,1.9,2.4];let SHEET=null;
-try{const pr=JSON.parse(localStorage.getItem('tm-audio')||'{}');AU.wantMusic=!!pr.music;AU.sfx=pr.sfx!==false;PREF.view3d=pr.v3===true;PREF.zoom=Math.min(3,Math.max(0,pr.zoom|0))}catch(e){}
-function savePrefs(){try{localStorage.setItem('tm-audio',JSON.stringify({music:AU.music,sfx:AU.sfx,v3:PREF.view3d,zoom:PREF.zoom}))}catch(e){}}
+let PREF={view3d:false,zoom:0,theme:'dark',anim:true,mvol:.6,svol:.8,step:'tap',fx:false};const ZOOMS=[1,1.45,1.9,2.4];let SHEET=null;
+try{const pr=JSON.parse(localStorage.getItem('tm-audio')||'{}');AU.wantMusic=!!pr.music;AU.sfx=pr.sfx!==false;PREF.view3d=false;PREF.zoom=Math.min(3,Math.max(0,pr.zoom|0));
+if(typeof pr.mvol==='number')PREF.mvol=pr.mvol;if(typeof pr.svol==='number')PREF.svol=pr.svol;if(pr.step)PREF.step=pr.step;if(typeof pr.fx==='boolean')PREF.fx=pr.fx}catch(e){}
+function applyPrefs(){RM=!PREF.anim;const h=document.documentElement;h.classList.toggle('rm',RM);h.classList.toggle('light',PREF.theme==='light');
+  if(AU.ctx&&AU.mv){AU.mv.gain.value=PREF.mvol;AU.sv.gain.value=PREF.svol}}
+applyPrefs();
+function savePrefs(){try{localStorage.setItem('tm-audio',JSON.stringify({music:AU.music,sfx:AU.sfx,v3:PREF.view3d,zoom:PREF.zoom,theme:PREF.theme,anim:PREF.anim,mvol:PREF.mvol,svol:PREF.svol,step:PREF.step,fx:PREF.fx}))}catch(e){}}
 function actx(){
   if(!AU.ctx){
     const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;
@@ -976,7 +1050,8 @@ function actx(){
     const len=Math.floor(c.sampleRate*1.8),buf=c.createBuffer(2,len,c.sampleRate);
     for(let ch=0;ch<2;ch++){const d=buf.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6)}
     const rv=c.createConvolver();rv.buffer=buf;const rg=c.createGain();rg.gain.value=.3;rv.connect(rg);rg.connect(m);
-    AU.mg.connect(m);AU.mg.connect(rv);AU.sg.connect(m);AU.sg.connect(rv);
+    AU.mv=c.createGain();AU.mv.gain.value=PREF.mvol;AU.sv=c.createGain();AU.sv.gain.value=PREF.svol;AU.mv.connect(m);AU.sv.connect(m);
+    AU.mg.connect(AU.mv);AU.mg.connect(rv);AU.sg.connect(AU.sv);AU.sg.connect(rv);
   }
   if(AU.ctx.state==='suspended')AU.ctx.resume();
   return AU.ctx;
@@ -1055,12 +1130,17 @@ const SFX={
   lose:t=>[330,294,262,196].forEach((f,k)=>pluck(f,t+k*.18,.6,AU.sg,.2)),
   pick:t=>pluck(880,t,.2,AU.sg,.14),
 };
-function sfx(n){if(!AU.sfx)return;const c=actx();if(!c)return;try{SFX[n](c.currentTime+.01)}catch(e){}}
+const STEPS={tap:{n:'კაკუნი',f:t=>SFX.step(t)},wood:{n:'ხე',f:t=>{noise(t,.045,.4,AU.sg,850,3);tone(210,t,.07,'triangle',.09,AU.sg)}},
+  coin:{n:'მონეტა',f:t=>tone(1568,t,.07,'triangle',.08,AU.sg)},bell:{n:'ზარი',f:t=>pluck(1175,t,.22,AU.sg,.08)},
+  drop:{n:'წვეთი',f:t=>tone(520,t,.09,'sine',.09,AU.sg,980)},off:{n:'გამორთული',f:()=>{}}};
+function sfx(n){if(!AU.sfx)return;if(n==='step'){if(PREF.step==='off')return}else if(!PREF.fx&&n!=='pick')return;const c=actx();if(!c)return;
+  try{n==='step'?(STEPS[PREF.step]||STEPS.tap).f(c.currentTime+.01):SFX[n](c.currentTime+.01)}catch(e){}}
 if(AU.wantMusic){const go=()=>{document.removeEventListener('pointerdown',go);if(!AU.music)startMusic();renderSide()};document.addEventListener('pointerdown',go)}
 
 /* ================= STATE & RULES ================= */
+const APP={screen:'home'};
 let S=null,confirmNew=false,lastCash=[],SETUP_DIFF='medium';try{const d=localStorage.getItem('tm-diff');if(d&&['easy','medium','hard'].includes(d))SETUP_DIFF=d}catch(e){}
-let SEATS=[{ai:false,name:'',tok:0},{ai:true,name:AIN[0],tok:1},{ai:true,name:AIN[1],tok:2}];
+let SEATS=[{ai:false,name:'',tok:0,col:COLORS[0]},{ai:true,name:AIN[0],tok:1,col:COLORS[1]},{ai:true,name:AIN[1],tok:2,col:COLORS[2]}];
 /* ================= ONLINE (shared artifact database) =================
    One game = one document games/<CODE>. Whoever acts runs the rules locally and writes the
    whole state back; every other open view follows the document live. Lobby members are
@@ -1068,11 +1148,14 @@ let SEATS=[{ai:false,name:'',tok:0},{ai:true,name:AIN[0],tok:1},{ai:true,name:AI
 const NET={db:null,user:null,uid:null,ready:false,unavailable:false,on:false,code:null,host:null,doc:null,lobby:null,members:[],rooms:[],
   seat:-1,ver:0,lastJson:'',applying:false,pushT:null,writing:false,dirty:false,unsubs:[],roomsUnsub:null,stats:false,
   myName:'',myTok:0,note:'',lastChange:Date.now(),joinCode:''};
-try{const s=JSON.parse(localStorage.getItem('tm-net')||'{}');NET.myName=s.name||'';NET.myTok=+s.tok||0}catch(e){}
-function netSavePrefs(){try{localStorage.setItem('tm-net',JSON.stringify({name:NET.myName,tok:NET.myTok}))}catch(e){}}
+NET.pres={};NET.presKey='';NET.presUnsub=null;
+NET.myCol=COLORS[0];try{const s=JSON.parse(localStorage.getItem('tm-net')||'{}');NET.myName=s.name||'';NET.myTok=+s.tok||0;if(COLORS.includes(s.col))NET.myCol=s.col}catch(e){}
+function netSavePrefs(){try{localStorage.setItem('tm-net',JSON.stringify({name:NET.myName,tok:NET.myTok,col:NET.myCol}))}catch(e){}}
 const mine=seat=>!NET.on||seat===NET.seat;
 const netCode=()=>Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');
 /* ---- Firebase adapter (standalone website): exposes the same small db surface as the artifact db ---- */
+const nickKey=n=>String(n||'').trim().toLowerCase();
+async function nickEmail(n){const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('magnati:'+nickKey(n)));return 'p'+[...new Uint8Array(h)].slice(0,16).map(b=>b.toString(16).padStart(2,'0')).join('')+'@magnati.game'}
 async function fbInit(cfg){
   const V='10.12.2',B=`https://www.gstatic.com/firebasejs/${V}/`;
   const [app,fs,au]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-firestore.js'),import(B+'firebase-auth.js')]);
@@ -1092,7 +1175,12 @@ async function fbInit(cfg){
     onSnapshot:(next,e)=>fs.onSnapshot(fs.doc(fdb,path),s=>next(wd(s)),err(e)),
     collection:c=>cr(path+'/'+c)});
   const cr=path=>Object.assign(mq(path,[]),{path,doc:id=>dr(path+'/'+(id||fs.doc(fs.collection(fdb,path)).id)),add:async d=>{const r=await fs.addDoc(fs.collection(fdb,path),d);return dr(path+'/'+r.id)}});
-  return {db:{doc:dr,collection:cr},uid:u.uid};
+  const api={
+    async register(nick,pw){const email=await nickEmail(nick),cred=au.EmailAuthProvider.credential(email,pw);
+      if(auth.currentUser&&auth.currentUser.isAnonymous)await au.linkWithCredential(auth.currentUser,cred);else await au.createUserWithEmailAndPassword(auth,email,pw);return auth.currentUser.uid},
+    async login(nick,pw){const email=await nickEmail(nick);await au.signInWithEmailAndPassword(auth,email,pw);return auth.currentUser.uid},
+    async logout(){await au.signOut(auth)}};
+  return {db:{doc:dr,collection:cr},uid:u.uid,anon:u.isAnonymous,api};
 }
 (async()=>{
   await new Promise(r=>setTimeout(r,0));
@@ -1104,7 +1192,7 @@ async function fbInit(cfg){
         if(uid&&!NET.myName){try{const me=await user.me();if(me&&me.name)NET.myName=me.name.split(' ')[0].slice(0,14)}catch(e){}}}
       NET.mode='artifact';
     }else if(window.FB_CONFIG&&window.FB_CONFIG.apiKey){
-      const r=await fbInit(window.FB_CONFIG);db=r.db;uid=r.uid;NET.mode='site';
+      const r=await fbInit(window.FB_CONFIG);db=r.db;uid=r.uid;NET.mode='site';NET.auth=r.api;NET.anon=r.anon;
     }
     if(!db||!uid){NET.unavailable=true;if(!S)renderSide();return}
     NET.db=db;NET.uid=uid;NET.ready=true;
@@ -1122,11 +1210,11 @@ async function socialStart(){
   let g=await ref.get(),p=g.exists?g.data():null;
   if(!p){
     let code=randCode(6);for(let k=0;k<5;k++){if(!(await NET.db.doc('codes/'+code).get()).exists)break;code=randCode(6)}
-    p={uid:NET.uid,name:(NET.myName||'მოთამაშე').slice(0,14),tok:NET.myTok,code,seen:Date.now(),room:null,friends:[]};
+    p={uid:NET.uid,name:(NET.myName||'მოთამაშე').slice(0,14),tok:NET.myTok,code,seen:Date.now(),room:null,friends:[],xp:0,wins:0,games:0,solo:0};
     await ref.set(p);await NET.db.doc('codes/'+code).set({uid:NET.uid});
   }else{if(!NET.myName&&p.name)NET.myName=p.name;if(p.tok!=null&&!localStorage.getItem('tm-net'))NET.myTok=p.tok}
   SOC.profile=p;
-  ref.onSnapshot(s=>{if(!s.exists)return;SOC.profile=s.data();socialWatchFriends();socialRender()},()=>{});
+  ref.onSnapshot(s=>{if(!s.exists)return;SOC.profile=s.data();if(SOC.profile.registered&&SOC.profile.name&&!NET.myName)NET.myName=SOC.profile.name;socialWatchFriends();socialRender()},()=>{});
   NET.db.collection(`users/${NET.uid}/inbox`).onSnapshot(q=>{
     const now=Date.now();SOC.inbox=q.docs.map(d=>Object.assign({id:d.id},d.data())).filter(x=>x&&now-(x.at||0)<20*60e3).sort((a,b)=>a.at-b.at);
     q.docs.forEach(d=>{const x=d.data();if(x&&now-(x.at||0)>=20*60e3)NET.db.doc(`users/${NET.uid}/inbox/${d.id}`).delete().catch(()=>{})});
@@ -1171,7 +1259,44 @@ async function socialInboxAct(id,act){
   if(x.type==='invite'){if(NET.on&&S&&S.phase!=='over'&&NET.code!==x.code){netLeave(true);S=null;overlayKey=null}else if(S&&!NET.on){S=null;overlayKey=null}netJoin(x.code)}
 }
 const isOnline=f=>Date.now()-(f.seen||0)<100000;
-function socialRender(toastsOnly){renderToasts();if(!toastsOnly&&!S)renderSide();else if(!S)renderSide()}
+const lvlOf=xp=>Math.floor((1+Math.sqrt(1+8*(xp||0)/100))/2);
+const lvlBase=l=>100*l*(l-1)/2;
+async function recordResult(kind){
+  if(!NET.ready||!S||S.phase!=='over'||S.winner==null)return;
+  const key='tm-rec-'+(kind==='online'?NET.code+':'+S.round:'solo:'+S.round+':'+S.log.length);
+  try{if(localStorage.getItem(key))return;localStorage.setItem(key,'1')}catch(e){}
+  const ref=NET.db.doc('users/'+NET.uid),g=await ref.get(),p=g.exists?g.data():null;if(!p)return;
+  const u={};
+  if(kind==='online'){if(NET.seat<0)return;const won=S.winner===NET.seat;
+    u.games=(p.games||0)+1;u.xp=(p.xp||0)+25+Math.min(60,S.round*2)+(won?100:0);if(won)u.wins=(p.wins||0)+1;
+    SOC.note=won?`🏆 გაიმარჯვე! +${u.xp-(p.xp||0)} XP`:`თამაში დასრულდა: +${u.xp-(p.xp||0)} XP`;}
+  else{const w=S.players[S.winner];if(!w||w.ai||!S.players.some(q=>q.ai))return;
+    u.solo=(p.solo||0)+1;u.xp=(p.xp||0)+({easy:5,medium:10,hard:20}[S.diff]||10)}
+  await ref.update(u).catch(()=>{});
+}
+function profileHTML(){
+  const p=SOC.profile;if(!p)return '';
+  const xp=p.xp||0,l=lvlOf(xp),a=lvlBase(l),b=lvlBase(l+1),pc=Math.round((xp-a)/(b-a)*100);
+  return `<div class="prof"><div class="lvl"><small>ლეველი</small><b>${l}</b></div><div class="pinfo">${p.first?`<div class="pfull">${esc(p.first+' '+(p.last||''))}</div>`:''}<div class="xpbar"><i style="width:${pc}%"></i></div>
+    <small>${xp} / ${b} XP</small><div class="pst"><span>🏆 ${p.wins||0} მოგება</span><span>🎲 ${p.games||0} თამაში</span><span>🤖 ${p.solo||0}</span></div></div>
+    <button class="btn sm" data-act="lboard">რეიტინგი</button></div>`;
+}
+let LB={rows:[],loading:false};
+async function showBoard(){
+  let d=document.getElementById('lbov');if(!d){d=document.createElement('div');d.id='lbov';d.className='overlay rulesov';document.body.appendChild(d)}
+  d.hidden=false;LB.loading=true;d.innerHTML=boardHTML();
+  try{const q=await NET.db.collection('users').orderBy('xp','desc').limit(30).get();LB.rows=q.docs.map(x=>x.data()).filter(Boolean)}catch(e){LB.rows=[];LB.err=String(e&&e.message||e)}
+  LB.loading=false;if(!d.hidden)d.innerHTML=boardHTML();
+}
+function hideBoard(){const d=document.getElementById('lbov');if(d)d.hidden=true}
+function boardHTML(){
+  const fr=new Set(SOC.profile&&SOC.profile.friends||[]);
+  const rows=LB.rows.map((u,i)=>`<tr class="${u.uid===NET.uid?'me':fr.has(u.uid)?'fr':''}"><td class="rk">${i<3?['🥇','🥈','🥉'][i]:i+1}</td><td><span class="av">${tokSvg(u.tok||0)}</span>${esc(u.name||'მოთამაშე')}${u.uid===NET.uid?' <small>(შენ)</small>':fr.has(u.uid)?' <small>მეგობარი</small>':''}</td><td><b>${lvlOf(u.xp)}</b></td><td>${u.wins||0}</td><td>${u.games||0}</td></tr>`).join('');
+  return `<div class="setbox lbbox" role="dialog" aria-label="რეიტინგი"><div class="rh"><h2>🏆 რეიტინგი</h2><button class="btn sm ghost" data-act="lbclose">← უკან</button></div>
+    ${LB.loading?'<p class="note">იტვირთება…</p>':rows?`<table class="lbt"><thead><tr><th>#</th><th>მოთამაშე</th><th>ლეველი</th><th>მოგება</th><th>თამაში</th></tr></thead><tbody>${rows}</tbody></table>`:'<p class="note">ჯერ არავის უთამაშია ონლაინ თამაში.</p>'}
+    <p class="note">XP: ონლაინ თამაში +25, ყოველი რაუნდი +2 (მაქს. 60), მოგება +100. კომპიუტერთან მოგება +5/10/20 სირთულის მიხედვით.</p></div>`;
+}
+function socialRender(toastsOnly){renderToasts();try{renderHome()}catch(e){}if(!toastsOnly&&!S)renderSide();else if(!S)renderSide()}
 function renderToasts(){
   let box=document.getElementById('toasts');if(!box){box=document.createElement('div');box.id='toasts';document.body.appendChild(box)}
   box.innerHTML=SOC.inbox.slice(-3).map(x=>`<div class="toast"><span class="av">${tokSvg(x.tok||0)}</span><div><b>${esc(x.name||'მეგობარი')}</b> ${x.type==='invite'?`გეპატიჟება ოთახში <b>${esc(x.code)}</b>`:'მეგობრად დაგიმატა'}</div><button class="btn sm gold" data-act="inb" data-id="${esc(x.id)}" data-v="yes">${x.type==='invite'?'შესვლა':'დამატება'}</button><button class="btn sm ghost" data-act="inb" data-id="${esc(x.id)}" data-v="no">✕</button></div>`).join('');
@@ -1182,7 +1307,7 @@ function friendsHTML(inLobby){
   if(!fr.length)h+=`<p class="note">ჯერ მეგობარი არ გყავს. გაუგზავნე შენი კოდი ან ჩაწერე მათი.</p>`;
   fr.forEach(f=>{const on=isOnline(f),sent=SOC.sent[f.uid]&&Date.now()-SOC.sent[f.uid]<60000;
     const st=!on?'ოფლაინ':f.playing?'თამაშობს':f.room?`ოთახში ${esc(f.room)}`:'ონლაინ';
-    h+=`<div class="lmem fr${on?' on':''}"><span class="av">${tokSvg(f.tok||0)}</span><b>${esc(f.name||'მოთამაშე')}</b><span><i class="dot"></i>${st}</span>`+
+    h+=`<div class="lmem fr${on?' on':''}"><span class="av">${tokSvg(f.tok||0)}</span><b title="${esc((f.first||'')+' '+(f.last||''))}">${esc(f.name||'მოთამაშე')} <small class="lv">Lv ${lvlOf(f.xp)}</small></b><span><i class="dot"></i>${st}</span>`+
       (inLobby&&f.room===NET.code?`<span class="tag turn">ოთახშია</span>`:inLobby?`<button class="btn sm${sent?' ghost':''}" data-act="finv" data-uid="${esc(f.uid)}" ${sent?'disabled':''}>${sent?'გაეგზავნა':'მოწვევა'}</button>`
         :(on&&f.room&&!f.playing&&f.room!==NET.code?`<button class="btn sm" data-act="netjoin" data-code="${esc(f.room)}">შეერთება</button>`:`<button class="btn sm ghost" data-act="frm" data-uid="${esc(f.uid)}" title="წაშლა">✕</button>`))+`</div>`});
   if(!inLobby)h+=`<label class="lrow">კოდი <input id="fcode" data-fcode="1" maxlength="6" placeholder="მეგობრის კოდი" value="${esc(SOC.addCode)}" autocomplete="off" style="text-transform:uppercase"> <button class="btn sm" data-act="fadd">დამატება</button></label>${SOC.note?`<p class="tnote">${esc(SOC.note)}</p>`:''}`;
@@ -1195,7 +1320,7 @@ function netWatchRooms(){
     if(!S&&!NET.code)renderSide();
   },()=>{NET.roomsUnsub=null})}catch(e){}
   try{NET.db.collection('games').where('status','==','play').onSnapshot(q=>{
-    NET.myGames=q.docs.map(d=>d.data()).filter(r=>r&&typeof r.S==='string'&&r.S.includes(NET.uid)&&Date.now()-(r.at||r.created||0)<7*86400e3)
+    NET.myGames=q.docs.map(d=>d.data()).filter(r=>{if(!r||typeof r.S!=='string'||!r.S.includes(NET.uid)||Date.now()-(r.at||r.created||0)>=7*86400e3)return false;try{const st=JSON.parse(r.S),me=st.players.find(p=>p.uid===NET.uid);return me&&!me.out&&st.phase!=='over'}catch(e){return false}})
       .map(r=>({code:r.code,round:+((r.S.match(/"round":(\d+)/)||[])[1]||1),at:r.at||r.created})).sort((a,b)=>b.at-a.at);
     if(!S&&!NET.code)renderSide();
   },()=>{})}catch(e){}
@@ -1215,39 +1340,100 @@ async function netJoin(code){
   netLeave(true);
   NET.code=code;NET.note='';NET.ver=0;NET.lastJson='';
   const d=g.data();
-  if(d.status==='lobby')await NET.db.doc(`games/${code}/members/${NET.uid}`).set({uid:NET.uid,name:(NET.myName||'მოთამაშე').slice(0,14),tok:NET.myTok,at:Date.now()});
+  if(d.status==='lobby')await NET.db.doc(`games/${code}/members/${NET.uid}`).set({uid:NET.uid,name:(NET.myName||'მოთამაშე').slice(0,14),tok:NET.myTok,col:NET.myCol,at:Date.now()});
   NET.unsubs.push(NET.db.doc('games/'+code).onSnapshot(s=>netOnGame(s),()=>{}));
   NET.unsubs.push(NET.db.collection(`games/${code}/members`).onSnapshot(q=>{
     NET.members=q.docs.map(x=>x.data()).filter(Boolean).sort((a,b)=>(a.uid===NET.host?-1:b.uid===NET.host?1:a.at-b.at));
+    if(!S)netWatchPresence(NET.members.map(m=>m.uid));
+    {const k=NET.members.findIndex(m=>m.uid===NET.uid);if(k>0){const before=NET.members.slice(0,k);let ch=false;
+      if(before.some(m=>m.col===NET.myCol)){NET.myCol=freeOf(new Set(before.map(m=>m.col)),COLORS);ch=true}
+      if(before.some(m=>m.tok===NET.myTok)){const ut=new Set(before.map(m=>m.tok));NET.myTok=[...Array(TOKENS.length).keys()].find(t=>!ut.has(t));ch=true}
+      if(ch){netSavePrefs();netUpdateMe()}}}
     if(!S){renderSide();renderDesk()}
   },()=>{}));
   renderSide();renderDesk();socialBeat();
+}
+function netWatchPresence(uids){
+  uids=[...new Set(uids.filter(Boolean))].slice(0,30);const key=uids.join(',');
+  if(!NET.db||key===NET.presKey)return;NET.presKey=key;
+  if(NET.presUnsub){try{NET.presUnsub()}catch(e){}NET.presUnsub=null}
+  if(!uids.length)return;
+  NET.presUnsub=NET.db.collection('users').where('uid','in',uids).onSnapshot(q=>{q.docs.forEach(d=>{const x=d.data();if(x&&x.uid)NET.pres[x.uid]=x.seen||0});if(!S)renderSide()},()=>{});
+}
+const isFresh=uid=>uid===NET.uid||(NET.pres[uid]!=null&&Date.now()-NET.pres[uid]<90000);
+/* the device that keeps the game moving: host if present, otherwise the first human still online */
+function isDriver(){
+  if(!NET.on||!S)return false;
+  const hs=S.players.filter(p=>!p.ai&&!p.out&&p.uid);
+  const host=NET.lobby&&NET.lobby.host,hp=hs.find(p=>p.uid===host);
+  const d=hp&&isFresh(hp.uid)?hp:hs.find(p=>isFresh(p.uid));
+  return d?d.uid===NET.uid:(host===NET.uid);
+}
+function netRemovePlayer(pi,why){
+  const p=S.players[pi];if(!p||p.out)return false;
+  const wasTurn=S.turn===pi;
+  if(S.auction){const A=S.auction;if(A.seller===pi){S.auction=null;if(S.modal&&S.modal.t==='auction')S.modal=null}else{A.passed[pi]=true;if(A.leader===pi){A.leader=-1;A.high=0}if(A.waiting===pi)A.waiting=null}}
+  if(S.trade&&(S.trade.from===pi||S.trade.to===pi)){S.trade=null;if(S.modal&&S.modal.t==='trade')S.modal=null}
+  bankrupt(p,null);p.cash=0;
+  log(p,`${p.name} ${why}. მისი ქონება ბანკს დაუბრუნდა`);
+  if(checkOver())return true;
+  if(wasTurn){S.modal=null;S.pending=null;S.debtThen=null;S.phase='end';render();nextTurn()}
+  else{render();if(S.auction&&S.auction.stage==='bidding'&&S.auction.waiting==null)auctionStep()}
+  return true;
+}
+function netQuit(){
+  if(!NET.on||!S||S.phase==='over'||NET.seat<0){netLeave();return}
+  const me=S.players[NET.seat];
+  if(NET.lobby&&NET.lobby.host===NET.uid){const nh=S.players.find(p=>!p.ai&&!p.out&&p.uid&&p.uid!==NET.uid);if(nh)NET.db.doc('games/'+NET.code).update({host:nh.uid}).catch(()=>{})}
+  if(me&&!me.out)netRemovePlayer(NET.seat,'გავიდა თამაშიდან');
+  netPushNow();
+  setTimeout(()=>netLeave(),600);
+}
+async function netAbandon(code){
+  const ref=NET.db.doc('games/'+code),g=await ref.get();if(!g.exists)return;
+  const d=g.data();let st;try{st=JSON.parse(d.S)}catch(e){await ref.delete().catch(()=>{});return}
+  const pi=st.players.findIndex(p=>p.uid===NET.uid);
+  if(pi>=0&&!st.players[pi].out){
+    const p=st.players[pi];p.out=true;p.cash=0;p.loan=0;p.inJail=false;
+    for(const k in st.own)if(st.own[k].o===pi)delete st.own[k];
+    st.log.unshift({c:p.col,m:`${p.name} გავიდა თამაშიდან. მისი ქონება ბანკს დაუბრუნდა`});
+    if(st.turn===pi&&st.phase!=='over'){let t=pi;const n=st.players.length;for(let k=0;k<n;k++){t=(t+1)%n;if(!st.players[t].out)break}
+      Object.assign(st,{turn:t,phase:'roll',modal:null,pending:null,trade:null,auction:null,dbl:0,again:false})}
+  }
+  const hs=st.players.filter(p=>!p.ai&&!p.out),alive=st.players.filter(p=>!p.out);
+  if(alive.length===1&&st.phase!=='over'){st.phase='over';st.winner=st.players.indexOf(alive[0]);st.modal={t:'over'};st.trade=null;st.auction=null;st.msg=`<b>${esc(alive[0].name)} იგებს!</b>`}
+  if(!hs.length)await ref.delete().catch(()=>{});
+  else{const u={S:JSON.stringify(st),ver:(d.ver||0)+1,by:NET.uid,at:Date.now()};if(d.host===NET.uid)u.host=hs[0].uid;await ref.update(u).catch(()=>{})}
+  NET.myGames=(NET.myGames||[]).filter(r=>r.code!==code);renderSide();
 }
 function netLeave(silent){
   NET.unsubs.forEach(u=>{try{u()}catch(e){}});NET.unsubs=[];
   if(NET.code&&NET.lobby&&NET.lobby.status==='lobby'&&NET.db){NET.db.doc(`games/${NET.code}/members/${NET.uid}`).delete().catch(()=>{})}
   const wasOn=NET.on;
+  if(NET.presUnsub){try{NET.presUnsub()}catch(e){}NET.presUnsub=null;NET.presKey=''}
   Object.assign(NET,{on:false,code:null,host:null,lobby:null,members:[],seat:-1,ver:0,lastJson:'',stats:false});
+  if(!silent)APP.screen='online';
   if(!silent){if(wasOn){S=null;overlayKey=null;const t=document.getElementById('tk');if(t)t.innerHTML=''}render()}
 }
 let netMemT=null;
 function netUpdateMe(){
   if(!NET.code||!NET.lobby||NET.lobby.status!=='lobby')return;
   netSavePrefs();clearTimeout(netMemT);
-  netMemT=setTimeout(()=>{NET.db.doc(`games/${NET.code}/members/${NET.uid}`).update({name:(NET.myName||'მოთამაშე').slice(0,14),tok:NET.myTok}).catch(()=>{})},450);
+  netMemT=setTimeout(()=>{NET.db.doc(`games/${NET.code}/members/${NET.uid}`).update({name:(NET.myName||'მოთამაშე').slice(0,14),tok:NET.myTok,col:NET.myCol}).catch(()=>{})},450);
 }
 async function netLobbySet(patch){if(NET.code&&NET.lobby&&NET.lobby.host===NET.uid)await NET.db.doc('games/'+NET.code).update(patch).catch(()=>{})}
 async function netStart(){
   const L=NET.lobby;if(!L||L.host!==NET.uid)return;
-  const hs=NET.members.slice(0,L.max);
+  const hs=NET.members.filter(m=>m.uid===NET.uid||NET.pres[m.uid]==null||isFresh(m.uid)).slice(0,L.max);
   if(!hs.length)return;
-  const seats=hs.map(m=>({ai:false,name:m.name,tok:m.tok,uid:m.uid}));
-  if(L.fillAI)while(seats.length<L.max){const used=new Set(seats.map(x=>x.tok));seats.push({ai:true,name:AIN[seats.length%AIN.length],tok:[...Array(8).keys()].find(k=>!used.has(k))})}
+  const seats=hs.map(m=>({ai:false,name:m.name,tok:m.tok,col:m.col,uid:m.uid}));
+  if(L.fillAI)while(seats.length<L.max){const used=new Set(seats.map(x=>x.tok));seats.push({ai:true,name:AIN[seats.length%AIN.length],tok:[...Array(TOKENS.length).keys()].find(k=>!used.has(k))})}
   if(seats.length<2){NET.note='საჭიროა მინიმუმ 2 მოთამაშე (ან ჩართე კომპიუტერი).';renderSide();return}
   SEATS=seats;SETUP_DIFF=L.diff||'medium';
   NET.on=true;NET.seat=0;
   netApplyingStart=true;newGame();netApplyingStart=false;
   NET.seat=S.players.findIndex(p=>p.uid===NET.uid);
+  netWatchPresence(S.players.filter(p=>!p.ai).map(p=>p.uid));
   netPushNow('play');setTimeout(socialBeat,500);
 }
 let netApplyingStart=false;
@@ -1266,6 +1452,7 @@ function netApply(d){
   const old=S;
   NET.ver=d.ver;NET.lastJson=d.S;NET.on=true;NET.lastChange=Date.now();
   NET.seat=ns.players.findIndex(p=>p.uid===NET.uid);
+  netWatchPresence(ns.players.filter(p=>!p.ai).map(p=>p.uid));
   if(old&&!first){ns.sel=old.sel;ns.exp=old.exp}else{ns.sel=null;ns.exp=null}
   ns.view=null;
   const rolled=old&&(ns.rollN||0)!==(old.rollN||0);if(rolled)NET.rollAt=Date.now();
@@ -1275,10 +1462,11 @@ function netApply(d){
     S.players.forEach((p,i)=>{const o=old.players[i];if(!o||o.pos===p.pos||p.out)return;
       const dist=(p.pos-o.pos+N)%N;let cells=[];
       const wait=Math.max(0,1150-(Date.now()-(NET.rollAt||0)));
-      if(dist>0&&dist<=14){for(let k=1;k<=dist;k++)cells.push((o.pos+k)%N);animatePath(i,cells,{stepMs:dist>9?205:235,delay:wait})}else animatePath(i,[p.pos],{jump:true,delay:wait})});
+      if(dist>0&&dist<=14){for(let k=1;k<=dist;k++)cells.push((o.pos+k)%N);const sm=dist>9?205:235;animatePath(i,cells,{stepMs:sm,delay:wait});cells.forEach((c,k)=>setTimeout(()=>sfx('step'),wait+sm*(k+.9)))}else animatePath(i,[p.pos],{jump:true,delay:wait})});
   }
   NET.applying=true;
   try{render();if(rolled){setDice(true);sfx('dice')}}finally{NET.applying=false}
+  if(S.phase==='over')setTimeout(()=>{try{recordResult('online')}catch(e){}},800);
 }
 function netSerialize(){const o=Object.assign({},S);delete o.sel;delete o.exp;delete o.view;return JSON.stringify(o)}
 function netQueuePush(){
@@ -1303,8 +1491,9 @@ async function netPushNow(status){
 }
 /* the host keeps computer players moving if the device that started their turn went away */
 setInterval(()=>{
-  if(!NET.on||!S||S.phase==='over'||!NET.lobby||NET.lobby.host!==NET.uid)return;
-  if(Date.now()-NET.lastChange<12000)return;
+  if(!NET.on||!S||S.phase==='over'||!NET.lobby||!isDriver())return;
+  {let gone=false;S.players.forEach((p,i)=>{if(!p.ai&&!p.out&&p.uid&&p.uid!==NET.uid&&NET.pres[p.uid]!=null&&Date.now()-NET.pres[p.uid]>240000){if(netRemovePlayer(i,'გაითიშა და თამაშიდან გავიდა'))gone=true}});if(gone){NET.lastChange=Date.now();return}}
+  if(Date.now()-NET.lastChange<9000)return;
   const p=cur();
   if(S.modal&&S.modal.t==='card'){S.modal=null;render()}
   if(p.ai){NET.lastChange=Date.now();if(S.phase==='end')nextTurn();else if(S.phase==='roll'||S.phase==='moving'){S.phase='roll';aiTurn()}else if(S.phase==='decide'){S.pending=null;afterLand()}}
@@ -1317,11 +1506,11 @@ function lobbyHTML(){
   let h=`<div class="panel grow"><div class="ph"><h2>ონლაინ ოთახი</h2><button class="btn sm ghost" data-act="netleave">გასვლა</button></div><div class="scroll" id="setupbody" data-k="lob">
     <div class="roomcode"><small>ოთახის კოდი</small><b>${NET.code}</b><span>მეგობრებმა გახსნან ეს თამაში და შეიყვანონ კოდი</span></div>
     <h3 class="lh">მოთამაშეები (${mem.length} / ${L.max})</h3><div class="seats">`;
-  mem.forEach((m,i)=>{h+=`<div class="lmem" style="--pc:${PCOL[i%PCOL.length]}"><span class="av">${tokSvg(m.tok||0)}</span><b>${esc(m.name||'მოთამაშე')}</b>${m.uid===L.host?'<span class="tag">მასპინძელი</span>':''}${m.uid===NET.uid?'<span class="tag turn">შენ</span>':''}${i>=L.max?'<span class="tag">არ ეტევა</span>':''}</div>`});
+  mem.forEach((m,i)=>{const off=NET.pres[m.uid]&&Date.now()-NET.pres[m.uid]>90000;h+=`<div class="lmem${off?' off':''}" style="--pc:${m.col||PCOL[i%PCOL.length]}"><span class="av">${tokSvg(m.tok||0)}</span><b>${esc(m.name||'მოთამაშე')}</b>${m.uid===L.host?'<span class="tag">მასპინძელი</span>':''}${m.uid===NET.uid?'<span class="tag turn">შენ</span>':''}${off?'<span class="tag">ოფლაინ</span>':''}${i>=L.max?'<span class="tag">არ ეტევა</span>':''}</div>`});
   if(L.fillAI&&mem.length<L.max)h+=`<p class="note">დარჩენილ ${L.max-mem.length} ადგილზე კომპიუტერი ითამაშებს.</p>`;
   if(SOC.profile&&SOC.friends.length)h+=`</div>${friendsHTML(true)}<div>`;
-  h+=`</div><h3 class="lh">შენ</h3><div class="seat" style="--pc:${PCOL[0]}"><div class="seat-top"><span class="av">${tokSvg(NET.myTok)}</span><input id="netname" data-netname="1" maxlength="14" placeholder="შენი სახელი" value="${esc(NET.myName)}" autocomplete="off"><span></span></div>
-    <div class="tokpick">${TOKENS.map((t,k)=>`<button class="tp" data-act="nettok" data-k="${k}" aria-pressed="${NET.myTok===k}" title="${t.n}">${tokSvg(k)}</button>`).join('')}</div></div>`;
+  h+=`</div><h3 class="lh">შენ</h3><div class="seat" style="--pc:${NET.myCol}"><div class="seat-top"><span class="av">${tokSvg(NET.myTok)}</span><input id="netname" data-netname="1" maxlength="14" placeholder="შენი სახელი" value="${esc(NET.myName)}" autocomplete="off"><span></span></div>
+    <div class="tokpick">${TOKENS.map((t,k)=>`<button class="tp" data-act="nettok" data-k="${k}" aria-pressed="${NET.myTok===k}" title="${t.n}">${tokSvg(k)}</button>`).join('')}</div><div class="colpick">${COLORS.map(c=>`<button class="cp" data-act="netcol" data-c="${c}" style="--c:${c}" aria-pressed="${NET.myCol===c}" ${mem.some(m=>m.uid!==NET.uid&&m.col===c)?"disabled":""}></button>`).join("")}</div></div>`;
   if(isHost){
     h+=`<div class="diffbox"><span>ადგილები სულ</span><div class="seg">${[2,3,4,5].map(n=>`<button data-act="netmax" data-n="${n}" aria-pressed="${L.max===n}">${n}</button>`).join('')}</div>
       <span>ცარიელი ადგილები</span><div class="seg"><button data-act="netai" data-v="1" aria-pressed="${!!L.fillAI}">კომპიუტერი</button><button data-act="netai" data-v="0" aria-pressed="${!L.fillAI}">არავინ</button></div>
@@ -1331,17 +1520,18 @@ function lobbyHTML(){
   return h+`</div></div>`;
 }
 function onlinePanelHTML(){
-  let h=`<div class="panel grow"><div class="ph"><h2>ონლაინ მეგობრებთან</h2></div><div class="scroll" id="onlbody" data-k="onl">`;
+  let h=`<div class="panel grow"><div class="ph"><h2>ონლაინ</h2><button class="btn sm ghost" data-act="home">← მენიუ</button></div><div class="scroll" id="onlbody" data-k="onl">`;
   if(NET.unavailable)return h+`<p class="note">${NET.mode==='artifact'?'ონლაინ რეჟიმი მუშაობს მხოლოდ claude.ai-ზე შესულ ანგარიშზე.':window.FB_CONFIG&&window.FB_CONFIG.apiKey?'სერვერთან დაკავშირება ვერ მოხერხდა. შეამოწმე ინტერნეტი და განაახლე გვერდი.':'ონლაინ რეჟიმი ჯერ არ არის ჩართული.'} მანამდე შეგიძლია ითამაშო კომპიუტერთან ან ერთ მოწყობილობაზე მეგობრებთან ერთად.</p></div></div>`;
   if(!NET.ready)return h+`<p class="note">უკავშირდება…</p></div></div>`;
   h+=`<div class="seat"><div class="seat-top"><span class="av">${tokSvg(NET.myTok)}</span><input id="netname" data-netname="1" maxlength="14" placeholder="შენი სახელი" value="${esc(NET.myName)}" autocomplete="off"><span></span></div>
     <div class="tokpick">${TOKENS.map((t,k)=>`<button class="tp" data-act="nettok" data-k="${k}" aria-pressed="${NET.myTok===k}" title="${t.n}">${tokSvg(k)}</button>`).join('')}</div>
     ${SOC.profile?`<div class="mycode"><span>ჩემი მეგობრის კოდი</span><b>${esc(SOC.profile.code)}</b><button class="btn sm ghost" data-act="fcopy">კოპირება</button></div>`:''}</div>
+    ${profileHTML()}
     <div class="setup-acts"><button class="btn gold" data-act="netcreate">ოთახის შექმნა</button></div>
     <label class="lrow">ოთახი <input id="netcode" data-netcode="1" maxlength="4" placeholder="ABCD" value="${esc(NET.joinCode)}" autocomplete="off" style="text-transform:uppercase"> <button class="btn sm" data-act="netjoin">შესვლა</button></label>
     ${NET.note?`<p class="tnote">${esc(NET.note)}</p>`:''}
     ${SOC.profile?friendsHTML(false):''}
-    ${(NET.myGames||[]).length?`<h3 class="lh">ჩემი დაწყებული თამაშები</h3>${NET.myGames.map(r=>`<div class="lmem"><b>${esc(r.code)}</b><span>რაუნდი ${r.round}</span><button class="btn sm gold" data-act="netjoin" data-code="${esc(r.code)}">გაგრძელება</button></div>`).join('')}`:''}
+    ${(NET.myGames||[]).length?`<h3 class="lh">ჩემი დაწყებული თამაშები</h3>${NET.myGames.map(r=>`<div class="lmem"><b>${esc(r.code)}</b><span>რაუნდი ${r.round}</span><button class="btn sm gold" data-act="netjoin" data-code="${esc(r.code)}">გაგრძელება</button><button class="btn sm ${SOC.abandon===r.code?'red':'ghost'}" data-act="netabandon" data-code="${esc(r.code)}" title="თამაშის დატოვება">${SOC.abandon===r.code?'დატოვება?':'✕'}</button></div>`).join('')}`:''}
     <h3 class="lh">ღია ოთახები</h3>${NET.rooms.length?NET.rooms.map(r=>`<div class="lmem"><b>${esc(r.code)}</b><span>${esc(r.hostName||'')}</span><button class="btn sm" data-act="netjoin" data-code="${esc(r.code)}">შესვლა</button></div>`).join(''):'<p class="note">ახლა ღია ოთახი არ არის.</p>'}`;
   return h+`</div></div>`;
 }
@@ -1431,11 +1621,12 @@ function snap(){try{UNDO.push(JSON.stringify(S));if(UNDO.length>25)UNDO.shift()}
 function clearUndo(){UNDO.length=0}
 function recordHist(){S.hist.push(S.players.map(p=>p.out?0:worth(p)))}
 function newGame(){
-  const used=new Set();
+  const used=new Set(),usedC=new Set();
   const players=SEATS.map((s,i)=>{
-    let tok=s.tok;if(used.has(tok))tok=[...Array(8).keys()].find(k=>!used.has(k));used.add(tok);
+    let tok=s.tok;if(used.has(tok))tok=[...Array(TOKENS.length).keys()].find(k=>!used.has(k));used.add(tok);
     const nm=(s.name||'').trim().slice(0,14)||(s.ai?AIN[i%AIN.length]:(SEATS.filter(x=>!x.ai).length===1?'შენ':`მოთამაშე ${i+1}`));
-    return {name:nm,ai:s.ai,tok,col:PCOL[i],cash:START,pos:0,inJail:false,jail:0,skip:0,out:false,loan:0,uid:s.uid||null};
+    let col=s.col&&!usedC.has(s.col)?s.col:freeOf(usedC,COLORS);usedC.add(col);
+    return {name:nm,ai:s.ai,tok,col,cash:START,pos:0,inJail:false,jail:0,skip:0,out:false,loan:0,uid:s.uid||null};
   });
   dedupe([...players.filter(q=>!q.ai),...players.filter(q=>q.ai)]);
   S={v:7,pot:0,diff:SETUP_DIFF,stats:players.map(newStat),cellRent:{},hist:[],players,own:{},turn:0,phase:'roll',dice:[3,5],dbl:0,again:false,log:[],deck:shuffle(CARDS.map((_,i)=>i)),deckI:0,round:1,pending:null,sel:null,modal:null,view:null,msg:'',exp:null,trade:null,auction:null,debtThen:null};
@@ -1671,6 +1862,7 @@ function checkOver(){
   const humansAlive=alive.filter(q=>!q.ai).length;
   if(alive.length===1||humansAlive===0){
     S.phase='over';S.trade=null;S.auction=null;recordHist();clearUndo();
+    setTimeout(()=>{try{recordResult(NET.on?'online':'solo')}catch(e){}},800);
     const w=alive.slice().sort((a,b)=>worth(b)-worth(a))[0];S.winner=pidx(w);S.modal={t:'over'};
     setTimeout(()=>{if(RM||!document.body.animate)return;for(let k=0;k<4;k++)setTimeout(()=>burst(innerWidth*(.25+Math.random()*.5),innerHeight*(.2+Math.random()*.3),PCOL[k%4],34,200),k*350)},300);
     say(`<b>${esc(w.name)} იგებს!</b> თამაში დასრულდა ${S.round}-ე რაუნდში.`);
@@ -2126,8 +2318,9 @@ function renderDesk(){
     msg.innerHTML=`ონლაინ ოთახი <b>${NET.code}</b> · ${NET.members.length} მოთამაშე.<br>${isHost?'როცა ყველა შემოვა, დაიწყე.':'ელოდება მასპინძელს…'}`;
     acts.innerHTML=isHost?`<button class="btn gold" data-act="netstart">თამაშის დაწყება</button>`:'';rd.textContent='';applyTod();positionHud();return;
   }
+  if(!S&&APP.screen==='online'){msg.innerHTML='შექმენი ოთახი ან შედი მეგობრის ოთახში.';acts.innerHTML='';rd.textContent='';applyTod();positionHud();return}
   if(!S){
-    msg.innerHTML='აირჩიე მოთამაშეები და ფიგურები, შემდეგ დაიწყე.';
+    msg.innerHTML='აირჩიე მოთამაშეები, ფიგურები და ფერები, შემდეგ დაიწყე.';
     acts.innerHTML=`<button class="btn gold" data-act="start">თამაშის დაწყება</button>`;rd.textContent='';applyTod();positionHud();return;
   }
   const p=cur(),human=!p.ai&&mine(S.turn);
@@ -2359,24 +2552,108 @@ function rulesHTML(){
    ['💸','ვალი და გაკოტრება','თუ გადასახდელი ფული არ გყოფნის, ვალში ხვდები. გაყიდე სართულები, დააგირავე უბნები, გაიტანე აუქციონზე ან აიღე სესხი. თუ ვერ დაფარავ, კოტრდები და თამაშიდან გადიხარ.'],
    ['🤖','კომპიუტერი','სამი სირთულე: მარტივი, საშუალო და რთული. რთული აგრესიულად ყიდულობს, ფსონებს მაღლა სწევს და ვაჭრობაში ნაკლებად თმობს.'],
   ];
-  return `<div class="rulesbox" role="dialog" aria-label="წესები"><div class="rh"><h2>როგორ ვითამაშო</h2><button class="btn sm ghost" data-act="rclose">დახურვა</button></div>
+  return `<div class="rulesbox" role="dialog" aria-label="წესები"><div class="rh"><h2>როგორ ვითამაშო</h2><button class="btn sm ghost" data-act="rclose">← უკან</button></div>
     <div class="rgrid">${T.map(([e,h,t])=>`<section><h3><span>${e}</span>${h}</h3><p>${t}</p></section>`).join('')}</div>
     <div class="acts"><button class="btn gold" data-act="rclose">გასაგებია</button></div></div>`;
 }
 function showRules(){let d=document.getElementById('rulesov');if(!d){d=document.createElement('div');d.id='rulesov';d.className='overlay rulesov';document.body.appendChild(d)}d.innerHTML=rulesHTML();d.hidden=false;sfx('pick')}
 function hideRules(){const d=document.getElementById('rulesov');if(d)d.hidden=true}
-addEventListener('keydown',e=>{if(e.key==='Escape')hideRules()});
+addEventListener('keydown',e=>{if(e.key==='Escape'){hideRules();hideSettings();hideBoard()}if(e.key==='Enter'&&e.target&&e.target.dataset&&e.target.dataset.acc){ACC.tab==='reg'?accRegister():accLogin()}});
+document.addEventListener('click',e=>{const id=e.target&&e.target.id;if(id==='rulesov')hideRules();if(id==='setov')hideSettings();if(id==='lbov')hideBoard()});
+const ACC={tab:'reg',first:'',last:'',nick:'',pw:'',note:'',busy:false};
+const needAccount=()=>NET.mode==='site'&&NET.ready&&!!SOC.profile&&!SOC.profile.registered;
+const AERR={'auth/email-already-in-use':'ეს ნიკნეიმი უკვე დაკავებულია. აირჩიე სხვა.','auth/credential-already-in-use':'ეს ნიკნეიმი უკვე დაკავებულია. აირჩიე სხვა.',
+  'auth/weak-password':'პაროლი მინიმუმ 6 სიმბოლო უნდა იყოს.','auth/wrong-password':'ნიკნეიმი ან პაროლი არასწორია.','auth/invalid-credential':'ნიკნეიმი ან პაროლი არასწორია.',
+  'auth/user-not-found':'ასეთი ანგარიში არ არსებობს.','auth/operation-not-allowed':'რეგისტრაცია ჯერ არ არის ჩართული (Firebase-ში Email/Password).','auth/too-many-requests':'ბევრი მცდელობა. ცოტა ხანში სცადე.','auth/network-request-failed':'ინტერნეტი არ არის.'};
+function renderAccount(){
+  let d=document.getElementById('acct');const show=needAccount();
+  if(!show){if(d)d.hidden=true;return}
+  if(!d){d=document.createElement('div');d.id='acct';d.className='home';document.body.appendChild(d)}
+  d.hidden=false;const f=(k,ph,t)=>`<input class="ain" id="acc_${k}" data-acc="${k}" type="${t||'text'}" placeholder="${ph}" value="${esc(ACC[k])}" maxlength="${k==='pw'?40:20}" autocomplete="${t==='password'?(ACC.tab==='reg'?'new-password':'current-password'):'off'}">`;
+  const html=`<div class="homebox acctbox"><div class="hlogo">თბილისელი მაგნატი</div><div class="hsub">✦ ქალაქი შენს ხელშია ✦</div>
+    <div class="seg atabs"><button data-act="acctab" data-v="reg" aria-pressed="${ACC.tab==='reg'}">რეგისტრაცია</button><button data-act="acctab" data-v="login" aria-pressed="${ACC.tab==='login'}">შესვლა</button></div>
+    ${ACC.tab==='reg'?`<div class="afields">${f('first','სახელი')}${f('last','გვარი')}${f('nick','ნიკნეიმი (ჩანს თამაშში)')}${f('pw','პაროლი (მინ. 6 სიმბოლო)','password')}</div>
+      <button class="btn gold wide" data-act="accreg" ${ACC.busy?'disabled':''}>${ACC.busy?'…':'რეგისტრაცია'}</button>
+      <p class="anote">ნიკნეიმით და პაროლით სხვა მოწყობილობიდანაც შეხვალ. შენი ლეველი და მეგობრები შენთან დარჩება.</p>`
+    :`<div class="afields">${f('nick','ნიკნეიმი')}${f('pw','პაროლი','password')}</div>
+      <button class="btn gold wide" data-act="acclogin" ${ACC.busy?'disabled':''}>${ACC.busy?'…':'შესვლა'}</button>`}
+    ${ACC.note?`<p class="aerr">${esc(ACC.note)}</p>`:''}</div>`;
+  if(d._h!==html){const ae=document.activeElement,aid=ae&&ae.id;d._h=html;d.innerHTML=html;if(aid){const e=document.getElementById(aid);if(e){e.focus();try{e.setSelectionRange(e.value.length,e.value.length)}catch(x){}}}}
+}
+async function accRegister(){
+  const first=ACC.first.trim(),last=ACC.last.trim(),nick=ACC.nick.trim();
+  if(!first||!last){ACC.note='ჩაწერე სახელი და გვარი.';return renderAccount()}
+  if(nick.length<3){ACC.note='ნიკნეიმი მინიმუმ 3 სიმბოლო უნდა იყოს.';return renderAccount()}
+  if(ACC.pw.length<6){ACC.note='პაროლი მინიმუმ 6 სიმბოლო უნდა იყოს.';return renderAccount()}
+  ACC.busy=true;ACC.note='';renderAccount();
+  try{await NET.auth.register(nick,ACC.pw);
+    NET.myName=nick.slice(0,14);netSavePrefs();
+    await NET.db.doc('users/'+NET.uid).update({first:first.slice(0,20),last:last.slice(0,20),name:nick.slice(0,14),login:nick,registered:true});
+    ACC.pw='';ACC.busy=false;APP.screen='home';render();
+  }catch(e){ACC.busy=false;ACC.note=AERR[e&&e.code]||('შეცდომა: '+(e&&(e.code||e.message)||e));renderAccount()}
+}
+async function accLogin(){
+  if(!ACC.nick.trim()||!ACC.pw){ACC.note='ჩაწერე ნიკნეიმი და პაროლი.';return renderAccount()}
+  ACC.busy=true;ACC.note='';renderAccount();
+  try{await NET.auth.login(ACC.nick,ACC.pw);try{localStorage.removeItem('tm-net')}catch(e){}location.reload()}
+  catch(e){ACC.busy=false;ACC.note=AERR[e&&e.code]||('შეცდომა: '+(e&&(e.code||e.message)||e));renderAccount()}
+}
+function accountHTML(){
+  const p=SOC.profile;if(NET.mode!=='site'||!p||!p.registered)return '';
+  return `<div class="sgrp"><h3>ანგარიში</h3>
+    <div class="acc1"><span class="av">${tokSvg(NET.myTok)}</span><div><b>${esc(p.name||'')}</b><small>${esc((p.first||'')+' '+(p.last||''))} · შესვლის ნიკი: ${esc(p.login||p.name||'')}</small></div></div>
+    <label class="vol">ნიკნეიმი თამაშში <input class="ain sm" data-netname="1" id="set_nick" maxlength="14" value="${esc(NET.myName)}"></label>
+    <button class="btn ghost wide" data-act="acclogout">ანგარიშიდან გასვლა</button></div>`;
+}
+function renderHome(){
+  let d=document.getElementById('home');
+  renderAccount();
+  const show=!S&&APP.screen==='home'&&!NET.code&&!needAccount();
+  if(!show){if(d)d.hidden=true;return}
+  if(!d){d=document.createElement('div');d.id='home';d.className='home';document.body.appendChild(d)}
+  d.hidden=false;
+  let saved=false;try{saved=!!localStorage.getItem('tm-save-v7')}catch(e){}
+  const inv=(typeof SOC!=='undefined'&&SOC.inbox||[]).filter(x=>x.type==='invite').length;
+  const html=`<div class="homebox">
+    <div class="hlogo">თბილისელი მაგნატი</div><div class="hsub">✦ ქალაქი შენს ხელშია ✦</div>
+    <div class="hbtns">
+      ${saved?`<button class="hb gold" data-act="resume"><span>▶</span><b>გაგრძელება</b><small>შენახული თამაში</small></button>`:''}
+      <button class="hb${saved?'':' gold'}" data-act="go_local"><span>🎲</span><b>თამაში კომპიუტერთან</b><small>ან რამდენიმე ადამიანი ერთ ეკრანზე</small></button>
+      <button class="hb" data-act="go_online"><span>🌐</span><b>ონლაინ მეგობრებთან</b><small>${NET.ready?(inv?`${inv} მოწვევა გელოდება`:'ოთახები, მოწვევა, მეგობრები'):NET.unavailable?'ამ ვერსიაში ხელმისაწვდომი არ არის':'უკავშირდება…'}</small></button>
+      <div class="hmrow${NET.ready?' three':''}"><button class="hb sm" data-act="settings"><span>⚙</span><b>პარამეტრები</b></button>${NET.ready?'<button class="hb sm" data-act="lboard"><span>🏆</span><b>რეიტინგი</b></button>':''}<button class="hb sm" data-act="rules"><span>❓</span><b>წესები</b></button></div>
+      ${NET.ready&&SOC.profile?`<div class="hprof">${esc(SOC.profile.name||'')} · ლეველი ${lvlOf(SOC.profile.xp)} · 🏆 ${SOC.profile.wins||0}</div>`:''}
+    </div></div>`;
+  if(d._h!==html){d._h=html;d.innerHTML=html}
+}
+function settingsHTML(){
+  const sw=(act,on,lbl)=>`<button class="sw" data-act="${act}" aria-pressed="${on}"><i></i>${lbl}</button>`;
+  return `<div class="setbox" role="dialog" aria-label="პარამეტრები"><div class="rh"><h2>⚙ პარამეტრები</h2><button class="btn sm ghost" data-act="sclose">← უკან</button></div>
+${accountHTML()}
+    <div class="sgrp"><h3>ხმა</h3>
+      ${sw('music',AU.music,'მუსიკა')}
+      <label class="vol">მუსიკის ხმა <input type="range" min="0" max="100" value="${Math.round(PREF.mvol*100)}" data-vol="m"></label>
+      ${sw('sound',AU.sfx,'ხმის ეფექტები')}
+      <div class="stepsel"><span>ფიგურის სვლის ხმა</span><div class="chips2">${Object.entries(STEPS).map(([k,v])=>`<button data-act="stepsnd" data-k="${k}" aria-pressed="${PREF.step===k}">${v.n}</button>`).join('')}</div></div>
+      ${sw('fxall',PREF.fx,'სხვა ეფექტები (ფული, ყიდვა, ბარათები, კამათელი)')}
+      <label class="vol">ეფექტების ხმა <input type="range" min="0" max="100" value="${Math.round(PREF.svol*100)}" data-vol="s"></label>
+      <button class="btn ghost wide" data-act="muteall">${AU.music||AU.sfx?'🔇 ყველა ხმის გამორთვა':'🔊 ხმის ჩართვა'}</button></div>
+    <div class="acts"><button class="btn gold" data-act="sclose">შენახვა</button></div></div>`;
+}
+function showSettings(){let d=document.getElementById('setov');if(!d){d=document.createElement('div');d.id='setov';d.className='overlay rulesov';document.body.appendChild(d)}d.innerHTML=settingsHTML();d.hidden=false}
+function refreshSettings(){const d=document.getElementById('setov');if(d&&!d.hidden)d.innerHTML=settingsHTML()}
+function hideSettings(){const d=document.getElementById('setov');if(d)d.hidden=true}
 function toolbar(){
   const fsOk=document.fullscreenEnabled||document.webkitFullscreenEnabled;
   const isFs=!!(document.fullscreenElement||document.webkitFullscreenElement);
+  const loud=AU.music||AU.sfx;
   return `<div class="bar"><div class="toggles">
-    <button class="tg" data-act="music" aria-pressed="${AU.music}" title="მუსიკა"><svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg><span class="lbl">მუსიკა</span></button>
-    <button class="tg" data-act="sound" aria-pressed="${AU.sfx}" title="ხმის ეფექტები"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/>${AU.sfx?'<path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>':'<path d="M17 9l5 6M22 9l-5 6"/>'}</svg><span class="lbl">ხმა</span></button>
-    <button class="tg" data-act="view" aria-pressed="${PREF.view3d}" title="3D ხედი"><svg viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg><span class="lbl">3D ხედი</span></button>
+    ${!S?`<button class="tg" data-act="home" title="მთავარი მენიუ"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="lbl">მენიუ</span></button>`:''}
+    <button class="tg" data-act="settings" title="პარამეტრები"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg><span class="lbl">პარამეტრები</span></button>
+    <button class="tg" data-act="muteall" aria-pressed="${loud}" title="${loud?'ხმის გამორთვა':'ხმის ჩართვა'}"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/>${loud?'<path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>':'<path d="M17 9l5 6M22 9l-5 6"/>'}</svg><span class="lbl">ხმა</span></button>
     <button class="tg" data-act="rules" title="როგორ ვითამაშო"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.3a2.8 2.8 0 1 1 3.9 2.6c-.8.4-1.2 1-1.2 1.9v.4"/><circle cx="12" cy="17.3" r=".4"/></svg><span class="lbl">წესები</span></button>
     ${S?`<button class="tg" data-act="stats" title="სტატისტიკა"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span class="lbl">სტატისტიკა</span></button>`:''}
     ${fsOk?`<button class="tg" data-act="fs" aria-pressed="${isFs}" title="სრული ეკრანი"><svg viewBox="0 0 24 24">${isFs?'<path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"/>':'<path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/>'}</svg><span class="lbl">სრული ეკრანი</span></button>`:''}</div>
-    ${S?`<button class="btn sm ${confirmNew?'red':'ghost'}" data-act="new">${confirmNew?'დაადასტურე':'ახალი თამაში'}</button>`:''}</div>`;
+    ${S?`<button class="btn sm ${confirmNew?'red':'ghost'}" data-act="new">${confirmNew?'დაადასტურე':NET.on?'თამაშიდან გასვლა':'მთავარი მენიუ'}</button>`:''}</div>`;
 }
 const ACT_PHASES=['roll','end','decide','debt'];
 function myActNow(){const vi=viewer(),me=S.players[vi];return S.turn===vi&&mine(vi)&&!me.ai&&ACT_PHASES.includes(S.phase)&&!me.out&&!S.modal}
@@ -2432,7 +2709,7 @@ function playerProps(i){
 }
 function renderSide(){
   const ae=document.activeElement,aid=ae&&ae.id&&ae.tagName==='INPUT'?ae.id:null,sel=aid?[ae.selectionStart,ae.selectionEnd]:null;
-  try{renderSide0()}finally{if(aid){const e=document.getElementById(aid);if(e&&e!==document.activeElement){e.focus();try{e.setSelectionRange(sel[0],sel[1])}catch(x){}}}}
+  try{renderSide0();renderHome()}finally{if(aid){const e=document.getElementById(aid);if(e&&e!==document.activeElement){e.focus();try{e.setSelectionRange(sel[0],sel[1])}catch(x){}}}}
 }
 function renderSide0(){
   const L=document.getElementById('colL'),R=document.getElementById('colR');
@@ -2448,20 +2725,35 @@ function renderSide0(){
       <li><b>მასპინძელმა თამაში არ დახუროს.</b> კომპიუტერის სვლები მის მოწყობილობაზე სრულდება.</li></ul></div></div>`;
     return;
   }
+  if(!S&&APP.screen==='online'){
+    L.innerHTML=toolbar()+onlinePanelHTML();
+    R.innerHTML=`<div class="panel grow"><div class="ph"><h2>როგორ მუშაობს</h2></div><div class="scroll"><ul class="rules">
+      <li><b>შენი კოდი.</b> ზემოთ ჩანს შენი მეგობრის კოდი. გაუგზავნე მეგობრებს ან ჩაწერე მათი და დაიმეგობრეთ.</li>
+      <li><b>ოთახი.</b> შექმენი ოთახი და მეგობრების სიიდან მოიწვიე, ან შედი მეგობრის ოთახში კოდით.</li>
+      <li><b>ფიგურა და ფერი.</b> თითოეული თავისას ირჩევს. ერთი ფერი ორ მოთამაშეს ვერ ექნება.</li>
+      <li><b>გასვლა.</b> თუ ვინმე თამაშიდან გავა ან დიდხანს გაითიშება, მისი ქონება ბანკს უბრუნდება და თამაში გრძელდება.</li></ul></div></div>`;
+    return;
+  }
   if(!S){
     const taken=k=>SEATS.some(x=>x.tok===k);
-    let h=toolbar()+`<div class="panel grow"><div class="ph"><h2>მოთამაშეები</h2><span class="num">${SEATS.length} / ${MAXP}</span></div><div class="scroll" id="setupbody" data-k="s"><div class="seats">`;
+    let h=toolbar()+`<div class="panel grow"><div class="ph"><h2>მოთამაშეები <small class="num">${SEATS.length} / ${MAXP}</small></h2><button class="btn sm ghost" data-act="home">← მენიუ</button></div><div class="scroll" id="setupbody" data-k="s"><div class="seats">`;
     SEATS.forEach((st,i)=>{
-      h+=`<div class="seat" style="--pc:${PCOL[i]}"><div class="seat-top"><span class="av">${tokSvg(st.tok)}</span>
+      if(!st.col)st.col=freeOf(new Set(SEATS.map(x=>x.col)),COLORS);
+      h+=`<div class="seat" style="--pc:${st.col}"><div class="seat-top"><span class="av">${tokSvg(st.tok)}</span>
         <input id="nm${i}" data-seat="${i}" maxlength="14" placeholder="${st.ai?AIN[i%AIN.length]:(SEATS.filter(x=>!x.ai).length===1?'შენი სახელი':'მოთამაშე '+(i+1))}" value="${esc(st.name)}" aria-label="მოთამაშე ${i+1}-ის სახელი" autocomplete="off">
         ${SEATS.length>2?`<button class="rm" data-act="rmseat" data-i="${i}" aria-label="მოთამაშის წაშლა">✕</button>`:'<span></span>'}</div>
         <div class="seg"><button data-act="stype" data-i="${i}" data-ai="0" aria-pressed="${!st.ai}">ადამიანი</button><button data-act="stype" data-i="${i}" data-ai="1" aria-pressed="${st.ai}">კომპიუტერი</button></div>
         <div class="tokname">ფიგურა: <b>${TOKENS[st.tok].n}</b></div>
-        <div class="tokpick">${TOKENS.map((t,k)=>`<button class="tp" data-act="tok" data-i="${i}" data-k="${k}" aria-pressed="${st.tok===k}" aria-label="${t.n}" title="${t.n}" ${taken(k)&&st.tok!==k?'disabled':''}>${tokSvg(k)}</button>`).join('')}</div></div>`;
+        <div class="tokpick">${TOKENS.map((t,k)=>`<button class="tp" data-act="tok" data-i="${i}" data-k="${k}" aria-pressed="${st.tok===k}" aria-label="${t.n}" title="${t.n}" ${taken(k)&&st.tok!==k?'disabled':''}>${tokSvg(k)}</button>`).join('')}</div><div class="colpick">${COLORS.map(c=>`<button class="cp" data-act="col" data-i="${i}" data-c="${c}" style="--c:${c}" aria-pressed="${st.col===c}" aria-label="ფერი" ${SEATS.some((x,k)=>k!==i&&x.col===c)?"disabled":""}></button>`).join("")}</div></div>`;
     });
     h+=`</div><div class="diffbox"><span>კომპიუტერის სირთულე</span><div class="seg">${Object.entries(AIP).map(([k,v])=>`<button data-act="diff" data-d="${k}" aria-pressed="${SETUP_DIFF===k}">${v.n}</button>`).join('')}</div><p class="note">${SETUP_DIFF==='hard'?'რთული: იყიდის აგრესიულად, დაბლოკავს შენს ფერებს, აიღებს სესხს და თავად შემოგთავაზებს გარიგებებს.':SETUP_DIFF==='easy'?'მარტივი: ფრთხილად ყიდულობს, ცოტას აშენებს და ვაჭრობას არ იწყებს.':'საშუალო: დაბალანსებული თამაში, ხანდახან შემოგთავაზებს გარიგებას.'}</p></div><div class="setup-acts">${(()=>{try{return localStorage.getItem('tm-save-v7')?'<button class="btn" data-act="resume">შენახული თამაშის გაგრძელება</button>':''}catch(e){return ''}})()}<button class="btn ghost" data-act="rules">როგორ ვითამაშო?</button>${SEATS.length<MAXP?`<button class="btn ghost" data-act="addseat">+ მოთამაშე</button>`:''}<button class="btn gold" data-act="start">დაწყება</button></div></div></div>`;
     L.innerHTML=h;
-    R.innerHTML=onlinePanelHTML();
+    R.innerHTML=`<div class="panel grow"><div class="ph"><h2>თამაში კომპიუტერთან</h2></div><div class="scroll"><ul class="rules">
+      <li><b>მოთამაშეები.</b> თითოეულ ადგილზე აირჩიე ადამიანი ან კომპიუტერი, ფიგურა და ფერი.</li>
+      <li><b>ერთ მოწყობილობაზე.</b> რამდენიმე ადამიანს შეუძლია რიგრიგობით ითამაშოს ერთ ეკრანზე.</li>
+      <li><b>სირთულე.</b> მარტივი, საშუალო ან რთული კომპიუტერი.</li>
+      <li><b>შენახვა.</b> თამაში ავტომატურად ინახება და მთავარი მენიუდან გააგრძელებ.</li></ul>
+      <div class="legend">${GROUPS.map(g=>`<span><i style="--gc:${g.c}"></i>${g.n}</span>`).join('')}</div></div></div>`;
     return;
   }
   const vi=viewer(),me=S.players[vi],myAct=myActNow();
@@ -2535,8 +2827,10 @@ document.addEventListener('mouseleave',()=>setHl(null));
 document.addEventListener('input',e=>{
   const t=e.target,d=t.dataset||{};
   if(d.seat!=null)SEATS[+d.seat].name=t.value;
+  if(d.vol){const v=Math.max(0,Math.min(1,(+t.value||0)/100));if(d.vol==='m')PREF.mvol=v;else PREF.svol=v;applyPrefs();savePrefs();if(d.vol==='s')sfx('coin')}
   if(d.netname){NET.myName=t.value.slice(0,14);netSavePrefs();netUpdateMe();socialSaveProfile()}
   if(d.netcode)NET.joinCode=t.value.toUpperCase();
+  if(d.acc){ACC[d.acc]=t.value;if(ACC.note){ACC.note='';const n=document.querySelector('.aerr');if(n)n.remove()}}
   if(d.fcode)SOC.addCode=t.value.toUpperCase();
   if(d.tf&&S&&S.trade){S.trade[d.tf]=Math.max(0,Math.floor(+t.value||0));}
   if(d.astart&&S&&S.auction)S.auction.start=Math.max(0,Math.floor(+t.value||0));
@@ -2547,9 +2841,23 @@ document.addEventListener('click',e=>{
   const el=e.target.closest('[data-act]');if(!el)return;
   const a=el.dataset.act;
   if(a!=='new'&&confirmNew)confirmNew=false;
-  if(a==='music'){AU.music?stopMusic():startMusic();renderSide();return}
-  if(a==='sound'){AU.sfx=!AU.sfx;savePrefs();if(AU.sfx)sfx('coin');renderSide();return}
-  if(a==='view'){PREF.view3d=!PREF.view3d;document.body.classList.toggle('flat',!PREF.view3d);savePrefs();renderSide();[60,300,800].forEach(t=>setTimeout(positionHud,t));return}
+  if(a==='music'){AU.music?stopMusic():startMusic();renderSide();refreshSettings();return}
+  if(a==='settings'){showSettings();sfx('pick');return}
+  if(a==='acctab'){ACC.tab=el.dataset.v;ACC.note='';renderAccount();return}
+  if(a==='accreg'){accRegister();return}
+  if(a==='acclogin'){accLogin();return}
+  if(a==='acclogout'){(async()=>{try{if(NET.code)netLeave(true);await NET.auth.logout()}catch(e){}try{localStorage.removeItem('tm-net')}catch(e){}location.reload()})();return}
+  if(a==='sclose'){hideSettings();return}
+  if(a==='stepsnd'){PREF.step=el.dataset.k;savePrefs();refreshSettings();if(!AU.sfx){AU.sfx=true}[0,240,480].forEach(d=>setTimeout(()=>sfx('step'),d));return}
+  if(a==='fxall'){PREF.fx=!PREF.fx;savePrefs();refreshSettings();if(PREF.fx)sfx('coin');return}
+  if(a==='theme'){PREF.theme=el.dataset.v;applyPrefs();savePrefs();refreshSettings();return}
+  if(a==='anim'){PREF.anim=!PREF.anim;applyPrefs();savePrefs();refreshSettings();return}
+  if(a==='muteall'){if(AU.music||AU.sfx){if(AU.music)stopMusic();AU.sfx=false}else{AU.sfx=true;startMusic()}savePrefs();renderSide();refreshSettings();return}
+  if(a==='home'){if(NET.code)netLeave(true);APP.screen='home';render();return}
+  if(a==='go_local'){APP.screen='local';actx();render();return}
+  if(a==='go_online'){APP.screen='online';render();return}
+  if(a==='sound'){AU.sfx=!AU.sfx;savePrefs();if(AU.sfx)sfx('coin');renderSide();refreshSettings();return}
+  if(a==='view'){PREF.view3d=!PREF.view3d;document.body.classList.toggle('flat',!PREF.view3d);savePrefs();renderSide();refreshSettings();[60,300,800].forEach(t=>setTimeout(positionHud,t));return}
   if(a==='sheet'){setSheet(el.dataset.s);return}
   if(a==='rules'){showRules(el.dataset.sec);return}
   if(a==='rclose'){hideRules();return}
@@ -2557,13 +2865,17 @@ document.addEventListener('click',e=>{
   if(a==='fs'){const d=document,de=d.documentElement;try{if(d.fullscreenElement||d.webkitFullscreenElement){(d.exitFullscreen||d.webkitExitFullscreen).call(d)}else{const r=(de.requestFullscreen||de.webkitRequestFullscreen).call(de);if(r&&r.catch)r.catch(()=>{})}}catch(err){}return}
   if(a==='netcreate'){NET.myName=(document.getElementById('netname')||{}).value||NET.myName;netSavePrefs();netCreate();return}
   if(a==='netjoin'){NET.myName=(document.getElementById('netname')||{}).value||NET.myName;netSavePrefs();netJoin(el.dataset.code||(document.getElementById('netcode')||{}).value);return}
+  if(a==='netabandon'){const c=el.dataset.code;if(SOC.abandon===c){SOC.abandon=null;netAbandon(c)}else{SOC.abandon=c;renderSide();setTimeout(()=>{if(SOC.abandon===c){SOC.abandon=null;renderSide()}},4000)}return}
+  if(a==='lboard'){showBoard();return}
+  if(a==='lbclose'){hideBoard();return}
   if(a==='netleave'){netLeave();socialBeat();return}
   if(a==='fadd'){socialAddFriend((document.getElementById('fcode')||{}).value||SOC.addCode);return}
   if(a==='frm'){socialRemoveFriend(el.dataset.uid);return}
   if(a==='finv'){socialInvite(el.dataset.uid);return}
   if(a==='inb'){socialInboxAct(el.dataset.id,el.dataset.v);return}
   if(a==='fcopy'){const c=SOC.profile&&SOC.profile.code;try{navigator.clipboard.writeText(c)}catch(e){}SOC.note='კოდი '+c+' დაკოპირდა. გაუგზავნე მეგობრებს.';renderSide();return}
-  if(a==='resume'){try{const raw=localStorage.getItem('tm-save-v7');const d=raw&&fixState(JSON.parse(raw));if(d){S=d;lastCash=S.players.map(p=>p.cash);if(!S.hist.length)recordHist();buildBoard();render();const p=cur();if(p.ai){if(S.phase==='end')setTimeout(nextTurn,500);else{S.phase='roll';setTimeout(aiTurn,600)}}else if(S.phase==='moving'){S.phase='roll';render()}}}catch(e){}return}
+  if(a==='resume'){APP.screen='local';try{const raw=localStorage.getItem('tm-save-v7');const d=raw&&fixState(JSON.parse(raw));if(d){S=d;lastCash=S.players.map(p=>p.cash);if(!S.hist.length)recordHist();buildBoard();render();const p=cur();if(p.ai){if(S.phase==='end')setTimeout(nextTurn,500);else{S.phase='roll';setTimeout(aiTurn,600)}}else if(S.phase==='moving'){S.phase='roll';render()}}}catch(e){}return}
+  if(a==='netcol'){NET.myCol=el.dataset.c;sfx('pick');netUpdateMe();netSavePrefs();renderSide();return}
   if(a==='nettok'){NET.myTok=+el.dataset.k;sfx('pick');netUpdateMe();netSavePrefs();socialSaveProfile();renderSide();return}
   if(a==='netmax'){netLobbySet({max:+el.dataset.n});return}
   if(a==='netai'){netLobbySet({fillAI:el.dataset.v==='1'});return}
@@ -2573,12 +2885,13 @@ document.addEventListener('click',e=>{
     if(a==='stype'){SEATS[+el.dataset.i].ai=el.dataset.ai==='1';const st=SEATS[+el.dataset.i];if(st.ai&&!st.name)st.name=AIN[+el.dataset.i%AIN.length];sfx('pick');renderSide();return}
     if(a==='tok'){SEATS[+el.dataset.i].tok=+el.dataset.k;sfx('pick');renderSide();return}
     if(a==='diff'){SETUP_DIFF=el.dataset.d;try{localStorage.setItem('tm-diff',SETUP_DIFF)}catch(e){}sfx('pick');renderSide();return}
-    if(a==='addseat'&&SEATS.length<MAXP){const used=new Set(SEATS.map(x=>x.tok));SEATS.push({ai:true,name:AIN[SEATS.length%AIN.length],tok:[...Array(8).keys()].find(k=>!used.has(k))});renderSide();return}
+    if(a==='addseat'&&SEATS.length<MAXP){const used=new Set(SEATS.map(x=>x.tok)),uc=new Set(SEATS.map(x=>x.col));SEATS.push({ai:true,name:AIN[SEATS.length%AIN.length],tok:[...Array(TOKENS.length).keys()].find(k=>!used.has(k)),col:freeOf(uc,COLORS)});renderSide();return}
+    if(a==='col'){SEATS[+el.dataset.i].col=el.dataset.c;sfx('pick');renderSide();return}
     if(a==='rmseat'&&SEATS.length>2){SEATS.splice(+el.dataset.i,1);renderSide();return}
     if(a==='start'){actx();newGame();return}
     return;
   }
-  if(a==='setup'){if(NET.on){netLeave();return}S=null;overlayKey=null;try{localStorage.removeItem('tm-save-v7')}catch(e){}render();return}
+  if(a==='setup'){if(NET.on){netLeave();return}APP.screen='home';S=null;overlayKey=null;try{localStorage.removeItem('tm-save-v7')}catch(e){}render();return}
   if(a==='sel'){const i=+el.dataset.i;S.sel=S.sel===i&&el.classList.contains('cell')?null:i;renderCells();renderSide();if(isPhone()){if(el.classList.contains('cell')){if(S.sel!=null&&SHEET!=='R')setSheet('R')}else{if(SHEET)setSheet(SHEET);setTimeout(()=>{setHl(i);scrollToCell(i);setTimeout(()=>setHl(null),1800)},250)}}return}
   if(a==='unsel'){S.sel=null;renderCells();renderSide();return}
   if(a==='stats'){if(NET.on){NET.stats=true;renderOverlay();return}S.modal={t:'stats'};render();return}
@@ -2594,7 +2907,7 @@ document.addEventListener('click',e=>{
   }
   if(a==='undo'){if(!NET.on&&UNDO.length&&!cur().ai&&S.phase!=='moving'){S=JSON.parse(UNDO.pop());S.modal=null;S.trade=null;S.auction=null;overlayKey=null;lastCash=S.players.map(p=>p.cash);log(cur(),`${cur().name}-მა ბოლო მოქმედება გააუქმა`);sfx('pick');render()}return}
   if(a==='pexp'){const i=+el.dataset.i;S.exp=S.exp===i?null:i;renderSide();return}
-  if(a==='new'){if(confirmNew&&NET.on){confirmNew=false;netLeave();return}if(confirmNew){confirmNew=false;S=null;overlayKey=null;try{localStorage.removeItem('tm-save-v7')}catch(e){}}else{confirmNew=true;setTimeout(()=>{if(confirmNew){confirmNew=false;S&&renderSide()}},4000)}render();return}
+  if(a==='new'){if(confirmNew&&NET.on){confirmNew=false;netQuit();return}if(confirmNew){confirmNew=false;S=null;overlayKey=null;APP.screen='home';try{localStorage.removeItem('tm-save-v7')}catch(e){}}else{confirmNew=true;setTimeout(()=>{if(confirmNew){confirmNew=false;S&&renderSide()}},4000)}render();return}
 
   /* trade dialog */
   if(S.trade&&S.modal&&S.modal.t==='trade'){
