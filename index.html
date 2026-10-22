@@ -1037,6 +1037,7 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
 .ph h2{background:linear-gradient(90deg,#FFE7A8,#E8B758)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
 .oi.on .oib,.oib:hover{background:rgba(255,240,200,.07)!important}
 .cp[aria-pressed="true"]{border-color:#F6DA8E}
+.uidc{font-size:11.5px;background:#0A090D;padding:2px 6px;border-radius:6px;color:#F6DA8E;user-select:all;word-break:break-all}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1862,7 +1863,7 @@ function netApply(d){
     }
   }
   NET.applying=true;
-  try{render();if(rolled){setDice(true);sfx('dice')}}finally{NET.applying=false}
+  try{render();if(rolled)remoteRoll()}finally{NET.applying=false}
   if(S.phase==='over')setTimeout(()=>{try{recordResult('online')}catch(e){}},800);
   driverKick();
 }
@@ -2046,6 +2047,13 @@ function setDice(anim){
     cb.style.transition=anim&&!RM?'transform 1.05s cubic-bezier(.12,.72,.22,1)':'none';
     cb.style.transform=`rotateZ(${JIT[k][2]}deg) rotateX(${-20+JIT[k][0]+x+SPIN[k][0]}deg) rotateY(${24+JIT[k][1]+y+SPIN[k][1]}deg)`;
   });
+}
+function remoteRoll(){
+  const d=document.getElementById('dice'),ds=document.getElementById('dsum'),v=S.dice.slice(),n=S.rollN;
+  if(d){d.classList.remove('throw');void d.offsetWidth;d.classList.add('throw')}
+  if(ds){ds.textContent='';ds.classList.remove('pop')}
+  setDice(true);sfx('dice');
+  setTimeout(()=>{const e=document.getElementById('dsum');if(!e||!S||S.rollN!==n)return;e.textContent=`${v[0]} + ${v[1]} = ${v[0]+v[1]}`;void e.offsetWidth;e.classList.add('pop')},RM?50:1100);
 }
 async function rollDice(){
   S.dice=[r6(),r6()];S.rollN=(S.rollN||0)+1;sfx('dice');if(NET.on)netPushNow();
@@ -3065,6 +3073,7 @@ function accountHTML(){
     <div class="acc1"><span class="av">${tokSvg(NET.myTok)}</span><div><b>${esc(p.name||'')}</b><small>${esc((p.first||'')+' '+(p.last||''))} · შესვლის ნიკი: ${esc(p.login||p.name||'')}</small></div></div>
     <label class="vol">ნიკნეიმი თამაშში <input class="ain sm" data-netname="1" id="set_nick" maxlength="14" value="${esc(NET.myName)}"></label>
     ${(()=>{const em=NET.auth&&NET.auth.email()||'';return em&&!em.endsWith('@magnati.game')?`<p class="note">📧 ${esc(em)}</p>`:`<p class="note">ელფოსტა არ არის მიბმული: პაროლის დავიწყების შემთხვევაში ვერ აღადგენ.</p><label class="vol">ელფოსტა <input class="ain sm" data-acc="addEmail" id="set_mail" type="email" value="${esc(ACC.addEmail)}"></label><button class="btn ghost wide" data-act="accaddmail">ელფოსტის მიბმა</button>`})()}
+    <p class="note">შენი ID: <code class="uidc">${esc(NET.uid||'')}</code> <button class="btn sm ghost" data-act="copyuid">კოპირება</button></p>
     ${ACC.setNote?`<p class="tnote">${esc(ACC.setNote)}</p>`:''}
     ${NET.isAdmin?'<button class="btn gold wide" data-act="admin">🛡 ადმინ პანელი</button>':''}
     ${ADM.hasAdmins===false?'<button class="btn ghost wide" data-act="adclaim">🛡 ადმინის უფლების აღება</button><p class="note">მხოლოდ ერთხელ: პირველი, ვინც დააჭერს, ადმინი ხდება.</p>':''}${ADM.note&&!ADM.open?`<p class="tnote">${esc(ADM.note)}</p>`:''}
@@ -3346,6 +3355,7 @@ document.addEventListener('click',e=>{
   if(a==='settings'){showSettings();sfx('pick');return}
   if(a==='admin'){hideSettings();openAdmin();return}
   if(a==='adclaim'){adminClaim();return}
+  if(a==='copyuid'){try{navigator.clipboard.writeText(NET.uid||'');el.textContent='✓ დაკოპირდა'}catch(e){}return}
   if(a==='annhide'){try{localStorage.setItem('tm-ann-hide',String(ADM.ann&&ADM.ann.at))}catch(e){}renderAnnounce();return}
   if(['admtab','admclose','aedit','asave','areset','aban','adelu','adelg','awatch','aclean','annsend','annoff','cfgsave','cfgreset','admadd','admrm'].includes(a)){if(NET.isAdmin)adminAct(a,el);return}
   if(a==='acctab'){ACC.tab=el.dataset.v;ACC.note='';ACC.ok='';renderAccount();return}
