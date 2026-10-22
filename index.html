@@ -935,6 +935,38 @@ body{background:
 .wbar{background:rgba(255,255,255,.1)!important}
 .prow{background:rgba(255,255,255,.055)!important;border-color:rgba(160,148,255,.18)!important}
 .tb{font-size:11.5px}
+
+/* v48: black background + build status */
+html,body{background:#000!important}
+body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),transparent 60%),#000!important}
+.oi{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:2px 0;cursor:default}
+.oi:hover,.oi.on{background:none}
+.oib{all:unset;box-sizing:border-box;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:5px 6px;border-radius:8px;cursor:pointer}
+.oib:hover,.oi.on .oib{background:rgba(255,255,255,.09)}
+.oib:focus-visible{outline:2px solid var(--acc1)}
+.bt{display:inline-grid;place-items:center;min-width:30px;font:inherit;font-size:11.5px;font-weight:800;padding:4px 8px;border-radius:8px;white-space:nowrap;border:0;line-height:1.2}
+.bt.na{padding:0;min-width:30px}
+.bt.go{background:linear-gradient(180deg,#43D88A,#22A866);color:#05210F;cursor:pointer;box-shadow:0 0 0 1px rgba(255,255,255,.25) inset,0 0 12px rgba(67,216,138,.45);animation:btp 1.8s ease-in-out infinite}
+.bt.go:hover{filter:brightness(1.12)}.bt.go:focus-visible{outline:2px solid #fff}
+@keyframes btp{50%{box-shadow:0 0 0 1px rgba(255,255,255,.25) inset,0 0 2px rgba(67,216,138,.2)}}
+.bt.soon{background:rgba(67,216,138,.14);color:#8EF0B9;box-shadow:inset 0 0 0 1px rgba(67,216,138,.45)}
+.bt.poor{background:rgba(255,255,255,.06);color:#9AA0C8;text-decoration:line-through}
+.bt.lock,.bt.wait{background:rgba(255,255,255,.05);color:var(--muted);cursor:help}
+.bt.max{background:rgba(246,218,142,.14);color:var(--gold-hi)}
+.ogs .gok{color:#6FE7A2;font-weight:800}.ogs .glock{color:#C9B6FF;font-weight:700}
+.bhint{margin:0 0 8px;padding:8px 10px;border-radius:10px;background:rgba(67,216,138,.12);border:1px solid rgba(67,216,138,.4);color:#BFF5D5;font-size:12.5px;line-height:1.4}
+.bhint b{color:#fff}
+.oblegend{display:flex;flex-wrap:wrap;gap:4px 10px;margin:4px 0 0;font-size:11px;color:var(--muted)}
+.og header{flex-wrap:wrap}.ogn{white-space:normal}
+
+.apick{width:min(100%,460px)}
+.aplist{display:flex;flex-direction:column;gap:6px;max-height:min(55vh,420px);overflow:auto}
+.aprow{display:grid;grid-template-columns:6px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.05)}
+.aprow>i{align-self:stretch;border-radius:3px;background:var(--gc)}
+.aprow b{display:block;font-size:14px}.aprow small{font-size:11.5px;color:var(--muted)}
+.aprow.no{opacity:.6}
+.hud .acts{flex-wrap:wrap;justify-content:center;gap:6px}
+.hud{width:fit-content!important;max-width:min(80%,560px)!important}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1169,13 +1201,13 @@ const CARDS=[
 
 /* ================= AUDIO ================= */
 const AU={ctx:null,music:false,sfx:true,mg:null,sg:null,timer:null,next:0,ix:0,drone:null,gen:0};
-let PREF={view3d:false,zoom:0,theme:'dark',anim:true,mvol:.6,svol:.8,step:'tap',gfx:true,ui:true};const ZOOMS=[1,1.45,1.9,2.4];let SHEET=null;
+const CLICKS_OK=['soft','bubble','wood','tick','off'];let PREF={click:'soft',view3d:false,zoom:0,theme:'dark',anim:true,mvol:.6,svol:.8,step:'tap',gfx:true,ui:true};const ZOOMS=[1,1.45,1.9,2.4];let SHEET=null;
 try{const pr=JSON.parse(localStorage.getItem('tm-audio')||'{}');AU.wantMusic=!!pr.music;AU.sfx=pr.sfx!==false;PREF.view3d=false;PREF.zoom=Math.min(3,Math.max(0,pr.zoom|0));
-if(typeof pr.mvol==='number')PREF.mvol=pr.mvol;if(typeof pr.svol==='number')PREF.svol=pr.svol;if(pr.step)PREF.step=pr.step;if(typeof pr.gfx==='boolean')PREF.gfx=pr.gfx;if(typeof pr.ui==='boolean')PREF.ui=pr.ui}catch(e){}
+if(typeof pr.mvol==='number')PREF.mvol=pr.mvol;if(typeof pr.svol==='number')PREF.svol=pr.svol;if(pr.step)PREF.step=pr.step;if(typeof pr.gfx==='boolean')PREF.gfx=pr.gfx;if(typeof pr.ui==='boolean')PREF.ui=pr.ui;if(pr.click&&CLICKS_OK.includes(pr.click))PREF.click=pr.click}catch(e){}
 function applyPrefs(){RM=!PREF.anim;const h=document.documentElement;h.classList.toggle('rm',RM);h.classList.toggle('light',PREF.theme==='light');
   if(AU.ctx&&AU.mv){AU.mv.gain.value=PREF.mvol;AU.sv.gain.value=PREF.svol}}
 applyPrefs();
-function savePrefs(){try{localStorage.setItem('tm-audio',JSON.stringify({music:AU.music,sfx:AU.sfx,v3:PREF.view3d,zoom:PREF.zoom,theme:PREF.theme,anim:PREF.anim,mvol:PREF.mvol,svol:PREF.svol,step:PREF.step,gfx:PREF.gfx,ui:PREF.ui}))}catch(e){}}
+function savePrefs(){try{localStorage.setItem('tm-audio',JSON.stringify({music:AU.music,sfx:AU.sfx,v3:PREF.view3d,zoom:PREF.zoom,theme:PREF.theme,anim:PREF.anim,mvol:PREF.mvol,svol:PREF.svol,step:PREF.step,gfx:PREF.gfx,ui:PREF.ui,click:PREF.click}))}catch(e){}}
 function actx(){
   if(!AU.ctx){
     const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;
@@ -1263,12 +1295,18 @@ const SFX={
   build:t=>{noise(t,.05,.45,AU.sg,300,2);noise(t+.14,.05,.45,AU.sg,360,2);pluck(659,t+.28,.35,AU.sg,.16)},
   win:t=>[523,659,784,1046,1318].forEach((f,k)=>pluck(f,t+k*.12,.7,AU.sg,.22)),
   lose:t=>[330,294,262,196].forEach((f,k)=>pluck(f,t+k*.18,.6,AU.sg,.2)),
-  pick:t=>{noise(t,.014,.32,AU.sg,5200,5);tone(2900,t,.022,'sine',.045,AU.sg,2100)},
+  pick:t=>(CLICKS[PREF.click]||CLICKS.soft).f(t),
   invite:t=>{[784,988,1175,1568].forEach((f,k)=>pluck(f,t+k*.09,.5,AU.sg,.2));tone(1568,t+.4,.5,'sine',.06,AU.sg)},
 };
 const STEPS={tap:{n:'კაკუნი',f:t=>SFX.step(t)},wood:{n:'ხე',f:t=>{noise(t,.045,.4,AU.sg,850,3);tone(210,t,.07,'triangle',.09,AU.sg)}},
   coin:{n:'მონეტა',f:t=>tone(1568,t,.07,'triangle',.08,AU.sg)},bell:{n:'ზარი',f:t=>pluck(1175,t,.22,AU.sg,.08)},
   drop:{n:'წვეთი',f:t=>tone(520,t,.09,'sine',.09,AU.sg,980)},off:{n:'გამორთული',f:()=>{}}};
+const CLICKS={
+  soft:{n:'რბილი',f:t=>{tone(520,t,.07,'sine',.05,AU.sg,380)}},
+  bubble:{n:'ბუშტი',f:t=>{tone(330,t,.08,'sine',.06,AU.sg,620)}},
+  wood:{n:'ხე',f:t=>{noise(t,.025,.12,AU.sg,700,3);tone(240,t,.05,'triangle',.05,AU.sg,200)}},
+  tick:{n:'წკაპი',f:t=>{noise(t,.012,.14,AU.sg,3200,4)}},
+  off:{n:'გამორთული',f:()=>{}}};
 const UI_SND=new Set(['pick','invite']);
 let lastPick=0;
 function sfx(n){if(!AU.sfx)return;if(n==='pick'){const t=performance.now();if(t-lastPick<90)return;lastPick=t}if(UI_SND.has(n)){if(!PREF.ui)return}else if(!PREF.gfx)return;if(n==='step'&&PREF.step==='off')return;const c=actx();if(!c)return;
@@ -2274,6 +2312,17 @@ function canBuild(pi,i){
   const gc=groupCells(c.g);if(gc.some(k=>S.own[k].m))return false;
   return o.h===Math.min(...gc.map(k=>S.own[k].h));
 }
+function buildTag(pi,i,myAct){
+  const c=CELLS[i],o=S.own[i];if(c.t!=='p')return '<span class="bt na"></span>';
+  if(o.h>=4)return '<span class="bt max" title="მაქსიმუმი: 4 სართული">⭐ მაქს.</span>';
+  if(!hasSet(pi,c.g))return '<span class="bt lock" title="სართულის ასაშენებლად მთელი ფერი (ჯგუფი) უნდა გქონდეს">🔒</span>';
+  if(groupCells(c.g).some(k=>S.own[k].m))return '<span class="bt lock" title="ჯგუფში დაგირავებული უბანია. ჯერ გამოისყიდე">🔒</span>';
+  if(!canBuild(pi,i))return '<span class="bt wait" title="სართულები თანაბრად შენდება. ჯერ ამ ჯგუფის სხვა უბანზე ააშენე">⏳</span>';
+  const cost=floorCost(i,o.h),p=S.players[pi];
+  if(p.cash<cost)return `<span class="bt poor" title="ფული არ გყოფნის">+🏠 ${cost}₾</span>`;
+  if(!myAct)return `<span class="bt soon" title="შენს სვლაზე შეგიძლია ააშენო">+🏠 ${cost}₾</span>`;
+  return `<button class="bt go" data-act="build" data-i="${i}" title="ააშენე ${o.h+1}-ე სართული">+🏠 ${cost}₾</button>`;
+}
 function canSell(pi,i){const c=CELLS[i],o=S.own[i];if(!o||o.o!==pi||c.t!=='p'||o.h<=0)return false;return o.h===Math.max(...groupCells(c.g).map(k=>S.own[k]?S.own[k].h:0))}
 function canMortgage(pi,i){return canTransfer(pi,i)&&!S.own[i].m}
 function build(p,i){
@@ -2313,6 +2362,15 @@ function aiMax(qi,i){
 }
 const aStep=i=>Math.max(10,Math.round(CELLS[i].price*.05/10)*10);
 const aNeed=A=>A.leader<0?A.start:A.high+A.step;
+function apickHTML(){
+  const pi=S.turn,p=S.players[pi],list=propsOf(pi).sort((a,b)=>CELLS[b].price-CELLS[a].price);
+  const rows=list.map(i=>{const c=CELLS[i],o=S.own[i],ok=canTransfer(pi,i);
+    return `<div class="aprow${ok?'':' no'}" style="--gc:${gcol(c)}"><i></i><span><b>${c.n}</b><small>${ok?`ფასი ${c.price}₾${o.m?' · დაგირავებულია':''}`:'სართულიანი უბანი აუქციონზე არ გადის. ჯერ ჯგუფის სართულები გაყიდე'}</small></span>${ok?`<button class="btn sm gold" data-act="apickgo" data-i="${i}">აუქციონზე</button>`:`<button class="btn sm" data-act="apickfl" data-g="${c.g}">სართულების გაყიდვა +${groupCells(c.g).reduce((a,k)=>{let v=0;for(let h=S.own[k]?S.own[k].h:0;h>0;h--)v+=floorRefund(k,h);return a+v},0)}₾</button>`}</div>`}).join('');
+  return `<div class="tradebox apick"><h3>🔨 რა გავიტანო აუქციონზე?</h3>
+    <p class="note" style="margin:0 0 10px">${p.cash<0?`ვალი: <b class="num" style="color:#FF8A9C">${-p.cash}₾</b>. `:''}აირჩიე უბანი. საწყის ფასს შენ დააწესებ, დანარჩენები ფსონს დადებენ, და ბოლოს შენ გადაწყვეტ, მიყიდი თუ არა.</p>
+    <div class="aplist">${rows||'<p class="empty">უბნები არ გაქვს.</p>'}</div>
+    <div class="acts"><button class="btn ghost" data-act="mclose">დახურვა</button></div></div>`;
+}
 function startAuction(i){
   clearUndo();
   const seller=S.turn,c=CELLS[i];
@@ -2380,7 +2438,7 @@ function auctionReject(){
 
 /* ---- trading between players ---- */
 /* trading: from round 2, one offer per player per round, at any moment of your own turn */
-function canOffer(pi){return S.round>=2&&(S.offUsed||{})[pi]!==S.round}
+function canOffer(pi){if(S.phase==='debt'&&S.turn===pi)return true;return S.round>=2&&(S.offUsed||{})[pi]!==S.round}
 function offerWhy(pi){return S.round<2?'ვაჭრობა იწყება პირველი სრული წრის შემდეგ (მე-2 რაუნდიდან).':'ამ რაუნდში შეთავაზება უკვე გააკეთე. შემდეგი რაუნდიდან ისევ შეძლებ.'}
 function openTrade(to){
   const me=S.turn;const partners=S.players.map((q,i)=>i).filter(i=>i!==me&&!S.players[i].out);
@@ -2638,7 +2696,8 @@ function renderDesk(){
   }else if(human&&S.phase==='end')h=`<button class="btn" data-act="next">სვლის დასრულება</button>`;
   else if(human&&S.phase==='debt'){
     h=p.cash>=0?`<button class="btn gold" data-act="debtok">ვალი დაფარულია, გაგრძელება</button>`:`<span class="debtpill num">ვალი ${-p.cash}₾</span>`;
-    h+=`<button class="btn" data-act="bank">ბანკი</button><button class="btn red" data-act="declare">გაკოტრება</button>`;
+    const alive=S.players.filter(q=>!q.out).length>1;
+    h+=`<button class="btn" data-act="apick" ${alive&&propsOf(S.turn).length?'':'disabled'}>🔨 აუქციონი</button><button class="btn" data-act="trade" ${alive&&propsOf(S.turn).length?'':'disabled'}>🤝 მიყიდე მოთამაშეს</button><button class="btn" data-act="bank">🏦 ბანკი</button><button class="btn red" data-act="declare">გაკოტრება</button>`;
   }
   if(human&&!NET.on&&UNDO.length&&['roll','end','debt'].includes(S.phase))h+=`<button class="btn ghost undo" data-act="undo" title="ბოლო მოქმედების გაუქმება">↶ გაუქმება</button>`;
   acts.innerHTML=h;
@@ -2814,6 +2873,8 @@ function renderOverlay(){
     key='over'+S.round;h=`<div class="overlay ov-scroll">${overHTML()}</div>`;
   }else if(S&&S.modal&&S.modal.t==='stats'){
     key='stats'+S.round+'|'+S.hist.length+'|'+S.players.map(p=>p.cash).join(',');h=`<div class="overlay ov-scroll">${statsHTML()}</div>`;
+  }else if(S&&S.modal&&S.modal.t==='apick'&&mine(S.turn)){
+    key='apick'+JSON.stringify(S.own)+cur().cash;h=`<div class="overlay">${apickHTML()}</div>`;
   }else if(S&&S.modal&&S.modal.t==='bank'&&mine(S.turn)){
     key='bank'+cur().cash+'|'+cur().loan+'|'+S.lnote+'|'+S.lamt;h=`<div class="overlay">${bankHTML()}</div>`;
   }else if(S&&S.modal&&S.modal.t==='card'){
@@ -2969,7 +3030,8 @@ ${accountHTML()}
       <div class="stepsel"><span>ფიგურის სვლის ხმა</span><div class="chips2">${Object.entries(STEPS).map(([k,v])=>`<button data-act="stepsnd" data-k="${k}" aria-pressed="${PREF.step===k}">${v.n}</button>`).join('')}</div></div>
       <label class="vol">ხმის სიძლიერე <input type="range" min="0" max="100" value="${Math.round(PREF.svol*100)}" data-vol="s"></label></div>
     <div class="sgrp"><h3>🔔 მენიუს ხმები</h3>
-      ${sw('uisnd',PREF.ui,'ღილაკები და მოწვევის შეტყობინება')}</div>
+      ${sw('uisnd',PREF.ui,'ღილაკები და მოწვევის შეტყობინება')}
+      <div class="stepsel"><span>მენიუს ღილაკის ხმა</span><div class="chips2">${Object.entries(CLICKS).map(([k,v])=>`<button data-act="clicksnd" data-k="${k}" aria-pressed="${PREF.click===k}">${v.n}</button>`).join('')}</div></div></div>
     <div class="sgrp"><h3>🎵 მუსიკა</h3>
       ${sw('music',AU.music,'ფონური მუსიკა')}
       <label class="vol">ხმის სიძლიერე <input type="range" min="0" max="100" value="${Math.round(PREF.mvol*100)}" data-vol="m"></label>
@@ -3127,7 +3189,8 @@ function renderSide0(){
   const trOk=myAct&&S.players.filter(q=>!q.out).length>1;
   l+=`<div class="panel grow mypanel"><div class="ph"><h2>${humans()>1?esc(me.name)+'-ის ქონება':'ჩემი ქონება'}</h2></div>
     <div class="mysum"><div><b class="num">${mine.length}</b><small>უბანი</small></div><div><b class="num">${totFl}</b><small>სართული</small></div><div><b class="num">${totRent}₾</b><small>ქირა სულ</small></div></div>
-    <div class="myacts"><button class="btn sm ghost" data-act="bank" ${myAct?'':'disabled'}>🏦 ბანკი</button><button class="btn sm${canOffer(vi)?'':' used'}" data-act="trade" title="${canOffer(vi)?'ერთი შეთავაზება ამ რაუნდში':esc(offerWhy(vi))}" ${trOk?'':'disabled'}>🤝 ვაჭრობა${S.round<2?' 🔒':canOffer(vi)?'':' ✓'}</button></div>
+    ${(()=>{const nB=mine.filter(i=>canBuild(vi,i)).length;return nB?`<div class="bhint">🔨 ახლა შეგიძლია ააშენო სართული <b>${nB}</b> უბანზე. დააჭირე მწვანე <b>+🏠</b> ღილაკს.</div>`:''})()}
+    <div class="myacts"><button class="btn sm ghost" data-act="bank" ${myAct?'':'disabled'}>🏦 ბანკი</button><button class="btn sm${canOffer(vi)?'':' used'}" data-act="trade" title="${canOffer(vi)?'ერთი შეთავაზება ამ რაუნდში':esc(offerWhy(vi))}" ${trOk?'':'disabled'}>🤝 ვაჭრობა${canOffer(vi)?'':S.round<2?' 🔒':' ✓'}</button></div>
     <div class="scroll" id="ownbody" data-k="o">`;
   if(!mine.length)l+=`<p class="empty">ჯერ არაფერი გაქვს. დადექი თავისუფალ უბანზე და იყიდე. ნაყიდი უბნები აქ ჯგუფებად გამოჩნდება.</p>`;
   else{
@@ -3135,12 +3198,13 @@ function renderSide0(){
     groups.forEach(g=>{
       const owned=g.cells.filter(i=>S.own[i]&&S.own[i].o===vi);if(!owned.length)return;
       const full=owned.length===g.cells.length,isTr=g.cells===TRS,missN=g.cells.length-owned.length;
-      const st=full?(isTr?'ყველა ✓':'სრულია ✓'):(missN===1&&!isTr?'1 აკლია':owned.length+' / '+g.cells.length);
+      const anyB=!isTr&&full&&owned.some(i=>canBuild(vi,i));
+      const st=isTr?(full?'ყველა ✓':owned.length+' / '+g.cells.length):full?(anyB?'<b class="gok">🔨 შენება შეიძლება</b>':owned.every(i=>S.own[i].h>=4)?'⭐ სრულად აშენდა':'სრულია ✓'):`<b class="glock">🔒 შენებამდე ${missN} აკლია</b>`;
       l+=`<section class="og${full?' full':''}" style="--gc:${g.c}"><header><span class="ogn">${g.n}</span><span class="ogd">${g.cells.map(i=>`<i class="${S.own[i]&&S.own[i].o===vi?'y':''}"></i>`).join('')}</span><span class="ogs">${st}</span></header>`;
       g.cells.forEach(i=>{
         const o=S.own[i],c=CELLS[i];
         if(o&&o.o===vi){
-          l+=`<button class="oi${S.sel===i?' on':''}${o.m?' m':''}" data-act="sel" data-i="${i}"><span class="oin">${c.n}</span><span class="oif">${o.m?'<em>დაგირავებული</em>':o.h?Array.from({length:o.h},()=>'🏠').join(''):''}</span><span class="oir num">${o.m?'—':rentOf(i)+'₾'}</span></button>`;
+          l+=`<div class="oi${S.sel===i?' on':''}${o.m?' m':''}" data-i="${i}"><button class="oib" data-act="sel" data-i="${i}"><span class="oin">${c.n}</span><span class="oif">${o.m?'<em>დაგირავებული</em>':o.h?Array.from({length:o.h},()=>'🏠').join(''):''}</span><span class="oir num">${o.m?'—':rentOf(i)+'₾'}</span></button>${buildTag(vi,i,myAct)}</div>`;
         }else if(!isTr){
           const ow=o?S.players[o.o]:null,canTr=ow&&!ow.out&&myAct&&canTransfer(o.o,i);
           l+=`<div class="om" data-i="${i}"><button class="omb" data-act="sel" data-i="${i}"><span class="oin">${c.n}</span><span class="oiw">${ow?`<i style="--pc:${ow.col}"></i>${esc(ow.name)}-ს აქვს`:`თავისუფალია · ${c.price}₾`}</span></button>${canTr?`<button class="btn xs" data-act="tradefor" data-i="${i}">ვაჭრობა</button>`:''}</div>`;
@@ -3148,6 +3212,7 @@ function renderSide0(){
       });
       l+=`</section>`;
     });
+    l+=`<div class="oblegend"><span><b style="color:#6FE7A2">+🏠</b> აშენება</span><span>🔒 სრული ფერი სჭირდება</span><span>⏳ ჯერ სხვაზე ააშენე</span><span>⭐ მაქსიმუმი</span></div>`;
   }
   l+=`</div></div>`;
   L.innerHTML=l;
@@ -3192,7 +3257,7 @@ document.addEventListener('input',e=>{
   if(d.acustom&&S&&S.auction)S.auction.custom=t.value;
   if(d.lamt&&S){S.lamt=Math.max(0,Math.floor(+t.value||0));const pv=document.getElementById('lprev');if(pv)pv.innerHTML=loanPreview(cur(),S.lamt)}
 });
-const NOTICK=new Set(['roll','buy','build','sellf','sellbank','mort','unmort','bail','ltake','lrepay','lrepayall','lquick','asell','taccept','muteall','sel','unsel','fly','declare','debtok']);
+const NOTICK=new Set(['clicksnd','roll','buy','build','sellf','sellbank','mort','unmort','bail','ltake','lrepay','lrepayall','lquick','asell','taccept','muteall','sel','unsel','fly','declare','debtok']);
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-act]');if(!el)return;
   const a=el.dataset.act;
@@ -3211,6 +3276,7 @@ document.addEventListener('click',e=>{
   if(a==='accaddmail'){(async()=>{if(!isEmail(ACC.addEmail)){ACC.setNote='ჩაწერე სწორი ელფოსტა.';return refreshSettings()}try{await NET.auth.addEmail(ACC.addEmail);ACC.setNote='ელფოსტაზე გამოგიგზავნეთ დასადასტურებელი ბმული. დადასტურების შემდეგ ამ ელფოსტით შეხვალ.'}catch(e){ACC.setNote=AERR[e&&e.code]||('შეცდომა: '+(e&&(e.code||e.message)||e))}refreshSettings()})();return}
   if(a==='acclogout'){(async()=>{try{if(NET.code)netLeave(true);await NET.auth.logout()}catch(e){}try{localStorage.removeItem('tm-net')}catch(e){}location.reload()})();return}
   if(a==='sclose'){hideSettings();return}
+  if(a==='clicksnd'){PREF.click=el.dataset.k;savePrefs();refreshSettings();lastPick=0;if(PREF.click!=='off'){AU.sfx=true;PREF.ui=true;setTimeout(()=>{lastPick=0;sfx('pick')},250)}return}
   if(a==='stepsnd'){PREF.step=el.dataset.k;savePrefs();refreshSettings();if(!AU.sfx){AU.sfx=true}[0,240,480].forEach(d=>setTimeout(()=>sfx('step'),d));return}
   if(a==='gfx'){PREF.gfx=!PREF.gfx;if(PREF.gfx)AU.sfx=true;savePrefs();refreshSettings();sfx('coin');return}
   if(a==='uisnd'){PREF.ui=!PREF.ui;if(PREF.ui)AU.sfx=true;savePrefs();refreshSettings();sfx('invite');return}
@@ -3316,6 +3382,12 @@ document.addEventListener('click',e=>{
   else if(a==='declare'&&S.phase==='debt'){clearUndo();bankrupt(p,null);p.cash=0;S.debtThen=null;sfx('lose');if(!checkOver()){render();setTimeout(nextTurn,700)}}
   else if(['trade','tradewith','tradefor'].includes(a)&&myAct&&!canOffer(ti)){say(offerWhy(ti));sfx('pay');render()}
   else if(a==='trade'&&myAct)openTrade();
+  else if(a==='apick'&&myAct){S.modal={t:'apick'};render()}
+  else if(a==='apickgo'&&S.modal&&S.modal.t==='apick'&&mine(S.turn)){const i=+el.dataset.i;S.modal=null;if(canTransfer(S.turn,i))startAuction(i);else render()}
+  else if(a==='apickfl'&&S.modal&&S.modal.t==='apick'&&mine(S.turn)){
+    const g=+el.dataset.g,me=cur();let tot=0,guard=0;snap();
+    while(guard++<40){const gc=groupCells(g).filter(k=>S.own[k]&&S.own[k].o===S.turn&&S.own[k].h>0);if(!gc.length)break;const k=gc.sort((x,y)=>S.own[y].h-S.own[x].h)[0];const v=floorRefund(k,S.own[k].h);S.own[k].h--;me.cash+=v;tot+=v}
+    if(tot){log(me,`${me.name}-მა ბანკს მიჰყიდა სართულები (${GROUPS[g].n}) +${tot}₾`);sfx('coin')}render()}
   else if(a==='bank'&&myAct){S.modal={t:'bank'};S.lnote='';S.lamt='';render()}
   else if(a==='tradewith'&&myAct)openTrade(+el.dataset.i);
   else if(a==='tradefor'&&myAct){const i=+el.dataset.i,o=S.own[i];if(o){openTrade(o.o);if(S.trade&&canTransfer(o.o,i)){S.trade.get=[i];S.trade.note='';render()}}}
