@@ -732,7 +732,7 @@ details.rulesbox summary{cursor:pointer;font-family:var(--display);font-weight:8
   .chips{margin-top:3px}
 }
 
-@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}.delta{display:none}}
+html.rm *{animation:none!important;transition:none!important}html.rm .delta{display:none}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -837,7 +837,9 @@ const START=2000, PASS=250, JAILFEE=75;
 const PCOL=['#E5483A','#3F95EC','#3DBE7C','#B068EE','#F2A93B'];
 const MAXP=5;
 const AIN=['ნინო','გიორგი','ლევანი','თამარი','დათო'];
-const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* animations stay on even when the device asks for reduced motion (players expect to see moves); tm-rm=1 turns them off */
+const RM=(()=>{try{return localStorage.getItem('tm-rm')==='1'}catch(e){return false}})();
+if(RM)document.documentElement.classList.add('rm');
 const sleep=ms=>new Promise(r=>setTimeout(r,RM?Math.min(ms,80):ms));
 const r6=()=>1+Math.floor(Math.random()*6);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -1280,7 +1282,7 @@ function netApply(d){
 function netSerialize(){const o=Object.assign({},S);delete o.sel;delete o.exp;delete o.view;return JSON.stringify(o)}
 function netQueuePush(){
   if(!NET.on||!S||NET.applying||netApplyingStart)return;
-  clearTimeout(NET.pushT);NET.pushT=setTimeout(()=>netPushNow(),180);
+  clearTimeout(NET.pushT);NET.pushT=setTimeout(()=>netPushNow(),50);
 }
 async function netPushNow(status){
   if(!NET.on||!S||!NET.code)return;
@@ -1449,7 +1451,7 @@ function setDice(anim){
   });
 }
 async function rollDice(){
-  S.dice=[r6(),r6()];S.rollN=(S.rollN||0)+1;sfx('dice');
+  S.dice=[r6(),r6()];S.rollN=(S.rollN||0)+1;sfx('dice');if(NET.on)netPushNow();
   const d=document.getElementById('dice');
   if(d){d.classList.remove('throw');void d.offsetWidth;d.classList.add('throw')}
   const ds=document.getElementById('dsum');if(ds){ds.textContent='';ds.classList.remove('pop')}
@@ -1477,7 +1479,7 @@ async function doFly(){
   if(F.fee>0){st(p).rentOut+=F.fee;S.stats[F.payee].rentIn+=F.fee;pay(p,F.fee,S.players[F.payee])}
   log(p,`Ⓜ ${p.name} მეტროთი: ${CELLS[F.from].st} → ${CELLS[F.to].st}${F.fee?` (ბილეთი ${F.fee}₾${F.payee!=null?' → '+S.players[F.payee].name:''})`:' (საკუთარი სადგური)'}`);
   say(`Ⓜ ${p.name} მეტროთი მიდის: <b>${CELLS[F.to].st}</b>`);sfx('card');
-  p.pos=F.to;p.metroAt=F.to;
+  p.pos=F.to;p.metroAt=F.to;if(NET.on)netPushNow();
   try{await animatePath(pi,[F.to],{jump:true});say(`Ⓜ ${p.name} ჩავიდა: <b>${CELLS[F.to].st}</b>.${F.payee!=null?' ბილეთში ქირაც შედის.':''}`);render();afterLand()}
   catch(e){console.error(e);S.phase=p.ai?'end':'roll';render();if(p.ai)setTimeout(nextTurn,600)}
 }
@@ -1548,7 +1550,7 @@ async function walk(p,n){
   const pi=pidx(p),cells=[];let pos=p.pos;p.metroAt=null;
   for(let k=0;k<n;k++){pos=(pos+1)%N;cells.push(pos)}
   const stepMs=n>9?205:235,z=cells.indexOf(0);
-  p.pos=cells[cells.length-1];
+  p.pos=cells[cells.length-1];if(NET.on)netPushNow();
   cells.forEach((c,k)=>setTimeout(()=>sfx('step'),RM?0:Math.max(0,stepMs*(k+.9))));
   let paid=false;const passGo=()=>{if(paid)return;paid=true;gain(p,PASS);st(p).pass+=PASS;log(p,`${p.name} გაიარა სტარტი: +${PASS}₾`);if(needsAid(p)){p.cash+=AID.amt;st(p).pass+=AID.amt;log(p,`${p.name}-ს ჩამორჩენისთვის სტარტის დახმარება: +${AID.amt}₾`)}renderSide()};
   if(z>=0)setTimeout(passGo,RM?0:stepMs*(z+1)-40);
@@ -2057,8 +2059,10 @@ function celebrate(i){
 function placeTokens(hopIdx){
   const L=document.getElementById('tk');if(!L)return;
   if(!S){L.innerHTML='';return}
-  if(L.children.length!==S.players.length){
-    L.innerHTML=S.players.map((p,i)=>`<div class="tk" id="tk${i}" style="--pc:${p.col}"><div class="tk-base"></div><div class="tk-fig"><div class="tk-hop">${tokSvg(p.tok)}</div></div></div>`).join('');
+  const tks=L.querySelectorAll(':scope > .tk'),sig=S.players.map(p=>p.tok+p.col).join('|');
+  if(tks.length!==S.players.length||L.dataset.sig!==sig){
+    tks.forEach(t=>t.remove());L.dataset.sig=sig;
+    L.insertAdjacentHTML('beforeend',S.players.map((p,i)=>`<div class="tk" id="tk${i}" style="--pc:${p.col}"><div class="tk-base"></div><div class="tk-fig"><div class="tk-hop">${tokSvg(p.tok)}</div></div></div>`).join(''));
   }
   const groups={};S.players.forEach((p,i)=>{if(!p.out)(groups[p.pos]=groups[p.pos]||[]).push(i)});
   S.players.forEach((p,i)=>{
