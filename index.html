@@ -1387,6 +1387,13 @@ function isDriver(){
   const d=hp&&isFresh(hp.uid)?hp:hs.find(p=>isFresh(p.uid));
   return d?d.uid===NET.uid:(host===NET.uid);
 }
+function driverKick(){
+  if(!NET.on||!S||S.phase==='over'||!isDriver())return;
+  const p=cur();if(!p||!p.ai||S.modal||S.auction||S.trade)return;
+  if(!['roll','end'].includes(S.phase))return;
+  const v=NET.ver;if(NET.kickVer===v)return;NET.kickVer=v;
+  setTimeout(()=>{if(!S||NET.ver!==v||!cur().ai||S.modal||S.auction||S.trade)return;NET.lastChange=Date.now();if(S.phase==='end')nextTurn();else if(S.phase==='roll')aiTurn()},RM?150:900);
+}
 function netRemovePlayer(pi,why){
   const p=S.players[pi];if(!p||p.out)return false;
   const wasTurn=S.turn===pi;
@@ -1587,7 +1594,7 @@ function netOnGame(snap){
   const d=snap.data();NET.lobby=d;NET.host=d.host;
   if(d.status==='lobby'){if(!S){renderSide();renderDesk()}return}
   if(!d.S)return;
-  if(d.ver<=NET.ver&&NET.on)return;
+  if(d.ver<NET.ver&&NET.on)return;
   if(d.S===NET.lastJson){NET.ver=Math.max(NET.ver,d.ver);return}
   netApply(d);
 }
@@ -1612,6 +1619,7 @@ function netApply(d){
   NET.applying=true;
   try{render();if(rolled){setDice(true);sfx('dice')}}finally{NET.applying=false}
   if(S.phase==='over')setTimeout(()=>{try{recordResult('online')}catch(e){}},800);
+  driverKick();
 }
 function netSerialize(){const o=Object.assign({},S);delete o.sel;delete o.exp;delete o.view;return JSON.stringify(o)}
 function netQueuePush(){
@@ -2067,11 +2075,13 @@ function beginTurn(){
 }
 function nextTurn(){
   if(!S||S.phase==='over')return;
+  if(NET.on&&cur().ai&&!isDriver())return;
   let t=S.turn;const n=S.players.length;
   do{t=(t+1)%n;if(t===0){S.round++;recordHist()}}while(S.players[t].out);
   clearUndo();S.turn=t;beginTurn();
 }
 function aiTurn(){
+  if(NET.on&&!isDriver())return;
   if(!S||S.phase!=='roll')return;
   const p=cur();if(!p.ai)return;
   const pi=pidx(p),P=aip();
@@ -2083,6 +2093,7 @@ function aiTurn(){
   aiRest(p);
 }
 function aiRest(p){
+  if(NET.on&&!isDriver())return;
   const P=aip();
   aiBuild(p);
   if(p.inJail&&p.cash>P.bail&&(S.diff!=='hard'||S.round<18)){fine(p,JAILFEE);p.inJail=false;p.jail=0;log(p,`${p.name} გადაიხადა ${JAILFEE}₾ და გამოვიდა საცობიდან`)}
