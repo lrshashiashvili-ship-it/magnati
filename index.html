@@ -1268,13 +1268,14 @@ function netApply(d){
   NET.seat=ns.players.findIndex(p=>p.uid===NET.uid);
   if(old&&!first){ns.sel=old.sel;ns.exp=old.exp}else{ns.sel=null;ns.exp=null}
   ns.view=null;
-  const rolled=old&&(ns.rollN||0)!==(old.rollN||0);
+  const rolled=old&&(ns.rollN||0)!==(old.rollN||0);if(rolled)NET.rollAt=Date.now();
   S=ns;
   if(first){const t=document.getElementById('tk');if(t)t.innerHTML='';overlayKey=null;lastCash=S.players.map(p=>p.cash);buildBoard()}
   else if(old&&old.players.length===S.players.length&&!RM){
     S.players.forEach((p,i)=>{const o=old.players[i];if(!o||o.pos===p.pos||p.out)return;
       const dist=(p.pos-o.pos+N)%N;let cells=[];
-      if(dist>0&&dist<=14){for(let k=1;k<=dist;k++)cells.push((o.pos+k)%N);animatePath(i,cells,{stepMs:150})}else animatePath(i,[p.pos],{jump:true})});
+      const wait=Math.max(0,1150-(Date.now()-(NET.rollAt||0)));
+      if(dist>0&&dist<=14){for(let k=1;k<=dist;k++)cells.push((o.pos+k)%N);animatePath(i,cells,{stepMs:dist>9?205:235,delay:wait})}else animatePath(i,[p.pos],{jump:true,delay:wait})});
   }
   NET.applying=true;
   try{render();if(rolled){setDice(true);sfx('dice')}}finally{NET.applying=false}
@@ -1288,6 +1289,11 @@ async function netPushNow(status){
   if(!NET.on||!S||!NET.code)return;
   const json=netSerialize();
   if(json===NET.lastJson&&!status)return;
+  if(NET.mode==='site'){ // Firestore keeps one client's writes in order, so send at once without waiting
+    NET.lastJson=json;NET.ver+=1;NET.lastChange=Date.now();
+    NET.db.doc('games/'+NET.code).update({S:json,ver:NET.ver,by:NET.uid,status:S.phase==='over'?'over':'play',at:Date.now()}).catch(e=>{NET.note='კავშირის შეცდომა: '+(e&&e.code||'')});
+    return;
+  }
   if(NET.writing){NET.dirty=true;return}
   NET.writing=true;NET.lastJson=json;NET.ver+=1;NET.lastChange=Date.now();
   try{await NET.db.doc('games/'+NET.code).update({S:json,ver:NET.ver,by:NET.uid,status:S.phase==='over'?'over':'play',at:Date.now()})}
@@ -1532,7 +1538,7 @@ function animatePath(pi,cells,opt={}){
     pts.forEach(([x,y],k)=>kf.push({left:x+'%',top:y+'%',offset:(k+1)/n,easing:'cubic-bezier(.42,0,.38,1)'}));
     el.style.transition='none';
     const [fx,fy]=pts[n-1];el.style.left=fx+'%';el.style.top=fy+'%';el.style.zIndex=1500;
-    const a1=el.animate(kf,{duration:dur});
+    const dl=opt.delay||0,a1=el.animate(kf,{duration:dur,delay:dl,fill:'backwards'});
     if(hop){
       const hk=[{transform:'translateY(0) scale(1)',offset:0}];
       for(let k=0;k<n;k++){
@@ -1541,7 +1547,7 @@ function animatePath(pi,cells,opt={}){
       }
       hk.push({transform:'translateY(0) scale(1)',offset:1});
       hk[0].easing='cubic-bezier(.2,.6,.4,1)';
-      hop.animate(hk,{duration:dur});
+      hop.animate(hk,{duration:dur,delay:dl,fill:'backwards'});
     }
     a1.onfinish=()=>{el.style.transition='';placeTokens();res()};
   });
