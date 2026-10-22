@@ -1038,6 +1038,26 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
 .oi.on .oib,.oib:hover{background:rgba(255,240,200,.07)!important}
 .cp[aria-pressed="true"]{border-color:#F6DA8E}
 .uidc{font-size:11.5px;background:#0A090D;padding:2px 6px;border-radius:6px;color:#F6DA8E;user-select:all;word-break:break-all}
+.plist.many{gap:4px}.plist.many .chips:has(.none){display:none}.plist.many .pcard{min-height:0}.plist.many .pc-main{padding:4px 8px;grid-template-columns:30px minmax(0,1fr) auto}.plist.many .av{width:30px;height:30px}.plist.many .av svg{width:19px;height:23px}.plist.many .cash b{font-size:16px}.plist.many .wbar{margin:3px 0 2px}.plist.many .chips{margin-top:2px}
+
+/* v58: keep "my property" readable */
+.tbar{grid-template-columns:repeat(auto-fit,minmax(74px,1fr))!important;gap:5px!important}
+.tb{padding:7px 2px 6px!important;font-size:10.5px!important;gap:3px!important}
+.tb svg{width:18px!important;height:18px!important}
+@media (min-width:900px){
+  .side .plpanel{flex:0 1 auto!important;min-height:min(300px,38vh)!important;display:flex;flex-direction:column}
+  .side .plpanel .scroll{overflow:auto!important;flex:1 1 auto!important;min-height:0!important}
+  .side .mypanel{flex:1 1 0!important;min-height:min(270px,34vh)!important}
+}
+.plist.many .pc-main{padding:4px 8px!important;grid-template-columns:28px minmax(0,1fr) auto!important}
+.plist.many .wbar,.plist.many .chips,.plist.many .cash small{display:none!important}
+.plist.many .av{width:28px!important;height:28px!important}.plist.many .av svg{width:17px!important;height:21px!important}
+.plist.many .pcard{padding:0!important}.plist.many .cash b{font-size:15px!important}.plist.many .pname{font-size:13px}
+.bhint{padding:6px 10px!important;font-size:12px!important}
+@media (min-width:900px) and (max-height:800px){.side .mypanel .mysum,.side .mypanel .bhint{display:none}.side .plpanel{min-height:min(260px,36vh)!important}}
+.endcd{display:inline-grid;place-items:center;min-width:1.7em;height:1.7em;margin-left:.35em;border-radius:999px;background:rgba(0,0,0,.28);font-variant-numeric:tabular-nums;font-size:.9em}.endcd:empty{display:none}.endcd.low{background:#C23A4C;color:#fff;animation:cdp 1s ease-in-out infinite}@keyframes cdp{50%{transform:scale(1.15)}}
+.mineb.oth{background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--pc) 55%,#fff),var(--pc));box-shadow:0 0 0 1.5px #0B0A10,0 0 0 3px var(--pc),0 2px 6px rgba(0,0,0,.7)}
+.tag.off{background:rgba(255,120,120,.15);color:#FF9A9A}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1140,9 +1160,9 @@ const TR_RENT=[40,100,200,350];
 const FLY={ride:300};
 let START=2000, PASS=250;const JAILFEE=75;
 const COLORS=['#E5483A','#3F95EC','#3DBE7C','#B068EE','#F2A93B','#E85D9C','#22B8C7','#8D99AE'];
-const PCOL=COLORS.slice(0,5);
-const MAXP=5;
-const AIN=['ნინო','გიორგი','ლევანი','თამარი','დათო'];
+const PCOL=COLORS.slice(0,7);
+const MAXP=7;
+const AIN=['ნინო','გიორგი','ლევანი','თამარი','დათო','ანა','ლუკა'];
 /* animations stay on even when the device asks for reduced motion (players expect to see moves); tm-rm=1 turns them off */
 let RM=false;
 const sleep=ms=>new Promise(r=>setTimeout(r,RM?Math.min(ms,80):ms));
@@ -1789,7 +1809,7 @@ async function netAbandon(code){
   const d=g.data();let st;try{st=JSON.parse(d.S)}catch(e){await ref.delete().catch(()=>{});return}
   const pi=st.players.findIndex(p=>p.uid===NET.uid);
   if(pi>=0&&!st.players[pi].out){
-    const p=st.players[pi];p.out=true;p.cash=0;p.loan=0;p.inJail=false;
+    const p=st.players[pi];p.out=true;p.outAt=Date.now();p.cash=0;p.loan=0;p.inJail=false;
     for(const k in st.own)if(st.own[k].o===pi)delete st.own[k];
     st.log.unshift({c:p.col,m:`${p.name} გავიდა თამაშიდან. მისი ქონება ბანკს დაუბრუნდა`});
     if(st.turn===pi&&st.phase!=='over'){let t=pi;const n=st.players.length;for(let k=0;k<n;k++){t=(t+1)%n;if(!st.players[t].out)break}
@@ -1891,7 +1911,7 @@ async function netPushNow(status){
 /* the host keeps computer players moving if the device that started their turn went away */
 setInterval(()=>{
   if(!NET.on||!S||S.phase==='over'||!NET.lobby||!isDriver())return;
-  {let gone=false;S.players.forEach((p,i)=>{if(!p.ai&&!p.out&&p.uid&&p.uid!==NET.uid&&NET.pres[p.uid]!=null&&Date.now()-NET.pres[p.uid]>240000){if(netRemovePlayer(i,'გაითიშა და თამაშიდან გავიდა'))gone=true}});if(gone){NET.lastChange=Date.now();return}}
+  {let gone=false;S.players.forEach((p,i)=>{if(!p.ai&&!p.out&&p.uid&&p.uid!==NET.uid&&NET.pres[p.uid]!=null&&Date.now()-NET.pres[p.uid]>120000){if(netRemovePlayer(i,'გაითიშა და თამაშიდან გავიდა'))gone=true}});if(gone){NET.lastChange=Date.now();return}}
   if(Date.now()-NET.lastChange<9000)return;
   const p=cur();
   if(S.modal&&S.modal.t==='card'){S.modal=null;render()}
@@ -1911,7 +1931,7 @@ function lobbyHTML(){
   h+=`</div><h3 class="lh">შენ</h3><div class="seat" style="--pc:${NET.myCol}"><div class="seat-top"><span class="av">${tokSvg(NET.myTok)}</span><input id="netname" data-netname="1" maxlength="14" placeholder="შენი სახელი" value="${esc(NET.myName)}" autocomplete="off"><span></span></div>
     <div class="tokpick">${TOKENS.map((t,k)=>`<button class="tp" data-act="nettok" data-k="${k}" aria-pressed="${NET.myTok===k}" title="${t.n}">${tokSvg(k)}</button>`).join('')}</div><div class="colpick">${COLORS.map(c=>`<button class="cp" data-act="netcol" data-c="${c}" style="--c:${c}" aria-pressed="${NET.myCol===c}" ${mem.some(m=>m.uid!==NET.uid&&m.col===c)?"disabled":""}></button>`).join("")}</div></div>`;
   if(isHost){
-    h+=`<div class="diffbox"><span>ადგილები სულ</span><div class="seg">${[2,3,4,5].map(n=>`<button data-act="netmax" data-n="${n}" aria-pressed="${L.max===n}">${n}</button>`).join('')}</div>
+    h+=`<div class="diffbox"><span>ადგილები სულ</span><div class="seg">${[2,3,4,5,6,7].map(n=>`<button data-act="netmax" data-n="${n}" aria-pressed="${L.max===n}">${n}</button>`).join('')}</div>
       <span>ცარიელი ადგილები</span><div class="seg"><button data-act="netai" data-v="1" aria-pressed="${!!L.fillAI}">კომპიუტერი</button><button data-act="netai" data-v="0" aria-pressed="${!L.fillAI}">არავინ</button></div>
       <span>კომპიუტერის სირთულე</span><div class="seg">${Object.entries(AIP).map(([k,v])=>`<button data-act="netdiff" data-d="${k}" aria-pressed="${(L.diff||'medium')===k}">${v.n}</button>`).join('')}</div></div>
       ${NET.note?`<p class="tnote">${esc(NET.note)}</p>`:''}<div class="setup-acts"><button class="btn gold" data-act="netstart">თამაშის დაწყება</button></div>`;
@@ -2116,7 +2136,7 @@ async function rollTurn(){
 /* Smooth token movement: one continuous glide along the path with a small hop on every cell. */
 function tokXY(pi,pos,final){
   const [r,c]=rc(pos);let dx=0,dy=0;
-  if(final){const g=S.players.map((q,i)=>i).filter(i=>!S.players[i].out&&S.players[i].pos===pos),k=Math.max(0,g.indexOf(pi)),n=Math.max(1,g.length);dx=(k-(n-1)/2)*2.7;dy=(k%2)*1.1}
+  if(final){const g=S.players.map((q,i)=>i).filter(i=>!S.players[i].out&&S.players[i].pos===pos),k=Math.max(0,g.indexOf(pi)),n=Math.max(1,g.length);if(n<=3){dx=(k-(n-1)/2)*2.7;dy=(k%2)*1.1}else{const cols=Math.ceil(n/2),row=Math.floor(k/cols),col=k%cols;dx=(col-(cols-1)/2)*2.5;dy=(row-.5)*2.2}}
   return [(c-.5)/GRID*100+dx,(r-.5)/GRID*100-1+dy];
 }
 function animatePath(pi,cells,opt={}){
@@ -2258,7 +2278,7 @@ function raise(p,amt){
   }
 }
 function bankrupt(p,to){
-  const pi=pidx(p);p.out=true;p.inJail=false;p.loan=0;
+  const pi=pidx(p);p.out=true;p.outAt=Date.now();p.inJail=false;p.loan=0;
   const ti=to?pidx(to):-1;
   for(const k in S.own)if(S.own[k].o===pi){if(ti>=0){S.own[k].o=ti;S.own[k].h=0}else delete S.own[k]}
   log(p,`${p.name} გაკოტრდა${to?`, ქონება გადაეცა ${to.name}-ს`:''}`);
@@ -2294,11 +2314,25 @@ function afterLand(){
   }
   toEnd();
 }
+const END_MS=15000;
+function endLeft(){if(!S||S.phase!=='end'||!S.endAt)return '';return Math.max(0,Math.ceil((S.endAt-Date.now())/1000))}
+function endBusy(){return !!(S.modal||S.trade||S.auction)}
+setInterval(()=>{
+  if(!S||S.phase!=='end'||!S.endAt||cur().ai)return;
+  const p=cur(),i=S.turn;
+  if(endBusy()&&(!NET.on||mine(i))){S.endAt=Math.max(S.endAt,Date.now()+5000)}
+  const el=document.getElementById('endcd');const left=endLeft();
+  if(el){el.textContent=left;el.classList.toggle('low',left<=5)}
+  const over=Date.now()-S.endAt;
+  if(over<0||endBusy())return;
+  if(!NET.on||mine(i)){S.endAt=0;nextTurn();return}
+  if(NET.on&&isDriver()&&over>6000&&!isFresh(p.uid)){S.endAt=0;nextTurn()}
+},250);
 function toEnd(){
   if(checkOver())return;
   const p=cur();
   if(!p.ai&&!p.out&&p.cash<0){enterDebt(p,'end');return}
-  S.phase='end';render();
+  S.phase='end';S.endAt=p.ai?0:Date.now()+END_MS;render();
   if(p.ai)setTimeout(nextTurn,RM?200:1100);
 }
 function loanTick(p){
@@ -2606,13 +2640,13 @@ function cellHTML(i){
   if(prop){
     const fl='';
     const price=o?(o.m?'—':`${rentOf(i)}₾`):`${c.price}₾`;
-    inner=`<div class="band">${fl}</div><div class="scene">${scene(c.sc)}</div><div class="cname">${c.sn||c.n}</div><div class="cprice">${price}</div>${want?'<span class="wantb">აკლია</span>':''}${mine?`<span class="mineb">${tokSvg(S.players[o.o].tok)}</span><span class="minet">შენი</span>`:''}`;
+    inner=`<div class="band">${fl}</div><div class="scene">${scene(c.sc)}</div><div class="cname">${c.sn||c.n}</div><div class="cprice">${price}</div>${want?'<span class="wantb">აკლია</span>':''}${mine?`<span class="mineb">${tokSvg(S.players[o.o].tok)}</span><span class="minet">შენი</span>`:o?`<span class="mineb oth" title="${esc(S.players[o.o].name)}">${tokSvg(S.players[o.o].tok)}</span>`:''}`;
   }else if(['card','tax','obs'].includes(c.t)){
     inner=`<div class="ico">${icon(c.ic)}</div><div class="cname">${c.sn||c.n}</div><div class="cprice">${c.t==='tax'?'−'+c.amt+'₾'+(c.rate||c.cashRate?'+':''):(c.sub||'')}</div>`;
   }else inner=`<div class="ico">${icon(c.ic)}</div><div class="cname">${c.n}</div><div class="cprice${c.t==='rest'&&S&&S.pot?' pot':''}">${c.t==='rest'&&S?`ჯეკპოტი ${S.pot||0}₾`:(c.sub||'')}</div>`;
   return [cls,style,inner];
 }
-const NEWBUY={};let PREV_OWN=null;
+const NEWBUY={},OUT_T=new Set();let PREV_OWN=null;
 function trackBuys(){
   if(!S){PREV_OWN=null;return}
   const vi=viewer(),now=CELLS.map((_,i)=>S.own[i]?S.own[i].o:-1);
@@ -2707,9 +2741,7 @@ function placeTokens(hopIdx){
     const el=document.getElementById('tk'+i);
     el.classList.toggle('out',p.out);el.classList.toggle('cur',i===S.turn&&S.phase!=='over');
     if(p.out)return;
-    const g=groups[p.pos],k=g.indexOf(i),n=g.length;
-    const [r,c]=rc(p.pos);
-    const x=(c-.5)/GRID*100+(k-(n-1)/2)*2.7, y=(r-.5)/GRID*100-1+(k%2)*1.1;
+    const [x,y]=tokXY(i,p.pos,true);
     el.style.left=x+'%';el.style.top=y+'%';el.style.zIndex=Math.round(y*10);
     if(hopIdx===i){el.classList.remove('hop');void el.offsetWidth;el.classList.add('hop')}
   });
@@ -2771,7 +2803,7 @@ function renderDesk(){
     h=`<button class="btn gold" data-act="roll">გააგორე კამათელი</button>`;
     {const F=flyInfo(p);if(F)h+=`<button class="btn fly" data-act="fly" ${F.ok?'':'disabled'} title="${esc(CELLS[F.to].n)}">Ⓜ მეტრო → ${CELLS[F.to].st} · ${F.fee?F.fee+'₾':'უფასო'}</button>`}
     if(p.inJail)h+=`<button class="btn ghost" data-act="bail" ${p.cash<JAILFEE?'disabled':''}>გადაიხადე ${JAILFEE}₾</button>`;
-  }else if(human&&S.phase==='end')h=`<button class="btn" data-act="next">სვლის დასრულება</button>`;
+  }else if(human&&S.phase==='end')h=`<button class="btn" data-act="next">სვლის დასრულება <span class="endcd" id="endcd">${endLeft()}</span></button>`;
   else if(human&&S.phase==='debt'){
     h=p.cash>=0?`<button class="btn gold" data-act="debtok">ვალი დაფარულია, გაგრძელება</button>`:`<span class="debtpill num">ვალი ${-p.cash}₾</span>`;
     const alive=S.players.filter(q=>!q.out).length>1;
@@ -3255,15 +3287,17 @@ function renderSide0(){
     return;
   }
   const vi=viewer(),me=S.players[vi],myAct=myActNow();
-  let l=toolbar()+`<div class="panel plpanel"><div class="ph"><h2>მოთამაშეები</h2><span class="num">რაუნდი ${S.round} · ${TODN[todOf(S.round)]}${S.players.some(q=>q.ai)?` · ${AIP[S.diff||'medium'].n}`:''}</span></div><div class="scroll" id="plbody" data-k="p"><ul class="plist">`;
+  let l=toolbar()+`<div class="panel plpanel"><div class="ph"><h2>მოთამაშეები</h2><span class="num">რაუნდი ${S.round} · ${TODN[todOf(S.round)]}${S.players.some(q=>q.ai)?` · ${AIP[S.diff||'medium'].n}`:''}</span></div><div class="scroll" id="plbody" data-k="p"><ul class="plist${S.players.length>4?' many':''}">`;
   S.players.forEach((p,i)=>{
+    if(p.out&&S.phase!=='over'&&Date.now()-(p.outAt||0)>20000)return;
+    if(p.out&&S.phase!=='over'&&!OUT_T.has(i+':'+p.outAt)){OUT_T.add(i+':'+p.outAt);setTimeout(()=>{if(S)renderSide()},20500-(Date.now()-(p.outAt||0)))}
     const props=propsOf(i);
     const d=lastCash[i]!=null?p.cash-lastCash[i]:0;
     const isCur=i===S.turn&&S.phase!=='over'&&!p.out,open=S.exp===i;
     l+=`<li class="pcard${isCur?' cur':''}${p.out?' out':''}${open?' open':''}" style="--pc:${p.col}">
       <button class="pc-main" data-act="pexp" data-i="${i}" aria-expanded="${open}" title="ქონების ნახვა">
       <span class="av" data-coin="${i}" title="${TOKENS[p.tok].n}">${tokSvg(p.tok)}</span>
-      <span class="pc-mid"><span class="pname">${esc(p.name)}${p.ai?'<span class="tag ai">AI</span>':''}${isCur?'<span class="tag turn">სვლა</span>':''}${p.inJail?'<span class="tag">საცობში</span>':''}${p.skip?'<span class="tag">გამოტოვებს</span>':''}${p.loan?`<span class="tag loan">სესხი ${p.loan}₾</span>`:''}${p.out?'<span class="tag">გაკოტრდა</span>':''}</span>
+      <span class="pc-mid"><span class="pname">${esc(p.name)}${p.ai?'<span class="tag ai">AI</span>':''}${isCur?'<span class="tag turn">სვლა</span>':''}${p.inJail?'<span class="tag">საცობში</span>':''}${p.skip?'<span class="tag">გამოტოვებს</span>':''}${p.loan?`<span class="tag loan">სესხი ${p.loan}₾</span>`:''}${p.out?'<span class="tag">გავიდა</span>':''}${!p.out&&NET.on&&!p.ai&&p.uid&&!isFresh(p.uid)?'<span class="tag off">📵 კავშირი გაწყდა</span>':''}</span>
       <span class="wbar" title="ქონების წილი"><i style="width:${Math.max(2,Math.round(100*Math.max(0,worth(p))/Math.max(1,S.players.reduce((a,q)=>a+(q.out?0:Math.max(0,worth(q))),0))))}%"></i></span>
       <span class="chips">${props.length?props.map(k=>{const o=S.own[k];return `<i class="${o.m?'m':''}" style="--gc:${gcol(CELLS[k])}" title="${esc(CELLS[k].n)}${o.h?' · '+o.h+' სართ.':''}">${o.h||''}</i>`}).join(''):'<span class="none">უბნები ჯერ არ აქვს</span>'}</span></span>
       <span class="cash"><b class="${p.cash<0?'neg':''}">${p.cash}₾</b><small>${props.length} უბ. · ${floorsOf(p)} სართ.</small></span></button>
@@ -3277,7 +3311,7 @@ function renderSide0(){
   const trOk=myAct&&S.players.filter(q=>!q.out).length>1;
   l+=`<div class="panel grow mypanel"><div class="ph"><h2>${humans()>1?esc(me.name)+'-ის ქონება':'ჩემი ქონება'}</h2></div>
     <div class="mysum"><div><b class="num">${mine.length}</b><small>უბანი</small></div><div><b class="num">${totFl}</b><small>სართული</small></div><div><b class="num">${totRent}₾</b><small>ქირა სულ</small></div></div>
-    ${(()=>{const nB=mine.filter(i=>canBuild(vi,i)).length;return nB?`<div class="bhint">🔨 ახლა შეგიძლია ააშენო სართული <b>${nB}</b> უბანზე. დააჭირე მწვანე <b>+🏠</b> ღილაკს.</div>`:''})()}
+    ${(()=>{const nB=mine.filter(i=>canBuild(vi,i)).length;return nB?`<div class="bhint">🔨 აშენება შეგიძლია <b>${nB}</b> უბანზე: დააჭირე მწვანე <b>+🏠</b>-ს</div>`:''})()}
     <div class="myacts"><button class="btn sm ghost" data-act="bank" ${myAct?'':'disabled'}>🏦 ბანკი</button><button class="btn sm${canOffer(vi)?'':' used'}" data-act="trade" title="${canOffer(vi)?'ერთი შეთავაზება ამ რაუნდში':esc(offerWhy(vi))}" ${trOk?'':'disabled'}>🤝 ვაჭრობა${canOffer(vi)?'':S.round<2?' 🔒':' ✓'}</button></div>
     <div class="scroll" id="ownbody" data-k="o">`;
   if(!mine.length)l+=`<p class="empty">ჯერ არაფერი გაქვს. დადექი თავისუფალ უბანზე და იყიდე. ნაყიდი უბნები აქ ჯგუფებად გამოჩნდება.</p>`;
@@ -3351,6 +3385,7 @@ document.addEventListener('click',e=>{
   const a=el.dataset.act;
   if(!NOTICK.has(a)&&!el.disabled)sfx('pick');
   if(a!=='new'&&confirmNew)confirmNew=false;
+  if(S&&S.phase==='end'&&S.endAt&&!cur().ai&&(!NET.on||mine(S.turn))&&a!=='next')S.endAt=Math.max(S.endAt,Date.now()+END_MS);
   if(a==='music'){AU.music?stopMusic():startMusic();renderSide();refreshSettings();return}
   if(a==='settings'){showSettings();sfx('pick');return}
   if(a==='admin'){hideSettings();openAdmin();return}
