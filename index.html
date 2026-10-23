@@ -1041,7 +1041,7 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
 .plist.many{gap:4px}.plist.many .chips:has(.none){display:none}.plist.many .pcard{min-height:0}.plist.many .pc-main{padding:4px 8px;grid-template-columns:30px minmax(0,1fr) auto}.plist.many .av{width:30px;height:30px}.plist.many .av svg{width:19px;height:23px}.plist.many .cash b{font-size:16px}.plist.many .wbar{margin:3px 0 2px}.plist.many .chips{margin-top:2px}
 
 /* v58: keep "my property" readable */
-.tbar{grid-template-columns:repeat(auto-fit,minmax(74px,1fr))!important;gap:5px!important}
+.tbar{grid-template-columns:repeat(auto-fit,minmax(60px,1fr))!important;gap:5px!important}
 .tb{padding:7px 2px 6px!important;font-size:10.5px!important;gap:3px!important}
 .tb svg{width:18px!important;height:18px!important}
 @media (min-width:900px){
@@ -1058,6 +1058,24 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
 .endcd{display:inline-grid;place-items:center;min-width:1.7em;height:1.7em;margin-left:.35em;border-radius:999px;background:rgba(0,0,0,.28);font-variant-numeric:tabular-nums;font-size:.9em}.endcd:empty{display:none}.endcd.low{background:#C23A4C;color:#fff;animation:cdp 1s ease-in-out infinite}@keyframes cdp{50%{transform:scale(1.15)}}
 .mineb.oth{background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--pc) 55%,#fff),var(--pc));box-shadow:0 0 0 1.5px #0B0A10,0 0 0 3px var(--pc),0 2px 6px rgba(0,0,0,.7)}
 .tag.off{background:rgba(255,120,120,.15);color:#FF9A9A}
+
+.squick{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:4px 0 6px}
+.sq{display:flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-size:13.5px;font-weight:700;color:#EADFC6;padding:11px 8px;border-radius:12px;cursor:pointer;
+  background:linear-gradient(180deg,#1C1A22,#0E0D12);border:1px solid rgba(214,172,92,.35)}
+.sq:hover{border-color:rgba(246,214,140,.8);color:#F6DA8E}
+.sq[aria-pressed="false"]{color:#FF9A9A;border-color:rgba(226,86,108,.5)}
+/* v62: smaller player rows, bigger property panel */
+.plist.many{gap:3px!important}
+.plist.many .pc-main{padding:2px 8px!important}
+.plist.many .av{width:24px!important;height:24px!important}.plist.many .av svg{width:15px!important;height:18px!important}
+.plist.many .pc-main{grid-template-columns:24px minmax(0,1fr) auto!important}
+.plist.many .cash b{font-size:14px!important}.plist.many .pname{font-size:12.5px!important}
+.plist.many .tag{font-size:10px;padding:0 6px}
+@media (min-width:900px){
+  .side .plpanel{min-height:0!important;flex:0 1 auto!important}
+  .side .mypanel{flex:1 1 0!important;min-height:min(340px,45vh)!important}
+}
+.psets{display:inline-flex;align-items:center;gap:3px;margin-left:2px;padding:1px 5px 1px 4px;border-radius:999px;background:rgba(255,240,200,.06);font-size:10px}.psets i{display:grid;place-items:center;min-width:12px;height:12px;padding:0 2px;border-radius:3px;background:var(--gc);box-shadow:0 0 6px color-mix(in srgb,var(--gc) 60%,transparent);font-style:normal;font-size:8.5px;font-weight:900;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.7)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1387,6 +1405,7 @@ const SFX={
   win:t=>[523,659,784,1046,1318].forEach((f,k)=>pluck(f,t+k*.12,.7,AU.sg,.22)),
   lose:t=>[330,294,262,196].forEach((f,k)=>pluck(f,t+k*.18,.6,AU.sg,.2)),
   pick:t=>(CLICKS[PREF.click]||CLICKS.soft).f(t),
+  myturn:t=>{[659,880,1175].forEach((f,k)=>pluck(f,t+k*.11,.5,AU.sg,.16));tone(1760,t+.36,.6,'sine',.04,AU.sg)},
   invite:t=>{[784,988,1175,1568].forEach((f,k)=>pluck(f,t+k*.09,.5,AU.sg,.2));tone(1568,t+.4,.5,'sine',.06,AU.sg)},
 };
 const STEPS={tap:{n:'კაკუნი',f:t=>SFX.step(t)},wood:{n:'ხე',f:t=>{noise(t,.045,.4,AU.sg,850,3);tone(210,t,.07,'triangle',.09,AU.sg)}},
@@ -2798,7 +2817,7 @@ function renderDesk(){
   const p=cur(),human=!p.ai&&mine(S.turn);
   msg.innerHTML=S.msg+(NET.on&&!mine(S.turn)&&S.phase!=='over'?`<br><small class="waitn">${NET.seat<0?'შენ მაყურებელი ხარ.':`ახლა ${esc(cur().name)}-ის სვლაა.`}</small>`:'');
   let h='';
-  if(S.phase==='over')h=`<button class="btn gold" data-act="setup">ახალი თამაში</button>`;
+  if(S.phase==='over')h=`<button class="btn gold" data-act="setup">ახალი თამაში</button><button class="btn" data-act="showover">📊 შედეგები</button>`;
   else if(human&&S.phase==='roll'){
     h=`<button class="btn gold" data-act="roll">გააგორე კამათელი</button>`;
     {const F=flyInfo(p);if(F)h+=`<button class="btn fly" data-act="fly" ${F.ok?'':'disabled'} title="${esc(CELLS[F.to].n)}">Ⓜ მეტრო → ${CELLS[F.to].st} · ${F.fee?F.fee+'₾':'უფასო'}</button>`}
@@ -2973,13 +2992,14 @@ function bankHTML(){
     ${S.lnote?`<p class="tnote ok">${esc(S.lnote)}</p>`:''}
     <div class="acts">${c.ok?`<button class="btn gold" data-act="ltake">სესხის აღება</button>`:''}${p.loan?`<button class="btn" data-act="lrepay" ${p.cash>0?'':'disabled'}>დაფარვა</button><button class="btn ghost" data-act="lrepayall" ${p.cash>0?'':'disabled'}>სრულად დაფარვა</button>`:''}<button class="btn ghost" data-act="mclose">დახურვა</button></div></div>`;
 }
-let overlayKey=null;
+let overlayKey=null,OVER_HIDE=null;
+function overId(){return S?(NET.code||'local')+':'+(S.round)+':'+(S.winner)+':'+S.players.map(p=>p.name).join(','):''}
 function renderOverlay(){
   const ov=document.getElementById('overlay');
   let h='',key='';
   if(NET.on&&NET.stats&&S){
     key='lstats'+S.round+'|'+S.hist.length;h=`<div class="overlay ov-scroll">${statsHTML()}</div>`;
-  }else if(S&&S.modal&&S.modal.t==='over'){
+  }else if(S&&S.modal&&S.modal.t==='over'&&OVER_HIDE!==overId()){
     key='over'+S.round;h=`<div class="overlay ov-scroll">${overHTML()}</div>`;
   }else if(S&&S.modal&&S.modal.t==='stats'){
     key='stats'+S.round+'|'+S.hist.length+'|'+S.players.map(p=>p.cash).join(',');h=`<div class="overlay ov-scroll">${statsHTML()}</div>`;
@@ -3144,6 +3164,7 @@ function renderHome(){
 function settingsHTML(){
   const sw=(act,on,lbl)=>`<button class="sw" data-act="${act}" aria-pressed="${on}"><i></i>${lbl}</button>`;
   return `<div class="setbox" role="dialog" aria-label="პარამეტრები"><div class="rh"><h2>⚙ პარამეტრები</h2><button class="btn sm ghost" data-act="sclose">← უკან</button></div>
+    <div class="squick"><button class="sq" data-act="rules">📖<span>წესები</span></button>${S?'<button class="sq" data-act="stats">📊<span>სტატისტიკა</span></button>':''}<button class="sq" data-act="muteall" aria-pressed="${AU.music||AU.sfx}">${AU.music||AU.sfx?'🔊':'🔇'}<span>${AU.music||AU.sfx?'ხმა ჩართულია':'ხმა გამორთულია'}</span></button></div>
 ${accountHTML()}
     <div class="sgrp"><h3>🎲 თამაშის ხმები</h3>
       ${sw('gfx',PREF.gfx,'კამათელი, ფული, ყიდვა, ბარათები')}
@@ -3178,9 +3199,6 @@ function toolbar(){
   if(S)h+=`<button class="tb exit${confirmNew?' sure':''}" data-act="new" title="${NET.on?'თამაშიდან გასვლა':'მთავარ მენიუში დაბრუნება'}"><svg viewBox="0 0 24 24">${NET.on?I.exit:I.home}</svg><span>${confirmNew?'დარწმუნდი?':NET.on?'გასვლა':'მენიუ'}</span></button>`;
   else h+=B('home',I.home,'მენიუ');
   h+=B('settings',I.gear,'პარამეტრები');
-  h+=B('muteall',I.snd,loud?'ხმა':'ხმა გამორთ.',`aria-pressed="${loud}"`);
-  h+=B('rules',I.book,'წესები');
-  if(S)h+=B('stats',I.stat,'სტატისტიკა');
   if(fsOk)h+=B('fs',I.fs,isFs?'პატარა':'ეკრანი',`aria-pressed="${isFs}"`);
   if(NET.isAdmin)h+=B('admin',I.shield,'ადმინი');
   return h+`</div>`;
@@ -3297,7 +3315,7 @@ function renderSide0(){
     l+=`<li class="pcard${isCur?' cur':''}${p.out?' out':''}${open?' open':''}" style="--pc:${p.col}">
       <button class="pc-main" data-act="pexp" data-i="${i}" aria-expanded="${open}" title="ქონების ნახვა">
       <span class="av" data-coin="${i}" title="${TOKENS[p.tok].n}">${tokSvg(p.tok)}</span>
-      <span class="pc-mid"><span class="pname">${esc(p.name)}${p.ai?'<span class="tag ai">AI</span>':''}${isCur?'<span class="tag turn">სვლა</span>':''}${p.inJail?'<span class="tag">საცობში</span>':''}${p.skip?'<span class="tag">გამოტოვებს</span>':''}${p.loan?`<span class="tag loan">სესხი ${p.loan}₾</span>`:''}${p.out?'<span class="tag">გავიდა</span>':''}${!p.out&&NET.on&&!p.ai&&p.uid&&!isFresh(p.uid)?'<span class="tag off">📵 კავშირი გაწყდა</span>':''}</span>
+      <span class="pc-mid"><span class="pname">${esc(p.name)}${p.ai?'<span class="tag ai">AI</span>':''}${isCur?'<span class="tag turn">სვლა</span>':''}${p.inJail?'<span class="tag">საცობში</span>':''}${p.skip?'<span class="tag">გამოტოვებს</span>':''}${p.loan?`<span class="tag loan">სესხი ${p.loan}₾</span>`:''}${p.out?'<span class="tag">გავიდა</span>':''}${(()=>{if(p.out)return '';const sets=GROUPS.map((g,gi)=>gi).filter(gi=>hasSet(i,gi));return sets.length?`<span class="psets" title="სრული ფერები: აშენება შეუძლია">🏠${sets.map(gi=>{const fl=groupCells(gi).reduce((a,k)=>a+(S.own[k]?S.own[k].h:0),0);return `<i style="--gc:${GROUPS[gi].c}" title="${esc(GROUPS[gi].n)}${fl?' · '+fl+' სართ.':''}">${fl||''}</i>`}).join('')}</span>`:''})()}${!p.out&&NET.on&&!p.ai&&p.uid&&!isFresh(p.uid)?'<span class="tag off">📵 კავშირი გაწყდა</span>':''}</span>
       <span class="wbar" title="ქონების წილი"><i style="width:${Math.max(2,Math.round(100*Math.max(0,worth(p))/Math.max(1,S.players.reduce((a,q)=>a+(q.out?0:Math.max(0,worth(q))),0))))}%"></i></span>
       <span class="chips">${props.length?props.map(k=>{const o=S.own[k];return `<i class="${o.m?'m':''}" style="--gc:${gcol(CELLS[k])}" title="${esc(CELLS[k].n)}${o.h?' · '+o.h+' სართ.':''}">${o.h||''}</i>`}).join(''):'<span class="none">უბნები ჯერ არ აქვს</span>'}</span></span>
       <span class="cash"><b class="${p.cash<0?'neg':''}">${p.cash}₾</b><small>${props.length} უბ. · ${floorsOf(p)} სართ.</small></span></button>
@@ -3345,8 +3363,15 @@ function renderSide0(){
   R.innerHTML=r;
   });
 }
+let LAST_TURN='';
+function turnChime(){
+  if(!S||S.phase==='over'){LAST_TURN='';return}
+  const k=(NET.code||'l')+':'+S.round+':'+S.turn;if(k===LAST_TURN)return;
+  const first=!LAST_TURN;LAST_TURN=k;if(first&&!NET.on)return;
+  const p=cur();if(p&&!p.ai&&!p.out&&mine(S.turn)&&S.phase!=='over')sfx('myturn');
+}
 function render(){
-  syncCfg();
+  syncCfg();turnChime();
   renderCells();renderDesk();placeTokens();renderOverlay();renderSide();
   if(NET.on){netQueuePush();return}
   try{if(S&&S.phase!=='moving'&&!(S.modal&&S.modal.t==='card'))localStorage.setItem('tm-save-v7',JSON.stringify(S))}catch(e){}
@@ -3413,7 +3438,7 @@ document.addEventListener('click',e=>{
   if(a==='sound'){AU.sfx=!AU.sfx;savePrefs();if(AU.sfx)sfx('coin');renderSide();refreshSettings();return}
   if(a==='view'){PREF.view3d=!PREF.view3d;document.body.classList.toggle('flat',!PREF.view3d);savePrefs();renderSide();refreshSettings();[60,300,800].forEach(t=>setTimeout(positionHud,t));return}
   if(a==='sheet'){setSheet(el.dataset.s);return}
-  if(a==='rules'){showRules(el.dataset.sec);return}
+  if(a==='rules'){hideSettings();showRules(el.dataset.sec);return}
   if(a==='rclose'){hideRules();return}
   if(a==='zoom'){PREF.zoom=Math.min(ZOOMS.length-1,Math.max(0,(PREF.zoom||0)+(+el.dataset.z)));savePrefs();applyZoom(true);return}
   if(a==='fs'){const d=document,de=d.documentElement;try{if(d.fullscreenElement||d.webkitFullscreenElement){(d.exitFullscreen||d.webkitExitFullscreen).call(d)}else{const r=(de.requestFullscreen||de.webkitRequestFullscreen).call(de);if(r&&r.catch)r.catch(()=>{})}}catch(err){}return}
@@ -3448,8 +3473,10 @@ document.addEventListener('click',e=>{
   if(a==='setup'){if(NET.on){netLeave();return}APP.screen='home';S=null;overlayKey=null;try{localStorage.removeItem('tm-save-v7')}catch(e){}render();return}
   if(a==='sel'){const i=+el.dataset.i;S.sel=S.sel===i&&el.classList.contains('cell')?null:i;renderCells();renderSide();if(isPhone()){if(el.classList.contains('cell')){if(S.sel!=null&&SHEET!=='R')setSheet('R')}else{if(SHEET)setSheet(SHEET);setTimeout(()=>{setHl(i);scrollToCell(i);setTimeout(()=>setHl(null),1800)},250)}}return}
   if(a==='unsel'){S.sel=null;renderCells();renderSide();return}
-  if(a==='stats'){if(NET.on){NET.stats=true;renderOverlay();return}S.modal={t:'stats'};render();return}
+  if(a==='stats'){hideSettings();if(NET.on){NET.stats=true;renderOverlay();return}S.modal={t:'stats'};render();return}
   if(a==='mclose'&&NET.on&&NET.stats){NET.stats=false;renderOverlay();return}
+  if(a==='mclose'&&S&&S.modal&&S.modal.t==='over'){OVER_HIDE=overId();renderOverlay();renderSide();return}
+  if(a==='showover'){OVER_HIDE=null;renderOverlay();return}
   if(a==='mclose'){if(NET.on&&!mine(S.turn))return;S.modal=null;S.lnote='';S.lamt='';render();return}
   if(S.modal&&S.modal.t==='bank'){
     const p=cur();if(p.ai||!mine(S.turn))return;
