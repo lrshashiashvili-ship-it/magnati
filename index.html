@@ -1137,6 +1137,7 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
 .cell.prop.own:not(.mine).sel{box-shadow:inset 0 0 0 calc(var(--u)*.55) var(--pc),0 0 0 3px var(--gold-hi),0 0 20px rgba(246,218,142,.8)!important}
 .cell.prop.own:not(.mine) .mineb,.cell.prop.own:not(.mine) .cname,.cell.prop.own:not(.mine) .cprice{position:relative;z-index:3}
 .cell.prop.own:not(.mine) .mineb{position:absolute}
+#annbar.ring{animation:annring .9s ease-in-out 2}@keyframes annring{0%,100%{transform:translateX(-50%) rotate(0)}20%{transform:translateX(-50%) rotate(-2deg)}40%{transform:translateX(-50%) rotate(2deg)}60%{transform:translateX(-50%) rotate(-1deg)}80%{transform:translateX(-50%) rotate(1deg)}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1475,6 +1476,7 @@ const SFX={
   win:t=>[523,659,784,1046,1318].forEach((f,k)=>pluck(f,t+k*.12,.7,AU.sg,.22)),
   lose:t=>[330,294,262,196].forEach((f,k)=>pluck(f,t+k*.18,.6,AU.sg,.2)),
   pick:t=>(CLICKS[PREF.click]||CLICKS.soft).f(t),
+  announce:t=>{[0,.55].forEach(d=>{pluck(1318,t+d,.9,AU.sg,.22);pluck(988,t+d+.18,1.1,AU.sg,.2);tone(2637,t+d,.5,'sine',.04,AU.sg)})},
   chat:t=>{tone(740,t,.07,'sine',.07,AU.sg,1100);tone(1100,t+.07,.09,'sine',.05,AU.sg,1480)},
   myturn:t=>{[659,880,1175].forEach((f,k)=>pluck(f,t+k*.11,.5,AU.sg,.16));tone(1760,t+.36,.6,'sine',.04,AU.sg)},
   invite:t=>{[784,988,1175,1568].forEach((f,k)=>pluck(f,t+k*.09,.5,AU.sg,.2));tone(1568,t+.4,.5,'sine',.06,AU.sg)},
@@ -1488,7 +1490,7 @@ const CLICKS={
   wood:{n:'ხე',f:t=>{noise(t,.025,.12,AU.sg,700,3);tone(240,t,.05,'triangle',.05,AU.sg,200)}},
   tick:{n:'წკაპი',f:t=>{noise(t,.012,.14,AU.sg,3200,4)}},
   off:{n:'გამორთული',f:()=>{}}};
-const UI_SND=new Set(['pick','invite','chat']);
+const UI_SND=new Set(['pick','invite','chat','announce']);
 let lastPick=0;
 function sfx(n){if(!AU.sfx)return;if(n==='pick'){const t=performance.now();if(t-lastPick<90)return;lastPick=t}if(UI_SND.has(n)){if(!PREF.ui)return}else if(!PREF.gfx)return;if(n==='step'&&PREF.step==='off')return;const c=actx();if(!c)return;
   try{n==='step'?(STEPS[PREF.step]||STEPS.tap).f(c.currentTime+.01):SFX[n](c.currentTime+.01)}catch(e){}}
@@ -1803,6 +1805,19 @@ function renderAnnounce(){
   if(!show){if(b)b.hidden=true;return}
   if(!b){b=document.createElement('div');b.id='annbar';document.body.appendChild(b)}
   b.hidden=false;b.innerHTML=`<span>📢</span><div>${esc(a.text)}</div><button class="btn sm ghost" data-act="annhide">✕</button>`;
+  /* ring once for every new announcement this device has not heard yet */
+  let heard='';try{heard=localStorage.getItem('tm-ann-heard')||''}catch(e){}
+  if(String(a.at)!==heard){try{localStorage.setItem('tm-ann-heard',String(a.at))}catch(e){}ANN_PENDING=true;annRing()}
+}
+let ANN_PENDING=false;
+function annRing(){
+  if(!ANN_PENDING)return;
+  const c=actx();if(!c)return;
+  if(c.state!=='running'){ /* browsers allow sound only after the first tap: ring then */
+    try{c.resume().then(()=>{if(c.state==='running')annRing()}).catch(()=>{})}catch(e){}
+    if(!annRing.armed){annRing.armed=true;const go=()=>{document.removeEventListener('pointerdown',go);annRing.armed=false;try{c.resume().then(annRing)}catch(e){annRing()}};document.addEventListener('pointerdown',go)}return}
+  ANN_PENDING=false;sfx('announce');
+  const b=document.getElementById('annbar');if(b){b.classList.remove('ring');void b.offsetWidth;b.classList.add('ring')}
 }
 function openAdmin(){
   if(!NET.isAdmin)return;ADM.open=true;
@@ -2043,7 +2058,7 @@ function lobbyHTML(){
   if(isHost){
     h+=`<div class="diffbox"><span>ადგილები სულ</span><div class="seg">${[2,3,4,5,6,7].map(n=>`<button data-act="netmax" data-n="${n}" aria-pressed="${L.max===n}">${n}</button>`).join('')}</div>
       <span>ცარიელი ადგილები</span><div class="seg"><button data-act="netai" data-v="1" aria-pressed="${!!L.fillAI}">კომპიუტერი</button><button data-act="netai" data-v="0" aria-pressed="${!L.fillAI}">არავინ</button></div>
-      <span>თამაშის ხანგრძლივობა</span><div class="seg">${[[0,'გაკოტრებამდე'],[30,'30 რ.'],[45,'45 რ.'],[60,'60 რ.']].map(([v,l])=>`<button data-act="netrounds" data-v="${v}" aria-pressed="${(L.rounds??60)===v}">${l}</button>`).join('')}</div>
+      <span>თამაშის ხანგრძლივობა</span><div class="seg">${[[0,'∞ ულიმიტო'],[30,'30 რ.'],[45,'45 რ.'],[60,'60 რ.']].map(([v,l])=>`<button data-act="netrounds" data-v="${v}" aria-pressed="${(L.rounds??60)===v}">${l}</button>`).join('')}</div>
       <span>კომპიუტერის სირთულე</span><div class="seg">${Object.entries(AIP).map(([k,v])=>`<button data-act="netdiff" data-d="${k}" aria-pressed="${(L.diff||'medium')===k}">${v.n}</button>`).join('')}</div></div>
       ${NET.note?`<p class="tnote">${esc(NET.note)}</p>`:''}<div class="setup-acts"><button class="btn gold" data-act="netstart">თამაშის დაწყება</button></div>`;
   }else h+=`<p class="note">ელოდება მასპინძელს (${esc(L.hostName||'')}), რომ თამაში დაიწყოს…</p>`;
@@ -3190,7 +3205,7 @@ function rulesHTML(){
    ['🏗️','სართულები','სართულები ფერში თანაბრად შენდება, მაქსიმუმ 4. ყოველი შემდეგი სართული უფრო ძვირია. გაყიდვისას ნახევარს იბრუნებ. უბნის დაგირავება ფულს გაძლევს, მაგრამ ქირას აღარ იღებ.'],
    ['Ⓜ️','მეტრო',`ოთხი სადგურია, თითო დაფის თითოეული მხარის შუაში. რაც მეტი სადგური გაქვს, მით მეტია ქირა: ${TR_RENT.join(' / ')}₾. ორი ხაზია: სამგორი ↔ მარჯანიშვილი და თავისუფლება ↔ უნივერსიტეტი. ხაზი მხოლოდ მაშინ იხსნება, როცა ერთი მოთამაშე მის ორივე სადგურს ფლობს. მფლობელი უფასოდ მგზავრობს, სხვები მას ${FLY.ride}₾-ს უხდიან. ჩასვლის სადგურზე ქირა აღარ იხდება. გადასვლა კამათლის ნაცვლად შეიძლება, თუ სვლას სადგურზე იწყებ. მეტროთი ჩასული ეგრევე უკან ვერ დაბრუნდება: ჯერ კამათლით უნდა იაროს და სადგურზე ხელახლა დადგეს. სტარტის ბონუსი მეტროთი არ ერიცხება.`],
    ['⚠️','დაბრკოლებები','პოლიცია აჯარიმებს, ორმო უკან გაბრუნებს, გადაკეტილი ქუჩა სვლას გაგაცდენინებს. ციხიდან გამოსასვლელად დუბლი უნდა გააგორო ან '+JAILFEE+'₾ გადაიხადო.'],
-   ['⏱','თამაშის ხანგრძლივობა','თამაშის დაწყებისას ირჩევ: გაკოტრებამდე, ან 30, 45, 60 რაუნდი. ლიმიტის ბოლოს იგებს ყველაზე მდიდარი: ნაღდი ფული + უბნები + სართულები, მინუს სესხი.'],
+   ['⏱','თამაშის ხანგრძლივობა','თამაშის დაწყებისას ირჩევ: ულიმიტო (თამაში გრძელდება, სანამ ერთი არ დარჩება), ან 30, 45, 60 რაუნდი. ლიმიტის ბოლოს იგებს ყველაზე მდიდარი: ნაღდი ფული + უბნები + სართულები, მინუს სესხი.'],
    ['💰','ჯეკპოტი',`ყველა ჯარიმა და გადასახადი ბოტანიკურ ბაღში გროვდება. ვინც იქ დადგება, ჯეკპოტიდან იღებს მაქსიმუმ ${JACK_MAX}₾-ს, დანარჩენი რჩება შემდეგისთვის.`],
    ['🧾','გადასახადები','დაფაზე 6 გადასახადია: დასუფთავება 80₾, კომუნალური 150₾ ან ქონების 4%, მიწის გადასახადი 120₾ ან ქონების 2%, საშემოსავლო 150₾ ან ნაღდი ფულის 10%, ფუფუნება 250₾ ან ქონების 7%, ქონების გადასახადი 200₾ ან ქონების 5%. ყველგან იხდი იმას, რომელიც მეტია. ყველა გადასახადი ჯეკპოტში მიდის.'],
    ['⚖️','ბალანსი',`პროცენტული გადასახადები მდიდარს უფრო ძვირი უჯდება, ასე რომ ლიდერი ძალიან ვერ გაიქცევა.`],
@@ -3448,7 +3463,7 @@ function renderSide0(){
         <div class="tokname">ფიგურა: <b>${TOKENS[st.tok].n}</b></div>
         <div class="tokpick">${TOKENS.map((t,k)=>`<button class="tp" data-act="tok" data-i="${i}" data-k="${k}" aria-pressed="${st.tok===k}" aria-label="${t.n}" title="${t.n}" ${taken(k)&&st.tok!==k?'disabled':''}>${tokSvg(k)}</button>`).join('')}</div><div class="colpick">${COLORS.map(c=>`<button class="cp" data-act="col" data-i="${i}" data-c="${c}" style="--c:${c}" aria-pressed="${st.col===c}" aria-label="ფერი" ${SEATS.some((x,k)=>k!==i&&x.col===c)?"disabled":""}></button>`).join("")}</div></div>`;
     });
-    h+=`</div><div class="diffbox"><span>თამაშის ხანგრძლივობა</span><div class="seg">${[[0,'გაკოტრებამდე'],[30,'30 რ.'],[45,'45 რ.'],[60,'60 რ.']].map(([v,l])=>`<button data-act="rounds" data-v="${v}" aria-pressed="${SETUP_ROUNDS===v}">${l}</button>`).join('')}</div><span>კომპიუტერის სირთულე</span><div class="seg">${Object.entries(AIP).map(([k,v])=>`<button data-act="diff" data-d="${k}" aria-pressed="${SETUP_DIFF===k}">${v.n}</button>`).join('')}</div><p class="note">${SETUP_DIFF==='hard'?'რთული: იყიდის აგრესიულად, დაბლოკავს შენს ფერებს, აიღებს სესხს და თავად შემოგთავაზებს გარიგებებს.':SETUP_DIFF==='easy'?'მარტივი: ფრთხილად ყიდულობს, ცოტას აშენებს და ვაჭრობას არ იწყებს.':'საშუალო: დაბალანსებული თამაში, ხანდახან შემოგთავაზებს გარიგებას.'}</p></div><div class="setup-acts">${(()=>{try{return localStorage.getItem('tm-save-v7')?'<button class="btn" data-act="resume">შენახული თამაშის გაგრძელება</button>':''}catch(e){return ''}})()}<button class="btn ghost" data-act="rules">როგორ ვითამაშო?</button>${SEATS.length<MAXP?`<button class="btn ghost" data-act="addseat">+ მოთამაშე</button>`:''}<button class="btn gold" data-act="start">დაწყება</button></div></div></div>`;
+    h+=`</div><div class="diffbox"><span>თამაშის ხანგრძლივობა</span><div class="seg">${[[0,'∞ ულიმიტო'],[30,'30 რ.'],[45,'45 რ.'],[60,'60 რ.']].map(([v,l])=>`<button data-act="rounds" data-v="${v}" aria-pressed="${SETUP_ROUNDS===v}">${l}</button>`).join('')}</div><span>კომპიუტერის სირთულე</span><div class="seg">${Object.entries(AIP).map(([k,v])=>`<button data-act="diff" data-d="${k}" aria-pressed="${SETUP_DIFF===k}">${v.n}</button>`).join('')}</div><p class="note">${SETUP_DIFF==='hard'?'რთული: იყიდის აგრესიულად, დაბლოკავს შენს ფერებს, აიღებს სესხს და თავად შემოგთავაზებს გარიგებებს.':SETUP_DIFF==='easy'?'მარტივი: ფრთხილად ყიდულობს, ცოტას აშენებს და ვაჭრობას არ იწყებს.':'საშუალო: დაბალანსებული თამაში, ხანდახან შემოგთავაზებს გარიგებას.'}</p></div><div class="setup-acts">${(()=>{try{return localStorage.getItem('tm-save-v7')?'<button class="btn" data-act="resume">შენახული თამაშის გაგრძელება</button>':''}catch(e){return ''}})()}<button class="btn ghost" data-act="rules">როგორ ვითამაშო?</button>${SEATS.length<MAXP?`<button class="btn ghost" data-act="addseat">+ მოთამაშე</button>`:''}<button class="btn gold" data-act="start">დაწყება</button></div></div></div>`;
     L.innerHTML=h;
     R.innerHTML=`<div class="panel grow"><div class="ph"><h2>თამაში კომპიუტერთან</h2></div><div class="scroll"><ul class="rules">
       <li><b>მოთამაშეები.</b> თითოეულ ადგილზე აირჩიე ადამიანი ან კომპიუტერი, ფიგურა და ფერი.</li>
