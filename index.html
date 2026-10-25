@@ -1629,7 +1629,16 @@ async function socialInboxAct(id,act){
   if(x.type==='freq'){const fr=SOC.profile.friends||[];if(!fr.includes(x.from))await NET.db.doc('users/'+NET.uid).update({friends:[...fr,x.from]})}
   if(x.type==='invite'){if(NET.on&&S&&S.phase!=='over'&&NET.code!==x.code){netLeave(true);S=null;overlayKey=null}else if(S&&!NET.on){S=null;overlayKey=null}netJoin(x.code)}
 }
-const isOnline=f=>Date.now()-(f.seen||0)<100000;
+/* presence must not compare clocks of different devices: remember on OUR clock when each player's heartbeat last changed */
+const SEEN={};
+function noteSeen(uid,raw){
+  raw=+raw||0;const now=Date.now(),r=SEEN[uid];
+  if(!r){const d=now-raw;SEEN[uid]={raw,at:raw===0?0:d<=60000?now-Math.max(0,d):d<600000?now-60000:raw};return SEEN[uid].at}
+  if(r.raw!==raw){r.raw=raw;r.at=now}
+  return r.at;
+}
+const seenAt=f=>f&&f.uid?noteSeen(f.uid,f.seen):0;
+const isOnline=f=>Date.now()-seenAt(f)<100000;
 const lvlOf=xp=>Math.floor((1+Math.sqrt(1+8*(xp||0)/100))/2);
 const lvlBase=l=>100*l*(l-1)/2;
 async function recordResult(kind){
@@ -1727,10 +1736,10 @@ async function netJoin(code){
 }
 function netWatchPresence(uids){
   uids=[...new Set(uids.filter(Boolean))].slice(0,30);const key=uids.join(',');
-  if(!NET.db||key===NET.presKey)return;NET.presKey=key;
+  if(!NET.db||key===NET.presKey)return;NET.presKey=key;NET.presSince=Date.now();
   if(NET.presUnsub){try{NET.presUnsub()}catch(e){}NET.presUnsub=null}
   if(!uids.length)return;
-  NET.presUnsub=NET.db.collection('users').where('uid','in',uids).onSnapshot(q=>{q.docs.forEach(d=>{const x=d.data();if(x&&x.uid)NET.pres[x.uid]=x.seen||0});if(!S)renderSide()},()=>{});
+  NET.presUnsub=NET.db.collection('users').where('uid','in',uids).onSnapshot(q=>{q.docs.forEach(d=>{const x=d.data();if(x&&x.uid)NET.pres[x.uid]=noteSeen(x.uid,x.seen)});if(!S)renderSide()},()=>{});
 }
 const isFresh=uid=>uid===NET.uid||(NET.pres[uid]!=null&&Date.now()-NET.pres[uid]<90000);
 /* the device that keeps the game moving: host if present, otherwise the first human still online */
@@ -2012,7 +2021,7 @@ async function netPushNow(status){
 /* the host keeps computer players moving if the device that started their turn went away */
 setInterval(()=>{
   if(!NET.on||!S||S.phase==='over'||!NET.lobby||!isDriver())return;
-  {let gone=false;S.players.forEach((p,i)=>{if(!p.ai&&!p.out&&p.uid&&p.uid!==NET.uid&&NET.pres[p.uid]!=null&&Date.now()-NET.pres[p.uid]>120000){if(netRemovePlayer(i,'გაითიშა და თამაშიდან გავიდა'))gone=true}});if(gone){NET.lastChange=Date.now();return}}
+  {let gone=false;S.players.forEach((p,i)=>{if(!p.ai&&!p.out&&p.uid&&p.uid!==NET.uid&&NET.pres[p.uid]!=null&&Date.now()-NET.pres[p.uid]>120000&&Date.now()-(NET.presSince||0)>150000){if(netRemovePlayer(i,'გაითიშა და თამაშიდან გავიდა'))gone=true}});if(gone){NET.lastChange=Date.now();return}}
   if(Date.now()-NET.lastChange<9000)return;
   const p=cur();
   if(S.modal&&S.modal.t==='card'){S.modal=null;render()}
@@ -2026,7 +2035,7 @@ function lobbyHTML(){
   let h=`<div class="panel grow"><div class="ph"><h2>ონლაინ ოთახი</h2><button class="btn sm ghost" data-act="netleave">გასვლა</button></div><div class="scroll" id="setupbody" data-k="lob">
     <div class="roomcode"><small>ოთახის კოდი</small><b>${NET.code}</b><span>მეგობრებმა გახსნან ეს თამაში და შეიყვანონ კოდი</span></div>
     <h3 class="lh">მოთამაშეები (${mem.length} / ${L.max})</h3><div class="seats">`;
-  mem.forEach((m,i)=>{const off=NET.pres[m.uid]&&Date.now()-NET.pres[m.uid]>90000;h+=`<div class="lmem${off?' off':''}" style="--pc:${m.col||PCOL[i%PCOL.length]}"><span class="av">${tokSvg(m.tok||0)}</span><b>${esc(m.name||'მოთამაშე')}</b>${m.uid===L.host?'<span class="tag">მასპინძელი</span>':''}${m.uid===NET.uid?'<span class="tag turn">შენ</span>':''}${off?'<span class="tag">ოფლაინ</span>':''}${i>=L.max?'<span class="tag">არ ეტევა</span>':''}${m.uid!==NET.uid&&!isFriend(m.uid)?`<button class="btn xs ghost" data-act="faddu" data-uid="${esc(m.uid)}" title="მეგობრად დამატება">+ მეგობარი</button>`:m.uid!==NET.uid?'<span class="tag">მეგობარი</span>':''}</div>`});
+  mem.forEach((m,i)=>{const off=NET.pres[m.uid]!=null&&!isFresh(m.uid);h+=`<div class="lmem${off?' off':''}" style="--pc:${m.col||PCOL[i%PCOL.length]}"><span class="av">${tokSvg(m.tok||0)}</span><b>${esc(m.name||'მოთამაშე')}</b>${m.uid===L.host?'<span class="tag">მასპინძელი</span>':''}${m.uid===NET.uid?'<span class="tag turn">შენ</span>':''}${off?'<span class="tag">ოფლაინ</span>':''}${i>=L.max?'<span class="tag">არ ეტევა</span>':''}${m.uid!==NET.uid&&!isFriend(m.uid)?`<button class="btn xs ghost" data-act="faddu" data-uid="${esc(m.uid)}" title="მეგობრად დამატება">+ მეგობარი</button>`:m.uid!==NET.uid?'<span class="tag">მეგობარი</span>':''}</div>`});
   if(L.fillAI&&mem.length<L.max)h+=`<p class="note">დარჩენილ ${L.max-mem.length} ადგილზე კომპიუტერი ითამაშებს.</p>`;
   if(SOC.profile&&SOC.friends.length)h+=`</div>${friendsHTML(true)}<div>`;
   h+=`</div><h3 class="lh">შენ</h3><div class="seat" style="--pc:${NET.myCol}"><div class="seat-top"><span class="av">${tokSvg(NET.myTok)}</span><input id="netname" data-netname="1" maxlength="14" placeholder="შენი სახელი" value="${esc(NET.myName)}" autocomplete="off"><span></span></div>
@@ -2439,15 +2448,25 @@ function afterLand(){
   toEnd();
 }
 const END_MS=15000;
-function endLeft(){if(!S||S.phase!=='end'||!S.endAt)return '';return Math.max(0,Math.ceil((S.endAt-Date.now())/1000))}
+let END_LOCAL={k:null,at:0};
+/* the deadline on THIS device's clock: the acting device stores endAt and endSet (both its own clock), others only use the difference */
+function endDeadline(){
+  if(!S||!S.endAt)return 0;
+  if(!NET.on||mine(S.turn))return S.endAt;
+  const k=S.endAt+':'+(S.endSet||0);
+  if(END_LOCAL.k!==k){const left=S.endSet?Math.max(0,Math.min(END_MS+1000,S.endAt-S.endSet)):END_MS;END_LOCAL={k,at:Date.now()+left}}
+  return END_LOCAL.at;
+}
+function setEnd(t){S.endAt=t;S.endSet=Date.now()}
+function endLeft(){if(!S||S.phase!=='end'||!S.endAt)return '';return Math.max(0,Math.ceil((endDeadline()-Date.now())/1000))}
 function endBusy(){return !!(S.modal||S.trade||S.auction)}
 setInterval(()=>{
   if(!S||S.phase!=='end'||!S.endAt||cur().ai)return;
   const p=cur(),i=S.turn;
-  if(endBusy()&&(!NET.on||mine(i))){S.endAt=Math.max(S.endAt,Date.now()+5000)}
+  if(endBusy()&&(!NET.on||mine(i))&&S.endAt<Date.now()+5000)setEnd(Date.now()+5000);
   const el=document.getElementById('endcd');const left=endLeft();
   if(el){el.textContent=left;el.classList.toggle('low',left<=5)}
-  const over=Date.now()-S.endAt;
+  const over=Date.now()-endDeadline();
   if(over<0||endBusy())return;
   if(!NET.on||mine(i)){S.endAt=0;nextTurn();return}
   if(NET.on&&isDriver()&&over>6000&&!isFresh(p.uid)){S.endAt=0;nextTurn()}
@@ -2456,7 +2475,7 @@ function toEnd(){
   if(checkOver())return;
   const p=cur();
   if(!p.ai&&!p.out&&p.cash<0){enterDebt(p,'end');return}
-  S.phase='end';S.endAt=p.ai?0:Date.now()+END_MS;render();
+  S.phase='end';if(p.ai)S.endAt=0;else setEnd(Date.now()+END_MS);render();
   if(p.ai)setTimeout(nextTurn,RM?200:1100);
 }
 function loanTick(p){
@@ -3632,7 +3651,7 @@ document.addEventListener('click',e=>{
   const a=el.dataset.act;
   if(!NOTICK.has(a)&&!el.disabled)sfx('pick');
   if(a!=='new'&&confirmNew)confirmNew=false;
-  if(S&&S.phase==='end'&&S.endAt&&!cur().ai&&(!NET.on||mine(S.turn))&&a!=='next')S.endAt=Math.max(S.endAt,Date.now()+END_MS);
+  if(S&&S.phase==='end'&&S.endAt&&!cur().ai&&(!NET.on||mine(S.turn))&&a!=='next')setEnd(Date.now()+END_MS);
   if(a==='music'){AU.music?stopMusic():startMusic();renderSide();refreshSettings();return}
   if(a==='settings'){showSettings();sfx('pick');return}
   if(a==='admin'){hideSettings();openAdmin();return}
