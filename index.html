@@ -6,6 +6,13 @@
 <title>თბილისელი მაგნატი</title>
 <meta name="description" content="ქართული ეკონომიკური სამაგიდო თამაში: იყიდე თბილისის უბნები, ითამაშე კომპიუტერთან ან მეგობრებთან ონლაინ.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316285F'/%3E%3Crect x='14' y='14' width='36' height='36' rx='8' fill='%23E8B758'/%3E%3Ccircle cx='25' cy='25' r='4' fill='%23B42647'/%3E%3Ccircle cx='39' cy='39' r='4' fill='%23B42647'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23B42647'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="მაგნატი">
+<meta name="theme-color" content="#000000">
 <script src="config.js"></script>
 </head>
 <body>
@@ -34,7 +41,7 @@ body{font-family:var(--body);font-size:14px;line-height:1.45;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 40px}
 .wrap{max-width:1900px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start}
 .col{display:flex;flex-direction:column;gap:12px;min-width:0}
-@media (max-width:899px){.stage{order:1}.colR{order:2}.colL{order:3}}
+@media (max-width:899px), (max-height:560px){.stage{order:1}.colR{order:2}.colL{order:3}}
 .num{font-variant-numeric:tabular-nums}
 
 /* ---------- 3D stage ---------- */
@@ -457,7 +464,7 @@ html.light :is(#colL,#colR) .wbar{background:#E3E8F3}
 html.light :is(#colL,#colR) :is(.lmem,.seat){background:#F7F9FD}
 html.light :is(#colL,#colR) .need{background:#FBFCFF}
 html.light :is(#colL,#colR) .tag{background:#EEF2FB;color:#3A4566}
-@media (max-width:899px){html.light :is(.colL,.colR){background:#F1F4FA}}
+@media (max-width:899px), (max-height:560px){html.light :is(.colL,.colR){background:#F1F4FA}}
 html.light :is(#colL,#colR) .tg{background:#fff}
 html.light .mtabs{background:#fff;border-color:#C9D2E8}
 .roomcode{display:grid;justify-items:center;gap:2px;padding:12px;border-radius:14px;border:1px dashed var(--gold-hi);background:rgba(246,218,142,.06);margin-bottom:10px;text-align:center}
@@ -580,7 +587,7 @@ html.light .mtabs{background:#fff;border-color:#C9D2E8}
 .btn.undo{font-size:clamp(11px,.9vw,14px)}
 
 .mtabs{display:none}
-@media (max-width:899px){
+@media (max-width:899px), (max-height:560px){
   body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
   .wrap{gap:10px}
   .stage{overflow:auto;-webkit-overflow-scrolling:touch;max-height:calc(100dvh - 96px - env(safe-area-inset-bottom,0px));border-radius:14px;overscroll-behavior:contain}
@@ -694,13 +701,13 @@ html.light .mtabs{background:#fff;border-color:#C9D2E8}
 .dacts .wide{grid-column:1/-1;width:100%}
 .dbody .note,.dbody .needtip{margin-top:7px;font-size:11.5px}
 .dbody .desc{text-align:left;font-size:13px;margin:2px 0 0}
-@media (min-width:900px){
+@media (min-width:900px) and (min-height:561px){
   .dpanel{flex:0 1 auto!important;min-height:0}
   .logp{flex:1 1 auto!important;min-height:110px}
   .dpanel .ph,.logp .ph{margin-bottom:6px}
 }
 .rt3 td small{color:var(--muted)}
-@media (min-width:900px) and (max-height:780px){
+@media (min-width:900px) and (min-height:561px) and (max-height:780px){
   .dhead{height:62px;padding:6px 10px}
   .dtxt b{font-size:17px}
   .rt3{font-size:12px}.rt3 td{padding:2px 0}.rt3 th{padding:0 0 2px}
@@ -741,11 +748,11 @@ body.flat .cell.hl,body.flat .cell.prop.hl{transform:scale(1.06)}
 .prow:hover{background:#131C36!important}
 .log{font-size:12px!important;gap:4px!important}
 /* info panel takes the column; the log stays small */
-@media (min-width:900px){
+@media (min-width:900px) and (min-height:561px){
   .dpanel{flex:1 1 auto!important;min-height:0}
   .logp{flex:0 0 auto!important;height:clamp(110px,19vh,190px);min-height:0!important}
 }
-@media (min-width:900px) and (min-height:781px){
+@media (min-width:900px) and (min-height:561px) and (min-height:781px){
   .dhead{height:clamp(116px,17vh,190px);padding:12px 14px}
   .dtxt b{font-size:clamp(22px,1.8vw,28px)}
   .dtxt small{font-size:11px}
@@ -758,7 +765,7 @@ body.flat .cell.hl,body.flat .cell.prop.hl{transform:scale(1.06)}
   .dbody .note,.dbody .needtip{font-size:12.5px}
   .dbody .desc{font-size:14px}
 }
-@media (min-width:900px) and (min-height:700px) and (max-height:780px){
+@media (min-width:900px) and (min-height:561px) and (min-height:700px) and (max-height:780px){
   .dhead{height:78px;padding:8px 12px}
   .dtxt b{font-size:20px}
   .rt3{font-size:13px}.rt3 td{padding:3px 0}
@@ -781,7 +788,7 @@ body.flat .cell.hl,body.flat .cell.prop.hl{transform:scale(1.06)}
 .pcard .cash small{font-size:10.5px}
 .pprops{padding:0 8px 8px 46px}
 .empty.sm{padding:0 8px 8px 46px}
-@media (min-width:900px) and (max-height:780px){
+@media (min-width:900px) and (min-height:561px) and (max-height:780px){
   .pc-main{padding:3px 8px}
   .pc-main .av{width:26px;height:26px}.pc-main .av svg{width:16px;height:19px}
   .pc-main{grid-template-columns:26px minmax(0,1fr) auto}
@@ -801,7 +808,7 @@ details.rulesbox{margin-top:14px;border-top:1px solid var(--line);padding-top:12
 details.rulesbox summary{cursor:pointer;font-family:var(--display);font-weight:800;font-size:16px;color:var(--cream);margin-bottom:10px}
 
 /* fit everything in one screen on larger displays */
-@media (min-width:900px){
+@media (min-width:900px) and (min-height:561px){
   html,body{height:100%;box-sizing:border-box}
   body{overflow:hidden;padding-block:14px}
   .wrap{height:100%;grid-template-columns:minmax(0,1fr) 330px;grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:14px 20px;align-items:stretch}
@@ -820,13 +827,13 @@ details.rulesbox summary{cursor:pointer;font-family:var(--display);font-weight:8
   .ph{margin-bottom:8px}
   .tabp .sdeed .ph-scene{aspect-ratio:5/2}
 }
-@media (min-width:1280px){
+@media (min-width:1280px) and (min-height:561px){
   .wrap{max-width:none;grid-template-columns:minmax(250px,1fr) minmax(0,calc(100dvh - 24px)) minmax(260px,1fr);grid-template-rows:minmax(0,1fr);gap:16px}
   .colL,.colR{max-width:460px;width:100%}.colL{justify-self:end}.colR{justify-self:start}
   .colL{grid-column:1;grid-row:1}.stage{grid-column:2;grid-row:1}.colR{grid-column:3;grid-row:1}
   .logp{display:flex;flex-direction:column;flex:0 0 30%;min-height:0}
 }
-@media (min-width:900px) and (max-height:760px){
+@media (min-width:900px) and (min-height:561px) and (max-height:760px){
   .av{width:32px;height:32px}.av svg{width:20px;height:24px}
   .pcard{grid-template-columns:32px minmax(0,1fr) auto}
   .cash b{font-size:16px}
@@ -1031,7 +1038,7 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
 .desk{background:radial-gradient(120% 90% at 70% 0%,#1A1E33 0%,#0D0F1C 50%,#06070D 100%)!important}
 .mtabs{background:rgba(6,5,9,.96)!important;border-top-color:rgba(214,172,92,.35)!important}
 .mtabs button{background:linear-gradient(180deg,#1C1A22,#0E0D12)!important;border-color:rgba(214,172,92,.35)!important}
-@media (max-width:899px){.colL,.colR{background:#0B0A0E!important}}
+@media (max-width:899px), (max-height:560px){.colL,.colR{background:#0B0A0E!important}}
 .overlay{background:rgba(0,0,0,.6)!important}
 .bhint{background:rgba(67,216,138,.08)!important}
 .ph h2{background:linear-gradient(90deg,#FFE7A8,#E8B758)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
@@ -1044,7 +1051,7 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
 .tbar{grid-template-columns:repeat(auto-fit,minmax(60px,1fr))!important;gap:5px!important}
 .tb{padding:7px 2px 6px!important;font-size:10.5px!important;gap:3px!important}
 .tb svg{width:18px!important;height:18px!important}
-@media (min-width:900px){
+@media (min-width:900px) and (min-height:561px){
   .side .plpanel{flex:0 1 auto!important;min-height:min(300px,38vh)!important;display:flex;flex-direction:column}
   .side .plpanel .scroll{overflow:auto!important;flex:1 1 auto!important;min-height:0!important}
   .side .mypanel{flex:1 1 0!important;min-height:min(270px,34vh)!important}
@@ -1054,7 +1061,7 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
 .plist.many .av{width:28px!important;height:28px!important}.plist.many .av svg{width:17px!important;height:21px!important}
 .plist.many .pcard{padding:0!important}.plist.many .cash b{font-size:15px!important}.plist.many .pname{font-size:13px}
 .bhint{padding:6px 10px!important;font-size:12px!important}
-@media (min-width:900px) and (max-height:800px){.side .mypanel .mysum,.side .mypanel .bhint{display:none}.side .plpanel{min-height:min(260px,36vh)!important}}
+@media (min-width:900px) and (min-height:561px) and (max-height:800px){.side .mypanel .mysum,.side .mypanel .bhint{display:none}.side .plpanel{min-height:min(260px,36vh)!important}}
 .endcd{display:inline-grid;place-items:center;min-width:1.7em;height:1.7em;margin-left:.35em;border-radius:999px;background:rgba(0,0,0,.28);font-variant-numeric:tabular-nums;font-size:.9em}.endcd:empty{display:none}.endcd.low{background:#C23A4C;color:#fff;animation:cdp 1s ease-in-out infinite}@keyframes cdp{50%{transform:scale(1.15)}}
 .mineb.oth{background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--pc) 55%,#fff),var(--pc));box-shadow:0 0 0 1.5px #0B0A10,0 0 0 3px var(--pc),0 2px 6px rgba(0,0,0,.7)}
 .tag.off{background:rgba(255,120,120,.15);color:#FF9A9A}
@@ -1071,7 +1078,7 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
 .plist.many .pc-main{grid-template-columns:24px minmax(0,1fr) auto!important}
 .plist.many .cash b{font-size:14px!important}.plist.many .pname{font-size:12.5px!important}
 .plist.many .tag{font-size:10px;padding:0 6px}
-@media (min-width:900px){
+@media (min-width:900px) and (min-height:561px){
   .side .plpanel{min-height:0!important;flex:0 1 auto!important}
   .side .mypanel{flex:1 1 0!important;min-height:min(340px,45vh)!important}
 }
@@ -1086,7 +1093,7 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
 #chatbox{position:fixed;right:16px;bottom:80px;z-index:73;width:min(360px,calc(100vw - 24px));height:min(520px,calc(100dvh - 120px));display:flex;flex-direction:column;
   background:linear-gradient(180deg,#1A1820,#0D0C11);border:1px solid rgba(214,172,92,.45);border-radius:18px;box-shadow:0 24px 60px rgba(0,0,0,.75);overflow:hidden;animation:pop .2s ease-out}
 #chatbox[hidden]{display:none}
-@media (max-width:899px){#chatbtn{bottom:calc(74px + env(safe-area-inset-bottom,0px));right:12px;width:48px;height:48px;font-size:21px}#chatbox{right:12px;bottom:calc(130px + env(safe-area-inset-bottom,0px));height:min(480px,calc(100dvh - 160px))}}
+@media (max-width:899px), (max-height:560px){#chatbtn{bottom:calc(74px + env(safe-area-inset-bottom,0px));right:12px;width:48px;height:48px;font-size:21px}#chatbox{right:12px;bottom:calc(130px + env(safe-area-inset-bottom,0px));height:min(480px,calc(100dvh - 160px))}}
 .chd{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid rgba(214,172,92,.2)}
 .chd b{color:#F6DA8E;font-size:15px}.chd small{color:var(--muted);font-size:11px}
 .cx{margin-left:auto;width:30px;height:30px;border-radius:50%;border:1px solid rgba(214,172,92,.35);background:transparent;color:#EADFC6;cursor:pointer}
@@ -1140,7 +1147,7 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
 #annbar.ring{animation:annring .9s ease-in-out 2}@keyframes annring{0%,100%{transform:translateX(-50%) rotate(0)}20%{transform:translateX(-50%) rotate(-2deg)}40%{transform:translateX(-50%) rotate(2deg)}60%{transform:translateX(-50%) rotate(-1deg)}80%{transform:translateX(-50%) rotate(1deg)}}
 
 /* ===== v70: phones ===== */
-@media (max-width:899px){
+@media (max-width:899px), (max-height:560px){
   html,body{height:100%;overflow:hidden}
   body{padding:0!important;overscroll-behavior:none}
   .wrap{position:fixed;left:0;right:0;top:0;bottom:calc(60px + env(safe-area-inset-bottom,0px));display:flex!important;flex-direction:column;gap:6px!important;
@@ -1158,7 +1165,8 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
   body:not(.sheetR) .colR{display:none!important}
   .side{gap:8px!important}
   .wrap>.colL,.wrap>.colR{overflow-y:auto!important;overflow-x:hidden!important}
-  .tokpick{grid-template-columns:repeat(8,minmax(0,1fr))!important;gap:4px!important}
+  .tokpick{grid-template-columns:repeat(auto-fill,minmax(38px,48px))!important;gap:5px!important;justify-content:start}
+  body.nogame .wrap>.colL,body.nogame .wrap>.colR{max-width:640px;width:100%;margin:0 auto}
   .side .panel{padding:10px 10px 12px!important;border-radius:14px!important}
   .side .grow,.plpanel,.mypanel,.dpanel,.logp{flex:none!important;min-height:0!important;max-height:none!important;display:block!important}
   .side .scroll{overflow:visible!important;max-height:none!important}
@@ -1193,7 +1201,7 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
   .tbar{grid-template-columns:repeat(auto-fit,minmax(70px,1fr))!important}
 }
 /* phone held sideways: board left, panels right */
-@media (max-width:899px) and (orientation:landscape){
+@media (max-width:899px) and (orientation:landscape), (max-height:560px) and (orientation:landscape){
   .wrap{flex-direction:row!important;bottom:0!important;padding-bottom:max(6px,env(safe-area-inset-bottom,0px))}
   .stage{--bs:min(calc(100dvh - 12px),56vw);height:var(--bs);width:var(--bs)!important;flex:none}
   .colL,.colR{padding-bottom:64px!important;align-self:stretch}
@@ -1212,16 +1220,16 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
   .hlogo{font-size:clamp(24px,6vh,34px)!important}.hsub{margin:4px 0 10px!important}
   .homebox{width:min(100%,520px)!important}
 }
-@media (max-width:899px) and (orientation:landscape){
+@media (max-width:899px) and (orientation:landscape), (max-height:560px) and (orientation:landscape){
   .hb{padding:9px 12px!important}
 }
-@media (max-width:899px) and (orientation:landscape){body:has(#overlay .overlay) .mtabs{display:none!important}}
-@media (max-width:899px){.hud .acts{gap:4px!important}.hud .acts .btn{font-size:12px!important;padding:.5em .75em!important}}
+@media (max-width:899px) and (orientation:landscape), (max-height:560px) and (orientation:landscape){body:has(#overlay .overlay) .mtabs{display:none!important}}
+@media (max-width:899px), (max-height:560px){.hud .acts{gap:4px!important}.hud .acts .btn{font-size:12px!important;padding:.5em .75em!important}}
 
 /* ===== v71: phone polish ===== */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 button,.cell,.tb,.mtabs button{touch-action:manipulation}
-@media (max-width:899px){
+@media (max-width:899px), (max-height:560px){
   input,select,textarea{font-size:16px!important}           /* iPhone would zoom the page on smaller inputs */
   .cell.prop .scene{display:none!important}
   .cell .cname{font-size:max(7px,calc(var(--u)*1.32))!important;line-height:1.08!important;padding:6% 3% 0!important;flex:1 1 auto;display:flex;align-items:center;justify-content:center;word-break:break-all;overflow:hidden}
@@ -1246,6 +1254,9 @@ html.forceland body:has(#overlay .overlay) .mtabs{display:none!important}
 html.forceland .home,html.forceland #homebg,html.forceland #acct{width:100dvh!important;height:100vw!important;inset:auto!important;top:0!important;left:0!important}
 html.forceland #chatbox{height:min(84vw,420px)!important;left:auto!important;width:min(360px,60dvh)!important}
 html.forceland #chatbtn{bottom:10px!important}
+.fsteps{margin:10px 0 4px;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.5}.fsteps b{color:#F6DA8E}
+@media all and (display-mode: standalone){body{padding-top:env(safe-area-inset-top,0px)}}
+@media (max-width:899px), (max-height:560px){body.nogame .mtabs{display:none!important}body.nogame .wrap{bottom:0!important;padding-bottom:env(safe-area-inset-bottom,0px)!important}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -3058,9 +3069,26 @@ function positionHud(){
   const a=st.getBoundingClientRect(),r=slot.getBoundingClientRect();
   hud.style.left=(r.left-a.left+st.scrollLeft+r.width/2)+'px';hud.style.top=(r.top-a.top+st.scrollTop+r.height/2-(acts?acts.offsetHeight/2:0))+'px';
 }
-const isPhone=()=>innerWidth<900;
+const isPhone=()=>innerWidth<900||innerHeight<=560;
 const PHONE_INLINE=()=>isPhone();
-let FORCE_LAND=false;try{FORCE_LAND=localStorage.getItem('tm-land')==='1'}catch(e){}
+let FORCE_LAND=false;try{localStorage.removeItem('tm-land')}catch(e){}
+const STANDALONE=()=>!!(navigator.standalone||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches);
+function phoneFullscreen(){
+  const d=document,de=d.documentElement;
+  if(d.fullscreenElement||d.webkitFullscreenElement){try{(d.exitFullscreen||d.webkitExitFullscreen).call(d)}catch(e){}return}
+  const fn=de.requestFullscreen||de.webkitRequestFullscreen;
+  if(fn&&!/iPhone|iPod/.test(navigator.userAgent)){try{const r=fn.call(de,{navigationUI:'hide'});if(r&&r.catch)r.catch(()=>fsTip())}catch(e){fsTip()}return}
+  fsTip();
+}
+function fsTip(){
+  let t=document.getElementById('fstip');if(!t){t=document.createElement('div');t.id='fstip';t.className='overlay rulesov';document.body.appendChild(t)}
+  const ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  t.innerHTML=`<div class="setbox"><div class="rh"><h2>📱 სრულ ეკრანზე</h2><button class="btn sm ghost" data-act="fstipclose">✕</button></div>
+    <p class="note" style="font-size:14px">${ios?'iPhone-ზე ბრაუზერი სრულ ეკრანს არ უშვებს. სანაცვლოდ დაამატე თამაში მთავარ ეკრანზე: გაიხსნება აპლიკაციასავით, მისამართის ზოლის და ჩანართების გარეშე.':'შენი ბრაუზერი სრულ ეკრანს არ უშვებს. დაამატე თამაში მთავარ ეკრანზე და აპლიკაციასავით გაიხსნება.'}</p>
+    <ol class="fsteps">${ios?'<li>დააჭირე ქვემოთ ან ზემოთ <b>გაზიარების</b> ღილაკს <b>⬆︎</b> (ისარი ყუთიდან).</li><li>აირჩიე <b>„Add to Home Screen" / „მთავარ ეკრანზე დამატება"</b>.</li><li>დააჭირე <b>Add</b>. მთავარ ეკრანზე გამოჩნდება თამაშის ხატულა: იქიდან გახსენი.</li>':'<li>ბრაუზერის მენიუში (⋮) აირჩიე <b>„Add to Home screen" / „Install app"</b>.</li><li>მთავარ ეკრანზე გამოჩნდება თამაშის ხატულა: იქიდან გახსენი.</li>'}</ol>
+    <div class="acts"><button class="btn gold" data-act="fstipclose">გასაგებია</button></div></div>`;
+  t.hidden=false;
+}
 function applyLand(){document.documentElement.classList.toggle('forceland',FORCE_LAND&&innerWidth<innerHeight&&innerWidth<900);setTimeout(()=>{try{applyZoom(false);positionHud()}catch(e){}},60)}
 async function rotateScreen(){
   const portrait=innerHeight>innerWidth;
@@ -3493,7 +3521,7 @@ function toolbar(){
   if(S)h+=`<button class="tb exit${confirmNew?' sure':''}" data-act="new" title="${NET.on?'თამაშიდან გასვლა':'მთავარ მენიუში დაბრუნება'}"><svg viewBox="0 0 24 24">${NET.on?I.exit:I.home}</svg><span>${confirmNew?'დარწმუნდი?':NET.on?'გასვლა':'მენიუ'}</span></button>`;
   else h+=B('home',I.home,'მენიუ');
   h+=B('settings',I.gear,'პარამეტრები');
-  if(isPhone())h+=B('rotate','<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/>','გადაბრუნება');
+  if(isPhone())h+=B('phonefs',I.fs,STANDALONE()||isFs?'ეკრანი ✓':'სრული ეკრანი');
   else if(fsOk)h+=B('fs',I.fs,isFs?'პატარა':'ეკრანი',`aria-pressed="${isFs}"`);
   if(NET.isAdmin)h+=B('admin',I.shield,'ადმინი');
   return h+`</div>`;
@@ -3826,6 +3854,8 @@ document.addEventListener('click',e=>{
   if(a==='rclose'){hideRules();return}
   if(a==='zoom'){PREF.zoom=Math.min(ZOOMS.length-1,Math.max(0,(PREF.zoom||0)+(+el.dataset.z)));savePrefs();applyZoom(true);return}
   if(a==='rotate'){rotateScreen();return}
+  if(a==='phonefs'){phoneFullscreen();return}
+  if(a==='fstipclose'){const d=document.getElementById('fstip');if(d)d.hidden=true;return}
   if(a==='fs'){const d=document,de=d.documentElement;try{if(d.fullscreenElement||d.webkitFullscreenElement){(d.exitFullscreen||d.webkitExitFullscreen).call(d)}else{const r=(de.requestFullscreen||de.webkitRequestFullscreen).call(de);if(r&&r.catch)r.catch(()=>{})}}catch(err){}return}
   if(a==='netcreate'){NET.myName=(document.getElementById('netname')||{}).value||NET.myName;netSavePrefs();netCreate();return}
   if(a==='netjoin'){NET.myName=(document.getElementById('netname')||{}).value||NET.myName;netSavePrefs();netJoin(el.dataset.code||(document.getElementById('netcode')||{}).value);return}
