@@ -1138,6 +1138,85 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
 .cell.prop.own:not(.mine) .mineb,.cell.prop.own:not(.mine) .cname,.cell.prop.own:not(.mine) .cprice{position:relative;z-index:3}
 .cell.prop.own:not(.mine) .mineb{position:absolute}
 #annbar.ring{animation:annring .9s ease-in-out 2}@keyframes annring{0%,100%{transform:translateX(-50%) rotate(0)}20%{transform:translateX(-50%) rotate(-2deg)}40%{transform:translateX(-50%) rotate(2deg)}60%{transform:translateX(-50%) rotate(-1deg)}80%{transform:translateX(-50%) rotate(1deg)}}
+
+/* ===== v70: phones ===== */
+@media (max-width:899px){
+  html,body{height:100%;overflow:hidden}
+  body{padding:0!important;overscroll-behavior:none}
+  .wrap{position:fixed;left:0;right:0;top:0;bottom:calc(60px + env(safe-area-inset-bottom,0px));display:flex!important;flex-direction:column;gap:6px!important;
+    padding:max(6px,env(safe-area-inset-top,0px)) max(6px,env(safe-area-inset-right,0px)) 0 max(6px,env(safe-area-inset-left,0px));max-width:none!important;margin:0}
+  .stage{order:1!important;flex:none;--bs:min(calc(100vw - 12px),58dvh);height:var(--bs);max-height:none!important;width:100%;padding:0!important;border-radius:12px;perspective:none!important;display:block!important;container-type:normal!important}
+  body.nogame .stage{display:none!important}
+  .frame{transform:none!important;width:calc(var(--bs) * var(--zoom,1))!important;max-width:none!important;padding:4px!important;border-radius:12px;margin:0 auto!important;box-shadow:0 1px 0 #FFF0B8 inset,0 3px 0 #6E5016,0 10px 24px rgba(0,0,0,.6)!important}
+  body.zoomed .frame{margin:0!important}
+  .frame::before{inset:2px}
+  .board{gap:2px!important;border-width:2px!important}
+  .colL,.colR{position:static!important;transform:none!important;visibility:visible!important;max-height:none!important;flex:1 1 auto;min-height:0;overflow:auto!important;-webkit-overflow-scrolling:touch;
+    order:2!important;border-radius:14px 14px 0 0!important;padding:0 0 12px!important;box-shadow:none!important;background:transparent!important;border:0!important;height:auto!important}
+  .colL::before,.colR::before{display:none!important}
+  body.sheetR .colL{display:none!important}
+  body:not(.sheetR) .colR{display:none!important}
+  .side{gap:8px!important}
+  .wrap>.colL,.wrap>.colR{overflow-y:auto!important;overflow-x:hidden!important}
+  .tokpick{grid-template-columns:repeat(8,minmax(0,1fr))!important;gap:4px!important}
+  .side .panel{padding:10px 10px 12px!important;border-radius:14px!important}
+  .side .grow,.plpanel,.mypanel,.dpanel,.logp{flex:none!important;min-height:0!important;max-height:none!important;display:block!important}
+  .side .scroll{overflow:visible!important;max-height:none!important}
+  .logp{display:block!important}.log{max-height:none!important}
+  .mtabs{grid-template-columns:1fr 1fr 48px 48px!important;padding:6px max(10px,env(safe-area-inset-left,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-right,0px))!important;gap:6px!important}
+  .mtabs button{min-height:46px!important;font-size:13.5px!important}
+  .mtabs button[aria-pressed="true"]{background:linear-gradient(180deg,#FFE09A,#E8B758 45%,#9C7426)!important;color:#2A1806!important;border-color:#E8B758!important}
+  body.nogame .mtabs button[data-act=zoom]{visibility:hidden}
+  /* desk on the small board */
+  .glegend,.brand .orn{display:none!important}
+  .desk-in{padding:4% 4% 2%!important;gap:2%!important}
+  .hud .acts .btn{font-size:13px!important;padding:.55em .9em!important}
+  .hud{max-width:76%!important}
+  .dsum{font-size:16px!important}
+  /* windows */
+  #overlay .overlay{position:fixed!important;inset:0 0 calc(60px + env(safe-area-inset-bottom,0px)) 0!important;z-index:65!important;padding:10px!important;display:grid;place-items:start center;overflow:auto!important;background:rgba(0,0,0,.72)!important}
+  #overlay .overlay{grid-template-columns:minmax(0,1fr)!important}
+  #overlay .overlay>*{margin-block:auto;max-width:100%!important;min-width:0!important;box-sizing:border-box;justify-self:center}
+  #overlay .overlay>.victory,#overlay .overlay>.tradebox{width:100%!important}
+  .stbl-wrap{max-width:100%}
+  .tradebox,.bankbox,.deed,.victory,.statsbox,.fate,.apick{width:100%!important;max-height:none!important}
+  .victory{padding:16px 12px!important}
+  .chart{min-width:0!important}
+  .awards{grid-template-columns:1fr 1fr!important}
+  .tcols{grid-template-columns:1fr!important}
+  .bkstats b{font-size:17px}
+  .rulesov,#setov,#lbov,#rulesov{padding:8px!important}
+  .setbox,.rulesbox{width:100%!important;max-height:calc(100dvh - 16px)!important}
+  #annbar{top:6px}
+  #chatbtn{bottom:calc(68px + env(safe-area-inset-bottom,0px))!important;right:10px!important}
+  #chatbox{left:6px!important;right:6px!important;width:auto!important;bottom:calc(66px + env(safe-area-inset-bottom,0px))!important;height:min(70dvh,520px)!important}
+  .tbar{grid-template-columns:repeat(auto-fit,minmax(70px,1fr))!important}
+}
+/* phone held sideways: board left, panels right */
+@media (max-width:899px) and (orientation:landscape){
+  .wrap{flex-direction:row!important;bottom:0!important;padding-bottom:max(6px,env(safe-area-inset-bottom,0px))}
+  .stage{--bs:min(calc(100dvh - 12px),56vw);height:var(--bs);width:var(--bs)!important;flex:none}
+  .colL,.colR{padding-bottom:64px!important;align-self:stretch}
+  .mtabs{left:calc(min(100dvh - 12px,56vw) + 12px)!important;border-radius:14px 0 0 0;padding:5px 8px calc(5px + env(safe-area-inset-bottom,0px))!important}
+  .mtabs button{min-height:40px!important}
+  #overlay .overlay{inset:0!important}
+  body.nogame .wrap{flex-direction:column!important}
+  body.nogame .mtabs{left:0!important}
+}
+
+/* v70: menu/account screens scroll on short screens */
+.home{overflow-y:auto!important;-webkit-overflow-scrolling:touch}
+.home>*{margin-block:auto}
+@media (max-height:560px){
+  .home{place-items:start center!important;padding:10px 16px!important}
+  .hlogo{font-size:clamp(24px,6vh,34px)!important}.hsub{margin:4px 0 10px!important}
+  .homebox{width:min(100%,520px)!important}
+}
+@media (max-width:899px) and (orientation:landscape){
+  .hb{padding:9px 12px!important}
+}
+@media (max-width:899px) and (orientation:landscape){body:has(#overlay .overlay) .mtabs{display:none!important}}
+@media (max-width:899px){.hud .acts{gap:4px!important}.hud .acts .btn{font-size:12px!important;padding:.5em .75em!important}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -2951,6 +3030,7 @@ function positionHud(){
   hud.style.left=(r.left-a.left+st.scrollLeft+r.width/2)+'px';hud.style.top=(r.top-a.top+st.scrollTop+r.height/2-(acts?acts.offsetHeight/2:0))+'px';
 }
 const isPhone=()=>innerWidth<900;
+const PHONE_INLINE=()=>isPhone();
 function applyZoom(center){
   const st=document.getElementById('stage');if(!st)return;
   const z=isPhone()?ZOOMS[PREF.zoom||0]:1;
@@ -2960,9 +3040,10 @@ function applyZoom(center){
   [50,350,800].forEach(t=>setTimeout(positionHud,t));
 }
 function setSheet(x){
-  SHEET=SHEET===x?null:x;
+  SHEET=isPhone()?(x==='L'?null:x):(SHEET===x?null:x);
   document.body.classList.toggle('sheetL',SHEET==='L');document.body.classList.toggle('sheetR',SHEET==='R');
-  document.querySelectorAll('#mtabs [data-act=sheet]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s===SHEET));
+  document.querySelectorAll('#mtabs [data-act=sheet]').forEach(b=>b.setAttribute('aria-pressed',isPhone()?(b.dataset.s===(SHEET||'L')):b.dataset.s===SHEET));
+  const c=document.getElementById(SHEET==='R'?'colR':'colL');if(c&&isPhone())c.scrollTop=0;
 }
 function scrollToCell(i){const st=document.getElementById('stage'),c=document.getElementById('c'+i);if(!st||!c||!isPhone()||(PREF.zoom||0)===0)return;const a=st.getBoundingClientRect(),r=c.getBoundingClientRect();st.scrollTo({left:st.scrollLeft+r.left-a.left-st.clientWidth/2+r.width/2,top:st.scrollTop+r.top-a.top-st.clientHeight/2+r.height/2,behavior:RM?'auto':'smooth'})}
 addEventListener('resize',()=>applyZoom(false));
@@ -3193,7 +3274,7 @@ function renderOverlay(){
       ${p.cash<c.price?`<p class="note">${esc(p.name)}-ს აქვს ${p.cash}₾. გაყიდე ან დააგირავე უბანი ინფორმაციის პანელში.</p>`:''}</div></div></div>`;
   }
   if(key===overlayKey)return;overlayKey=key;ov.innerHTML=h;
-  if(h&&isPhone()&&SHEET){SHEET=null;document.body.classList.remove('sheetL','sheetR');document.querySelectorAll('#mtabs [data-act=sheet]').forEach(b=>b.setAttribute('aria-pressed','false'))}
+  if(h&&isPhone()&&SHEET&&!PHONE_INLINE()){SHEET=null;document.body.classList.remove('sheetL','sheetR');document.querySelectorAll('#mtabs [data-act=sheet]').forEach(b=>b.setAttribute('aria-pressed','false'))}
 }
 
 function keepScroll(ids,fn){const tops={};ids.forEach(id=>{const e=document.getElementById(id);if(e)tops[id]=[e.dataset.k,e.scrollTop]});fn();ids.forEach(id=>{const e=document.getElementById(id);if(e&&tops[id]&&tops[id][0]===e.dataset.k)e.scrollTop=tops[id][1]})}
@@ -3627,7 +3708,8 @@ function turnChime(){
   const p=cur();if(p&&!p.ai&&!p.out&&mine(S.turn)&&S.phase!=='over')sfx('myturn');
 }
 function render(){
-  syncCfg();turnChime();
+  syncCfg();turnChime();if(document.body.classList.contains('nogame')&&S&&isPhone()){const c=document.getElementById('colL');if(c)c.scrollTop=0}document.body.classList.toggle('nogame',!S);
+  if(isPhone()){const L=document.querySelector('#mtabs [data-s=L]');if(L&&SHEET!=='R'&&L.getAttribute('aria-pressed')!=='true')setSheet(SHEET||'L')}
   renderCells();renderDesk();placeTokens();renderOverlay();renderSide();
   if(NET.on){netQueuePush();return}
   try{if(S&&S.phase!=='moving'&&!(S.modal&&S.modal.t==='card'))localStorage.setItem('tm-save-v7',JSON.stringify(S))}catch(e){}
