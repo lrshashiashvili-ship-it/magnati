@@ -1217,6 +1217,35 @@ body{background:radial-gradient(900px 600px at 50% -10%,rgba(80,60,200,.10),tran
 }
 @media (max-width:899px) and (orientation:landscape){body:has(#overlay .overlay) .mtabs{display:none!important}}
 @media (max-width:899px){.hud .acts{gap:4px!important}.hud .acts .btn{font-size:12px!important;padding:.5em .75em!important}}
+
+/* ===== v71: phone polish ===== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,.cell,.tb,.mtabs button{touch-action:manipulation}
+@media (max-width:899px){
+  input,select,textarea{font-size:16px!important}           /* iPhone would zoom the page on smaller inputs */
+  .cell.prop .scene{display:none!important}
+  .cell .cname{font-size:max(7px,calc(var(--u)*1.32))!important;line-height:1.08!important;padding:6% 3% 0!important;flex:1 1 auto;display:flex;align-items:center;justify-content:center;word-break:break-all;overflow:hidden}
+  .cell .cprice{font-size:max(7px,calc(var(--u)*1.22))!important;margin:2% auto 6%!important;padding:.05em .4em!important}
+  .cell.corner .cname,.cell.special .cname{font-size:max(6.5px,calc(var(--u)*1.12))!important;flex:none}
+  .cell.special .ico,.cell.corner .ico{padding:6% 18% 0!important}
+  .mineb{display:none!important}
+  .cell.mine .cprice{background:#fff!important;color:#1A1240!important}
+  .minet{display:none!important}
+  .tk{width:6.2%!important}
+}
+/* forced landscape (rotate button on iPhone) */
+html.forceland,html.forceland body{overflow:hidden!important}
+html.forceland body{position:fixed!important;top:0;left:100vw;width:100dvh;height:100vw;transform:rotate(90deg);transform-origin:top left;padding:0!important}
+html.forceland .wrap{flex-direction:row!important;inset:0!important;padding:6px!important}
+html.forceland .stage{--bs:min(calc(100vw - 12px),56dvh)!important;height:var(--bs)!important;width:var(--bs)!important}
+html.forceland .colL,html.forceland .colR{padding-bottom:64px!important;align-self:stretch}
+html.forceland .mtabs{left:calc(min(100vw - 12px,56dvh) + 12px)!important;border-radius:14px 0 0 0;padding:5px 8px!important}
+html.forceland .mtabs button{min-height:40px!important}
+html.forceland #overlay .overlay{inset:0!important}
+html.forceland body:has(#overlay .overlay) .mtabs{display:none!important}
+html.forceland .home,html.forceland #homebg,html.forceland #acct{width:100dvh!important;height:100vw!important;inset:auto!important;top:0!important;left:0!important}
+html.forceland #chatbox{height:min(84vw,420px)!important;left:auto!important;width:min(360px,60dvh)!important}
+html.forceland #chatbtn{bottom:10px!important}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -3031,6 +3060,22 @@ function positionHud(){
 }
 const isPhone=()=>innerWidth<900;
 const PHONE_INLINE=()=>isPhone();
+let FORCE_LAND=false;try{FORCE_LAND=localStorage.getItem('tm-land')==='1'}catch(e){}
+function applyLand(){document.documentElement.classList.toggle('forceland',FORCE_LAND&&innerWidth<innerHeight&&innerWidth<900);setTimeout(()=>{try{applyZoom(false);positionHud()}catch(e){}},60)}
+async function rotateScreen(){
+  const portrait=innerHeight>innerWidth;
+  /* Android: real fullscreen + orientation lock */
+  try{
+    const de=document.documentElement;
+    if(!(document.fullscreenElement||document.webkitFullscreenElement)&&(de.requestFullscreen||de.webkitRequestFullscreen))await (de.requestFullscreen||de.webkitRequestFullscreen).call(de);
+    if(screen.orientation&&screen.orientation.lock){await screen.orientation.lock(portrait?'landscape':'portrait');FORCE_LAND=false;try{localStorage.setItem('tm-land','0')}catch(e){}applyLand();return}
+  }catch(e){}
+  /* iPhone and others: turn the picture by 90° */
+  FORCE_LAND=!FORCE_LAND;try{localStorage.setItem('tm-land',FORCE_LAND?'1':'0')}catch(e){}
+  if(!portrait&&FORCE_LAND)FORCE_LAND=false;
+  applyLand();renderSide();
+}
+addEventListener('resize',()=>applyLand());setTimeout(applyLand,0);
 function applyZoom(center){
   const st=document.getElementById('stage');if(!st)return;
   const z=isPhone()?ZOOMS[PREF.zoom||0]:1;
@@ -3448,7 +3493,8 @@ function toolbar(){
   if(S)h+=`<button class="tb exit${confirmNew?' sure':''}" data-act="new" title="${NET.on?'თამაშიდან გასვლა':'მთავარ მენიუში დაბრუნება'}"><svg viewBox="0 0 24 24">${NET.on?I.exit:I.home}</svg><span>${confirmNew?'დარწმუნდი?':NET.on?'გასვლა':'მენიუ'}</span></button>`;
   else h+=B('home',I.home,'მენიუ');
   h+=B('settings',I.gear,'პარამეტრები');
-  if(fsOk)h+=B('fs',I.fs,isFs?'პატარა':'ეკრანი',`aria-pressed="${isFs}"`);
+  if(isPhone())h+=B('rotate','<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/>','გადაბრუნება');
+  else if(fsOk)h+=B('fs',I.fs,isFs?'პატარა':'ეკრანი',`aria-pressed="${isFs}"`);
   if(NET.isAdmin)h+=B('admin',I.shield,'ადმინი');
   return h+`</div>`;
 }
@@ -3779,6 +3825,7 @@ document.addEventListener('click',e=>{
   if(a==='rules'){hideSettings();showRules(el.dataset.sec);return}
   if(a==='rclose'){hideRules();return}
   if(a==='zoom'){PREF.zoom=Math.min(ZOOMS.length-1,Math.max(0,(PREF.zoom||0)+(+el.dataset.z)));savePrefs();applyZoom(true);return}
+  if(a==='rotate'){rotateScreen();return}
   if(a==='fs'){const d=document,de=d.documentElement;try{if(d.fullscreenElement||d.webkitFullscreenElement){(d.exitFullscreen||d.webkitExitFullscreen).call(d)}else{const r=(de.requestFullscreen||de.webkitRequestFullscreen).call(de);if(r&&r.catch)r.catch(()=>{})}}catch(err){}return}
   if(a==='netcreate'){NET.myName=(document.getElementById('netname')||{}).value||NET.myName;netSavePrefs();netCreate();return}
   if(a==='netjoin'){NET.myName=(document.getElementById('netname')||{}).value||NET.myName;netSavePrefs();netJoin(el.dataset.code||(document.getElementById('netcode')||{}).value);return}
