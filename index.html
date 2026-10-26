@@ -1289,6 +1289,7 @@ html.forceland #chatbtn{bottom:10px!important}
 #updbar{position:fixed;left:50%;top:max(10px,env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:300;display:flex;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:999px;background:#1A1820;border:1px solid #E8B758;box-shadow:0 10px 30px rgba(0,0,0,.7);font-weight:700;font-size:13.5px;color:#F6DA8E;white-space:nowrap;max-width:calc(100vw - 20px)}
 .verl{font-family:var(--body);font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;-webkit-text-fill-color:var(--muted)}
 @media (max-width:899px), (max-height:560px){body>#overlay{position:fixed;inset:0;z-index:200;pointer-events:none}body>#overlay>*{pointer-events:auto}body>#overlay .overlay{z-index:200!important}}
+.afields{position:relative}.afields #acc_pw{padding-right:48px}.pweye{position:absolute;right:6px;bottom:6px;width:40px;height:36px;border:0;background:transparent;font-size:18px;cursor:pointer;color:#EADFC6}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1688,7 +1689,10 @@ async function fbInit(cfg){
   const cr=path=>Object.assign(mq(path,[]),{path,doc:id=>dr(path+'/'+(id||fs.doc(fs.collection(fdb,path)).id)),add:async d=>{const r=await fs.addDoc(fs.collection(fdb,path),d);return dr(path+'/'+r.id)}});
   const api={
     async register(email,pw){const c=await au.createUserWithEmailAndPassword(auth,email.trim(),pw);return c.user.uid},
-    async login(id,pw){const email=String(id).includes('@')?String(id).trim():await nickEmail(id);await au.signInWithEmailAndPassword(auth,email,pw);return auth.currentUser.uid},
+    async login(id,pw){id=String(id).trim();let email=id;
+      if(!id.includes('@')){email=await nickEmail(id);try{const g=await fs.getDoc(fs.doc(fdb,'logins/'+email.split('@')[0]));if(g.exists()&&g.data().e)email=g.data().e}catch(e){}}
+      await au.signInWithEmailAndPassword(auth,email,pw);
+      return auth.currentUser.uid},
     async reset(email){await au.sendPasswordResetEmail(auth,email.trim())},
     async addEmail(email){await au.verifyBeforeUpdateEmail(auth.currentUser,email.trim())},
     email(){return auth.currentUser&&auth.currentUser.email||''},
@@ -1726,7 +1730,7 @@ async function socialStart(){
     let code=randCode(6);for(let k=0;k<5;k++){if(!(await NET.db.doc('codes/'+code).get()).exists)break;code=randCode(6)}
     p={uid:NET.uid,name:(NET.myName||'მოთამაშე').slice(0,14),tok:NET.myTok,code,seen:Date.now(),created:Date.now(),room:null,friends:[],xp:0,wins:0,games:0,solo:0};
     await ref.set(p);await NET.db.doc('codes/'+code).set({uid:NET.uid});
-  }else{if(!NET.myName&&p.name)NET.myName=p.name;if(p.tok!=null&&!localStorage.getItem('tm-net'))NET.myTok=p.tok;if(!p.created)ref.update({created:p.seen||Date.now()}).catch(()=>{})}
+  }else{loginBackfill(p);if(!NET.myName&&p.name)NET.myName=p.name;if(p.tok!=null&&!localStorage.getItem('tm-net'))NET.myTok=p.tok;if(!p.created)ref.update({created:p.seen||Date.now()}).catch(()=>{})}
   SOC.profile=p;adminWatch();
   ref.onSnapshot(s=>{if(!s.exists)return;SOC.profile=s.data();if(SOC.profile.registered&&SOC.profile.name&&!NET.myName)NET.myName=SOC.profile.name;socialWatchFriends();socialRender()},()=>{});
   NET.db.collection(`users/${NET.uid}/inbox`).onSnapshot(q=>{
@@ -3422,7 +3426,7 @@ function renderAccount(){
   if(!d){d=document.createElement('div');d.id='acct';d.className='home';document.body.appendChild(d)}
   d.hidden=false;
   if(SOC.profile&&SOC.profile.banned){const h=`<div class="homebox acctbox"><div class="hlogo">თბილისელი მაგნატი</div><p class="aerr" style="font-size:16px">🚫 შენი ანგარიში დაბლოკილია.</p><p class="anote">დაუკავშირდი ადმინს.</p><button class="btn ghost wide" data-act="acclogout">ანგარიშიდან გასვლა</button></div>`;if(d._h!==h){d._h=h;d.innerHTML=h}return}
-  const f=(k,ph,t)=>`<input class="ain" id="acc_${k}" data-acc="${k}" type="${t||'text'}" placeholder="${ph}" value="${esc(ACC[k])}" maxlength="${k==='pw'?40:k==='email'||k==='id'?80:20}" autocomplete="${t==='password'?(ACC.tab==='reg'?'new-password':'current-password'):t==='email'?'email':'off'}">`;
+  const f=(k,ph,t)=>`<input class="ain" id="acc_${k}" data-acc="${k}" type="${t||'text'}" placeholder="${ph}" value="${esc(ACC[k])}" maxlength="${k==='pw'?40:k==='email'||k==='id'?80:20}" autocomplete="${t==='password'?(ACC.tab==='reg'?'new-password':'current-password'):t==='email'?'email':k==='id'?'username':'off'}" ${['id','email','pw','nick'].includes(k)?'autocapitalize="none" autocorrect="off" spellcheck="false"':''}>${t==='password'?`<button type="button" class="pweye" data-act="pweye" aria-label="პაროლის ჩვენება">👁</button>`:''}`;
   const body=ACC.tab==='reg'?`<div class="afields">${f('first','სახელი')}${f('last','გვარი')}${f('nick','ნიკნეიმი (ჩანს თამაშში)')}${f('email','ელფოსტა','email')}${f('pw','პაროლი (მინ. 6 სიმბოლო)','password')}</div>
       <button class="btn gold wide" data-act="accreg" ${ACC.busy?'disabled':''}>${ACC.busy?'…':'რეგისტრაცია'}</button>
       <p class="anote">ელფოსტით და პაროლით ნებისმიერი მოწყობილობიდან შეხვალ. ელფოსტა პაროლის აღსადგენადაც გამოდგება და სხვებს არ უჩანთ.</p>`
@@ -3454,12 +3458,19 @@ async function accRegister(){
     const uid=await NET.auth.register(email,ACC.pw);
     let code=randCode(6);for(let k=0;k<5;k++){if(!(await NET.db.doc('codes/'+code).get()).exists)break;code=randCode(6)}
     await NET.db.doc('nicks/'+nid).set({uid,nick});
+    await NET.db.doc('logins/'+nid).set({uid,e:email}).catch(()=>{});
     await NET.db.doc('users/'+uid).set({uid,name:nick.slice(0,14),first:first.slice(0,20),last:last.slice(0,20),login:nick,registered:true,regAt:Date.now(),created:Date.now(),seen:Date.now(),
       tok:NET.myTok,code,room:null,friends:[],xp:0,wins:0,games:0,solo:0});
     await NET.db.doc('codes/'+code).set({uid});
     await bumpDoc('stats/global','regs');await bumpDoc('stats/'+dayKey(),'regs');
     NET.myName=nick.slice(0,14);netSavePrefs();location.reload();
   }catch(e){ACC.busy=false;ACC.note=AERR[e&&e.code]||('შეცდომა: '+(e&&(e.code||e.message)||e));renderAccount()}
+}
+async function loginBackfill(p){
+  if(loginBackfill.done||!p||!p.registered||!NET.auth)return;loginBackfill.done=true;
+  try{const em=NET.auth.email()||'';if(!em||em.endsWith('@magnati.game'))return;
+    const nid=await nickId(p.login||p.name||'');const r=NET.db.doc('logins/'+nid),g=await r.get();
+    if(!g.exists||g.data().e!==em)await r.set({uid:NET.uid,e:em});}catch(e){}
 }
 async function accLogin(){
   ACC.ok='';
@@ -3808,7 +3819,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=74;
+const APP_VER=75;
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 async function checkUpdate(){
   if(NET.mode!=='site')return;
@@ -3897,6 +3908,7 @@ document.addEventListener('click',e=>{
   if(a==='zoom'){PREF.zoom=Math.min(ZOOMS.length-1,Math.max(0,(PREF.zoom||0)+(+el.dataset.z)));savePrefs();applyZoom(true);return}
   if(a==='rotate'){rotateScreen();return}
   if(a==='doupdate'){location.replace(location.pathname+'?v='+Date.now());return}
+  if(a==='pweye'){const i=document.getElementById('acc_pw');if(i){i.type=i.type==='password'?'text':'password';el.textContent=i.type==='password'?'👁':'🙈'}return}
   if(a==='phonefs'){phoneFullscreen();return}
   if(a==='fstipclose'){const d=document.getElementById('fstip');if(d)d.hidden=true;return}
   if(a==='fs'){const d=document,de=d.documentElement;try{if(d.fullscreenElement||d.webkitFullscreenElement){(d.exitFullscreen||d.webkitExitFullscreen).call(d)}else{const r=(de.requestFullscreen||de.webkitRequestFullscreen).call(de);if(r&&r.catch)r.catch(()=>{})}}catch(err){}return}
