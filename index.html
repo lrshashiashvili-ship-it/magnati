@@ -2669,7 +2669,7 @@ function loanTick(p){
   if(p.loan<=0){p.loan=0;p.lrate=0}
 }
 function beginTurn(){
-  S.dbl=0;S.again=false;S.pending=null;S.modal=null;S.phase='roll';if(S.spy&&S.spy[S.turn])delete S.spy[S.turn];
+  S.dbl=0;S.again=false;S.pending=null;S.modal=null;S.phase='roll';
   const p=cur();
   if(!p.ai)S.view=S.turn;
   if(p.loan>0){loanTick(p);if(p.out){render();if(!checkOver())setTimeout(nextTurn,RM?150:700);return}}
@@ -2784,7 +2784,9 @@ function buildTag(pi,i,myAct){
 }
 function canSell(pi,i){const c=CELLS[i],o=S.own[i];if(!o||o.o!==pi||c.t!=='p'||o.h<=0)return false;return o.h===Math.max(...groupCells(c.g).map(k=>S.own[k]?S.own[k].h:0))}
 const spyPrice=()=>+(S&&S.cfg&&S.cfg.spy)||+(GCFG&&GCFG.spy)||279;
-function canSee(i){if(!S)return true;if(S.phase==='over')return true;const v=viewer();if(i===v)return true;return !!(S.spy&&S.spy[v])}
+function canSee(i){if(!S)return true;if(S.phase==='over')return true;const v=viewer();if(i===v)return true;return (SPY[v]||0)>Date.now()}
+const SPY={};const SPY_MS=15000;const spyLeft=v=>Math.max(0,Math.ceil(((SPY[v]||0)-Date.now())/1000));
+setInterval(()=>{if(!S)return;const v=viewer();if(SPY[v]&&(SPY[v]>Date.now()-1500)){renderSide();if(SPY[v]<=Date.now())delete SPY[v]}},1000);
 const cashTxt=(i,v)=>canSee(i)?v:'🔒';
 function canTrade(pi,i){return canTransfer(pi,i)&&!S.own[i].m}
 function canMortgage(pi,i){return canTransfer(pi,i)&&!S.own[i].m}
@@ -3410,7 +3412,7 @@ function rulesHTML(){
    ['🏗️','სართულები','სართულები ფერში თანაბრად შენდება, მაქსიმუმ 4. ყოველი შემდეგი სართული უფრო ძვირია. გაყიდვისას ნახევარს იბრუნებ. უბნის დაგირავება ფულს გაძლევს, მაგრამ ქირას აღარ იღებ.'],
    ['Ⓜ️','მეტრო',`ოთხი სადგურია, თითო დაფის თითოეული მხარის შუაში. რაც მეტი სადგური გაქვს, მით მეტია ქირა: ${TR_RENT.join(' / ')}₾. ორი ხაზია: სამგორი ↔ მარჯანიშვილი და თავისუფლება ↔ უნივერსიტეტი. ხაზი მხოლოდ მაშინ იხსნება, როცა ერთი მოთამაშე მის ორივე სადგურს ფლობს. მფლობელი უფასოდ მგზავრობს, სხვები მას ${FLY.ride}₾-ს უხდიან. ჩასვლის სადგურზე ქირა აღარ იხდება. გადასვლა კამათლის ნაცვლად შეიძლება, თუ სვლას სადგურზე იწყებ. მეტროთი ჩასული ეგრევე უკან ვერ დაბრუნდება: ჯერ კამათლით უნდა იაროს და სადგურზე ხელახლა დადგეს. სტარტის ბონუსი მეტროთი არ ერიცხება.`],
    ['⚠️','დაბრკოლებები','პოლიცია აჯარიმებს, ორმო უკან გაბრუნებს, გადაკეტილი ქუჩა სვლას გაგაცდენინებს. ციხიდან გამოსასვლელად დუბლი უნდა გააგორო ან '+JAILFEE+'₾ გადაიხადო.'],
-   ['👁','სხვების ფული',`მოწინააღმდეგეების ნაღდი ფული დამალულია. შენს სვლაზე შეგიძლია გადაიხადო ${spyPrice()}₾ (ჯეკპოტში მიდის) და ერთი წრით, შენს შემდეგ სვლამდე, ყველას ფულს დაინახავ.`],
+   ['👁','სხვების ფული',`მოწინააღმდეგეების ნაღდი ფული დამალულია. შენს სვლაზე შეგიძლია გადაიხადო ${spyPrice()}₾ (ჯეკპოტში მიდის) და 15 წამით ყველას ფულს დაინახავ, მერე ისევ დაიმალება.`],
    ['🏳','გაკოტრება','ვინც გაკოტრდება, მისი ყველა უბანი ბანკს უბრუნდება და ისევ თავისუფალია. მოწინააღმდეგე მის ქონებას არ იღებს. დაგირავებული უბნის გაცვლა ან აუქციონზე გატანა არ შეიძლება: ჯერ მფლობელმა უნდა გამოისყიდოს.'],
    ['⏱','თამაშის ხანგრძლივობა','თამაშის დაწყებისას ირჩევ: ულიმიტო (თამაში გრძელდება, სანამ ერთი არ დარჩება), ან 30, 45, 60 რაუნდი. ლიმიტის ბოლოს იგებს ყველაზე მდიდარი: ნაღდი ფული + უბნები + სართულები, მინუს სესხი.'],
    ['💰','ჯეკპოტი',`ყველა ჯარიმა და გადასახადი ბოტანიკურ ბაღში გროვდება. ვინც იქ დადგება, ჯეკპოტიდან იღებს მაქსიმუმ ${JACK_MAX}₾-ს, დანარჩენი რჩება შემდეგისთვის.`],
@@ -3689,7 +3691,7 @@ function renderSide0(){
     return;
   }
   const vi=viewer(),me=S.players[vi],myAct=myActNow();
-  let l=toolbar()+`<div class="panel plpanel"><div class="ph"><h2>მოთამაშეები</h2><span class="num">რაუნდი ${S.round}${S.maxR?'/'+S.maxR:''} · ${TODN[todOf(S.round)]}${S.players.some(q=>q.ai)?` · ${AIP[S.diff||'medium'].n}`:''}</span></div>${S.players.some((q,k)=>k!==vi&&!q.out)&&S.phase!=='over'?(S.spy&&S.spy[vi]?'<div class="spyrow on">👁 სხვების ფულს ხედავ შენს შემდეგ სვლამდე</div>':`<button class="spyrow" data-act="spy" ${myAct&&me.cash>=spyPrice()?'':'disabled'}><span>🔍 სხვების ფულის ნახვა</span><b>${spyPrice()}₾</b></button>`):''}<div class="scroll" id="plbody" data-k="p"><ul class="plist${S.players.length>4?' many':''}">`;
+  let l=toolbar()+`<div class="panel plpanel"><div class="ph"><h2>მოთამაშეები</h2><span class="num">რაუნდი ${S.round}${S.maxR?'/'+S.maxR:''} · ${TODN[todOf(S.round)]}${S.players.some(q=>q.ai)?` · ${AIP[S.diff||'medium'].n}`:''}</span></div>${S.players.some((q,k)=>k!==vi&&!q.out)&&S.phase!=='over'?(spyLeft(vi)?`<div class="spyrow on">👁 სხვების ფული ჩანს · <b>${spyLeft(vi)} წმ</b></div>`:`<button class="spyrow" data-act="spy" ${myAct&&me.cash>=spyPrice()?'':'disabled'}><span>🔍 სხვების ფულის ნახვა</span><b>${spyPrice()}₾</b></button>`):''}<div class="scroll" id="plbody" data-k="p"><ul class="plist${S.players.length>4?' many':''}">`;
   S.players.forEach((p,i)=>{
     if(p.out&&S.phase!=='over'&&Date.now()-(p.outAt||0)>20000)return;
     if(p.out&&S.phase!=='over'&&!OUT_T.has(i+':'+p.outAt)){OUT_T.add(i+':'+p.outAt);setTimeout(()=>{if(S)renderSide()},20500-(Date.now()-(p.outAt||0)))}
@@ -3834,7 +3836,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=77;
+const APP_VER=78;
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 async function checkUpdate(){
   if(NET.mode!=='site')return;
@@ -4021,7 +4023,7 @@ document.addEventListener('click',e=>{
   }
   else if(a==='declare'&&S.phase==='debt'){clearUndo();bankrupt(p,creditorOf(ti));p.cash=0;S.owed=(S.owed||[]).filter(o=>o.pi!==ti);S.debtThen=null;sfx('lose');if(!checkOver()){render();setTimeout(nextTurn,700)}}
   else if(['trade','tradewith','tradefor'].includes(a)&&myAct&&!canOffer(ti)){say(offerWhy(ti));sfx('pay');render()}
-  else if(a==='spy'&&myAct&&!(S.spy&&S.spy[ti])&&me.cash>=spyPrice()){snap();fine(me,spyPrice());S.spy=S.spy||{};S.spy[ti]=1;log(me,`${me.name}-მა ${spyPrice()}₾ გადაიხადა და მოწინააღმდეგეების ფულს ხედავს`);sfx('coin');render()}
+  else if(a==='spy'&&myAct&&!spyLeft(ti)&&me.cash>=spyPrice()){snap();fine(me,spyPrice());SPY[ti]=Date.now()+SPY_MS;log(me,`${me.name}-მა ${spyPrice()}₾ გადაიხადა და მოწინააღმდეგეების ფულს ხედავს`);sfx('coin');render()}
   else if(a==='trade'&&myAct)openTrade();
   else if(a==='apick'&&myAct){S.modal={t:'apick'};render()}
   else if(a==='apickgo'&&S.modal&&S.modal.t==='apick'&&mine(S.turn)){const i=+el.dataset.i;S.modal=null;if(canTrade(S.turn,i))startAuction(i);else render()}
