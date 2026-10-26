@@ -1291,6 +1291,11 @@ html.forceland #chatbtn{bottom:10px!important}
 @media (max-width:899px), (max-height:560px){body>#overlay{position:fixed;inset:0;z-index:200;pointer-events:none}body>#overlay>*{pointer-events:auto}body>#overlay .overlay{z-index:200!important}}
 .afields{position:relative}.afields #acc_pw{padding-right:48px}.pweye{position:absolute;right:6px;bottom:6px;width:40px;height:36px;border:0;background:transparent;font-size:18px;cursor:pointer;color:#EADFC6}
 .cash b.hid{color:var(--muted)!important;font-size:14px!important;letter-spacing:.02em}.wbar.hid{opacity:.25}.spyb{font-size:11px!important;padding:.2em .6em!important;margin-left:6px;vertical-align:middle}.spyon{font-size:11px;color:#8FF5EA;font-family:var(--body)}
+.spyrow{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;box-sizing:border-box;margin:0 0 8px;padding:8px 12px;border-radius:12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;
+  color:#2A1806;background:linear-gradient(180deg,#FFE09A,#E8B758 50%,#B8862A);border:0;box-shadow:0 3px 0 #6E4F16}
+.spyrow b{background:rgba(42,24,6,.15);padding:2px 9px;border-radius:999px}
+.spyrow:disabled{opacity:.45;cursor:not-allowed}
+.spyrow.on{background:rgba(46,230,214,.12);color:#8FF5EA;box-shadow:inset 0 0 0 1px rgba(46,230,214,.45);cursor:default;justify-content:center}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -3684,7 +3689,7 @@ function renderSide0(){
     return;
   }
   const vi=viewer(),me=S.players[vi],myAct=myActNow();
-  let l=toolbar()+`<div class="panel plpanel"><div class="ph"><h2>მოთამაშეები${S.players.some((q,k)=>k!==vi&&!q.out)&&S.phase!=='over'?(S.spy&&S.spy[vi]?' <small class="spyon">👁 ხედავ</small>':` <button class="btn xs ghost spyb" data-act="spy" ${myAct&&me.cash>=spyPrice()?'':'disabled'} title="ერთი წრით დაინახე ყველას ფული">👁 ${spyPrice()}₾</button>`):''}</h2><span class="num">რაუნდი ${S.round}${S.maxR?'/'+S.maxR:''} · ${TODN[todOf(S.round)]}${S.players.some(q=>q.ai)?` · ${AIP[S.diff||'medium'].n}`:''}</span></div><div class="scroll" id="plbody" data-k="p"><ul class="plist${S.players.length>4?' many':''}">`;
+  let l=toolbar()+`<div class="panel plpanel"><div class="ph"><h2>მოთამაშეები</h2><span class="num">რაუნდი ${S.round}${S.maxR?'/'+S.maxR:''} · ${TODN[todOf(S.round)]}${S.players.some(q=>q.ai)?` · ${AIP[S.diff||'medium'].n}`:''}</span></div>${S.players.some((q,k)=>k!==vi&&!q.out)&&S.phase!=='over'?(S.spy&&S.spy[vi]?'<div class="spyrow on">👁 სხვების ფულს ხედავ შენს შემდეგ სვლამდე</div>':`<button class="spyrow" data-act="spy" ${myAct&&me.cash>=spyPrice()?'':'disabled'}><span>🔍 სხვების ფულის ნახვა</span><b>${spyPrice()}₾</b></button>`):''}<div class="scroll" id="plbody" data-k="p"><ul class="plist${S.players.length>4?' many':''}">`;
   S.players.forEach((p,i)=>{
     if(p.out&&S.phase!=='over'&&Date.now()-(p.outAt||0)>20000)return;
     if(p.out&&S.phase!=='over'&&!OUT_T.has(i+':'+p.outAt)){OUT_T.add(i+':'+p.outAt);setTimeout(()=>{if(S)renderSide()},20500-(Date.now()-(p.outAt||0)))}
@@ -3829,7 +3834,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=76;
+const APP_VER=77;
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 async function checkUpdate(){
   if(NET.mode!=='site')return;
