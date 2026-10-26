@@ -1902,7 +1902,8 @@ async function netJoin(code){
   netLeave(true);
   NET.code=code;NET.note='';NET.ver=0;NET.lastJson='';
   const d=g.data();
-  if(d.status==='lobby')await NET.db.doc(`games/${code}/members/${NET.uid}`).set({uid:NET.uid,name:(NET.myName||'მოთამაშე').slice(0,14),tok:NET.myTok,col:NET.myCol,at:Date.now()});
+  const spec=NET.spectateCode===code;NET.spectateCode=null;NET.spectating=spec;
+  if(d.status==='lobby'&&!spec)await NET.db.doc(`games/${code}/members/${NET.uid}`).set({uid:NET.uid,name:(NET.myName||'მოთამაშე').slice(0,14),tok:NET.myTok,col:NET.myCol,at:Date.now()});
   NET.unsubs.push(NET.db.doc('games/'+code).onSnapshot(s=>netOnGame(s),()=>{}));
   NET.unsubs.push(NET.db.collection(`games/${code}/members`).onSnapshot(q=>{
     NET.members=q.docs.map(x=>x.data()).filter(Boolean).sort((a,b)=>(a.uid===NET.host?-1:b.uid===NET.host?1:a.at-b.at));
@@ -2044,7 +2045,7 @@ function renderAdmin(){
     const rows=G.slice().sort((a,b)=>(b.at||b.created||0)-(a.at||a.created||0)).map(g=>{let st=null;try{st=g.S?JSON.parse(g.S):null}catch(e){}
       const pl=st?st.players.map(p=>`${esc(p.name)}${p.ai?' 🤖':''}${p.out?' ✗':''}`).join(', '):'—';
       return `<tr><td><b>${esc(g.code)}</b></td><td>${{lobby:'ლობი',play:'მიმდინარე',over:'დასრულდა'}[g.status]||g.status}</td><td>${esc(nm(g.host))}</td><td>${pl}</td><td>${st?st.round:'—'}</td><td>${ago(g.at||g.created)}</td>
-        <td class="aact">${g.status!=='lobby'?`<button class="btn sm ghost" data-act="awatch" data-code="${esc(g.code)}">👁</button>`:''}<button class="btn sm ${ADM.confirm==='g'+g.code?'red':'ghost'}" data-act="adelg" data-code="${esc(g.code)}">${ADM.confirm==='g'+g.code?'წაშლა?':'🗑'}</button></td></tr>`}).join('');
+        <td class="aact"><button class="btn sm ghost" data-act="awatch" data-code="${esc(g.code)}" title="ნახვა (მაყურებლად)">👁 ნახვა</button><button class="btn sm ${ADM.confirm==='g'+g.code?'red':'ghost'}" data-act="adelg" data-code="${esc(g.code)}">${ADM.confirm==='g'+g.code?'წაშლა?':'🗑'}</button></td></tr>`}).join('');
     b=`<div class="atw"><table class="atab"><thead><tr><th>კოდი</th><th>სტატუსი</th><th>მასპინძელი</th><th>მოთამაშეები</th><th>რაუნდი</th><th>ბოლოს</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="7" class="note">თამაში არ არის.</td></tr>'}</tbody></table></div>
       <div class="setup-acts"><button class="btn ghost" data-act="aclean">ძველი თამაშების წაშლა (24 სთ+)</button></div>`;
   }else if(ADM.tab==='rank'){
@@ -2093,7 +2094,7 @@ async function adminAct(a,el){
   else if(a==='adelu'&&U){if(uid===NET.uid){ADM.note='საკუთარ თავს ვერ წაშლი.';return renderAdmin()}if(!admConfirm('del'+uid))return;
     await NET.db.doc('users/'+uid).delete().catch(()=>{});if(U.code)await NET.db.doc('codes/'+U.code).delete().catch(()=>{})}
   else if(a==='adelg'){if(!admConfirm('g'+code))return;await NET.db.doc('games/'+code).delete().catch(()=>{})}
-  else if(a==='awatch'){closeAdmin();if(S&&!NET.on){S=null;overlayKey=null}netJoin(code)}
+  else if(a==='awatch'){closeAdmin();NET.spectateCode=code;if(S&&!NET.on){S=null;overlayKey=null}netJoin(code)}
   else if(a==='aclean'){const old=ADM.games.filter(g=>Date.now()-(g.at||g.created||0)>86400e3);for(const g of old)await NET.db.doc('games/'+g.code).delete().catch(()=>{});ADM.note=`წაიშალა ${old.length} თამაში.`;renderAdmin()}
   else if(a==='annsend'){const t=(document.getElementById('anntxt')||{}).value||'';if(!t.trim()){ADM.note='ჩაწერე ტექსტი.';return renderAdmin()}await NET.db.doc('config/announce').set({text:t.trim().slice(0,200),on:true,at:Date.now(),by:NET.uid});ADM.note='განცხადება გაიგზავნა.';renderAdmin()}
   else if(a==='annoff'){await NET.db.doc('config/announce').set({text:'',on:false,at:Date.now()});ADM.note='განცხადება მოიხსნა.';renderAdmin()}
@@ -2642,7 +2643,22 @@ function afterLand(){
   }
   toEnd();
 }
-const END_MS=15000;
+const END_MS=15000,ROLL_MS=5000,DECIDE_MS=8000;
+let ACT_LOCAL={k:null,at:0};
+function actKey(){if(!S)return null;const p=cur();if(!p||p.ai||p.out)return null;
+  if(S.phase==='roll'&&!S.modal&&!S.trade&&!S.auction)return 'r:'+S.round+':'+S.turn+':'+(S.rollN||0)+':'+(S.mv&&S.mv.id||0);
+  if(S.phase==='decide'&&S.pending!=null&&!S.modal&&!S.trade&&!S.auction)return 'd:'+S.round+':'+S.turn+':'+S.pending+':'+(S.rollN||0);
+  return null}
+function actLeft(){const k=actKey();if(!k){ACT_LOCAL.k=null;return 0}if(ACT_LOCAL.k!==k)ACT_LOCAL={k,at:Date.now()+(k[0]==='r'?ROLL_MS:DECIDE_MS)};return Math.max(0,Math.ceil((ACT_LOCAL.at-Date.now())/1000))}
+setInterval(()=>{
+  const k=actKey();if(!k)return;const left=actLeft();
+  const e=document.getElementById('actcd');if(e){e.textContent=left;e.classList.toggle('low',left<=2)}
+  if(left>0)return;const i=S.turn,over=Date.now()-ACT_LOCAL.at,p=cur();
+  const me=!NET.on||mine(i),drv=NET.on&&isDriver()&&over>6000&&!isFresh(p.uid);
+  if(!me&&!drv)return;ACT_LOCAL.at=Date.now()+60000;
+  if(k[0]==='r')doRoll();
+  else{log(p,`${p.name} დროში ვერ მოასწრო და გამოტოვა ${CELLS[S.pending].n}`);say(`დრო ამოიწურა: ${CELLS[S.pending].n} გამოტოვებულია.`);S.pending=null;afterLand()}
+},250);
 let END_LOCAL={k:null,at:0};
 /* the deadline on THIS device's clock: the acting device stores endAt and endSet (both its own clock), others only use the difference */
 function endDeadline(){
@@ -3219,7 +3235,7 @@ function renderDesk(){
   let h='';
   if(S.phase==='over')h=`<button class="btn gold" data-act="setup">ახალი თამაში</button><button class="btn" data-act="showover">📊 შედეგები</button>`;
   else if(human&&S.phase==='roll'){
-    h=`<button class="btn gold" data-act="roll">გააგორე კამათელი</button>`;
+    h=`<button class="btn gold" data-act="roll">გააგორე კამათელი <span class="endcd" id="actcd">${actLeft()||5}</span></button>`;
     {const F=flyInfo(p);if(F)h+=`<button class="btn fly" data-act="fly" ${F.ok?'':'disabled'} title="${esc(CELLS[F.to].n)}">Ⓜ მეტრო → ${CELLS[F.to].st} · ${F.fee?F.fee+'₾':'უფასო'}</button>`}
     if(p.inJail)h+=`<button class="btn ghost" data-act="bail" ${p.cash<JAILFEE?'disabled':''}>გადაიხადე ${JAILFEE}₾</button>`;
   }else if(human&&S.phase==='end')h=`<button class="btn" data-act="next">სვლის დასრულება <span class="endcd" id="endcd">${endLeft()}</span></button>`;
@@ -3425,7 +3441,7 @@ function renderOverlay(){
     const i=S.pending,c=CELLS[i],p=cur();key='deed'+i+p.cash;
     h=`<div class="overlay"><div class="deed" style="--gc:${gcol(c)}"><div class="ph-scene">${scene(c.sc)}</div><div class="deed-h"><small>${c.t==='p'?GROUPS[c.g].n:'მეტრო'}</small><b>${c.n}</b></div><div class="deed-body">
       <div class="price num">${c.price}₾</div>${rentRows(i,null)}
-      <div class="acts"><button class="btn gold" data-act="buy" ${p.cash<c.price?'disabled':''}>იყიდე</button><button class="btn ghost" data-act="skip">გამოტოვე</button></div>
+      <div class="acts"><button class="btn gold" data-act="buy" ${p.cash<c.price?'disabled':''}>იყიდე</button><button class="btn ghost" data-act="skip">გამოტოვე <span class="endcd" id="actcd">${actLeft()||8}</span></button></div>
       ${p.cash<c.price?`<p class="note">${esc(p.name)}-ს აქვს ${p.cash}₾. გაყიდე ან დააგირავე უბანი ინფორმაციის პანელში.</p>`:''}</div></div></div>`;
   }
   if(key===overlayKey)return;overlayKey=key;ov.innerHTML=h;
@@ -3871,7 +3887,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=250;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=260;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 async function checkUpdate(){
   if(NET.mode!=='site')return;
