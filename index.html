@@ -1314,6 +1314,7 @@ html.forceland #chatbtn{bottom:10px!important}
 #chatpeek b{color:var(--pc,#F6DA8E)}#chatpeek[hidden]{display:none}
 #chatpeek .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 @media (max-width:899px), (max-height:560px){#chatpeek{right:66px;bottom:calc(72px + env(safe-area-inset-bottom,0px))}}
+.agpanel{border-color:rgba(232,183,88,.7)!important}.agrow{display:grid;grid-template-columns:26px minmax(0,1fr) 84px auto auto;gap:6px;align-items:center;margin-bottom:6px}.agrow .av{width:26px;height:26px}.agrow .av svg{width:15px;height:19px}.agrow b{font-size:13px;color:var(--pc);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.agacts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -2818,10 +2819,29 @@ function buildTag(pi,i,myAct){
 }
 function canSell(pi,i){const c=CELLS[i],o=S.own[i];if(!o||o.o!==pi||c.t!=='p'||o.h<=0)return false;return o.h===Math.max(...groupCells(c.g).map(k=>S.own[k]?S.own[k].h:0))}
 const spyPrice=()=>+(S&&S.cfg&&S.cfg.spy)||+(GCFG&&GCFG.spy)||279;
-function canSee(i){if(!S)return true;if(S.phase==='over')return true;const v=viewer();if(i===v)return true;return (SPY[v]||0)>Date.now()}
+function canSee(i){if(!S)return true;if(NET.on&&NET.spectating&&NET.isAdmin)return true;if(S.phase==='over')return true;const v=viewer();if(i===v)return true;return (SPY[v]||0)>Date.now()}
 const SPY={};const SPY_MS=15000;const spyLeft=v=>Math.max(0,Math.ceil(((SPY[v]||0)-Date.now())/1000));
 setInterval(()=>{if(!S)return;const v=viewer();if(SPY[v]&&(SPY[v]>Date.now()-1500)){renderSide();if(SPY[v]<=Date.now())delete SPY[v]}},1000);
 const cashTxt=(i,v)=>canSee(i)?v:'🔒';
+function adminGameHTML(){
+  if(!(NET.on&&NET.spectating&&NET.isAdmin&&S))return '';
+  const rows=S.players.map((p,i)=>p.out?'':`<div class="agrow" style="--pc:${p.col}"><span class="av">${tokSvg(p.tok)}</span><b>${esc(p.name)}</b>
+    <input class="ain sm" id="agc${i}" type="number" step="10" value="${p.cash}"><button class="btn xs" data-act="agcash" data-i="${i}">₾ შეცვლა</button>
+    <button class="btn xs ghost" data-act="agkick" data-i="${i}" title="თამაშიდან გაგდება">✕</button></div>`).join('');
+  return `<div class="panel agpanel"><div class="ph"><h2>🛡 ადმინი: ოთახი ${esc(NET.code||'')}</h2></div>${rows}
+    <div class="agacts"><button class="btn sm" data-act="agskip">⏭ სვლის გამოტოვება</button><button class="btn sm red" data-act="agend">🏁 თამაშის დასრულება</button></div>
+    <p class="note">ცვლილებები ყველა მოთამაშესთან მაშინვე ჩანს.</p></div>`;
+}
+function adminGameAct(a,el){
+  if(!(NET.on&&NET.spectating&&NET.isAdmin&&S))return;
+  const i=+el.dataset.i,p=S.players[i];
+  if(a==='agcash'&&p){const v=Math.round(+(document.getElementById('agc'+i)||{}).value);if(!Number.isFinite(v))return;log(p,`🛡 ადმინმა ${p.name}-ს ფული შეუცვალა: ${p.cash}₾ → ${v}₾`);p.cash=v}
+  else if(a==='agkick'&&p){netRemovePlayer(i,'ადმინმა გააგდო თამაშიდან')}
+  else if(a==='agskip'){S.modal=null;S.trade=null;S.auction=null;S.pending=null;S.phase='end';log(cur(),`🛡 ადმინმა ${cur().name}-ის სვლა გამოტოვა`);nextTurn()}
+  else if(a==='agend'){finishByAdmin()}
+  render();netPushNow();
+}
+function finishByAdmin(){const alive=S.players.filter(q=>!q.out);const w=alive.slice().sort((a,b)=>worth(b)-worth(a))[0];S.phase='over';S.trade=null;S.auction=null;S.winner=pidx(w);S.modal={t:'over'};say(`🛡 ადმინმა თამაში დაასრულა. იგებს <b>${esc(w.name)}</b>.`);log(w,`🛡 ადმინმა თამაში დაასრულა`)}
 function canTrade(pi,i){return canTransfer(pi,i)&&!S.own[i].m}
 function canMortgage(pi,i){return canTransfer(pi,i)&&!S.own[i].m}
 function build(p,i){
@@ -3736,7 +3756,7 @@ function renderSide0(){
     return;
   }
   const vi=viewer(),me=S.players[vi],myAct=myActNow();
-  let l=toolbar()+`<div class="panel plpanel"><div class="ph"><h2>მოთამაშეები</h2><span class="num">რაუნდი ${S.round}${S.maxR?'/'+S.maxR:''} · ${TODN[todOf(S.round)]}${S.players.some(q=>q.ai)?` · ${AIP[S.diff||'medium'].n}`:''}</span></div>${S.players.some((q,k)=>k!==vi&&!q.out)&&S.phase!=='over'?(spyLeft(vi)?`<div class="spyrow on">👁 სხვების ფული ჩანს · <b>${spyLeft(vi)} წმ</b></div>`:`<button class="spyrow" data-act="spy" ${myAct&&me.cash>=spyPrice()?'':'disabled'}><span>🔍 სხვების ფულის ნახვა</span><b>${spyPrice()}₾</b></button>`):''}<div class="scroll" id="plbody" data-k="p"><ul class="plist${S.players.length>4?' many':''}">`;
+  let l=toolbar()+adminGameHTML()+`<div class="panel plpanel"><div class="ph"><h2>მოთამაშეები</h2><span class="num">რაუნდი ${S.round}${S.maxR?'/'+S.maxR:''} · ${TODN[todOf(S.round)]}${S.players.some(q=>q.ai)?` · ${AIP[S.diff||'medium'].n}`:''}</span></div>${S.players.some((q,k)=>k!==vi&&!q.out)&&S.phase!=='over'?(spyLeft(vi)?`<div class="spyrow on">👁 სხვების ფული ჩანს · <b>${spyLeft(vi)} წმ</b></div>`:`<button class="spyrow" data-act="spy" ${myAct&&me.cash>=spyPrice()?'':'disabled'}><span>🔍 სხვების ფულის ნახვა</span><b>${spyPrice()}₾</b></button>`):''}<div class="scroll" id="plbody" data-k="p"><ul class="plist${S.players.length>4?' many':''}">`;
   S.players.forEach((p,i)=>{
     if(p.out&&S.phase!=='over'&&Date.now()-(p.outAt||0)>20000)return;
     if(p.out&&S.phase!=='over'&&!OUT_T.has(i+':'+p.outAt)){OUT_T.add(i+':'+p.outAt);setTimeout(()=>{if(S)renderSide()},20500-(Date.now()-(p.outAt||0)))}
@@ -3887,7 +3907,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=260;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=270;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 async function checkUpdate(){
   if(NET.mode!=='site')return;
@@ -3985,6 +4005,7 @@ document.addEventListener('click',e=>{
   if(a==='netabandon'){const c=el.dataset.code;if(SOC.abandon===c){SOC.abandon=null;netAbandon(c)}else{SOC.abandon=c;renderSide();setTimeout(()=>{if(SOC.abandon===c){SOC.abandon=null;renderSide()}},4000)}return}
   if(a==='lboard'){showBoard();return}
   if(a==='lbclose'){hideBoard();return}
+  if(a&&a.startsWith('ag')&&['agcash','agkick','agskip','agend'].includes(a)){adminGameAct(a,el);return}
   if(a==='faddu'){socialAddFriendUid(el.dataset.uid).then(()=>{const d=document.getElementById('lbov');if(d&&!d.hidden)d.innerHTML=boardHTML()});return}
   if(a&&a.startsWith('chat')){chatAct(a,el);return}
   if(a==='netleave'){netLeave();socialBeat();return}
