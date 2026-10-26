@@ -1257,6 +1257,35 @@ html.forceland #chatbtn{bottom:10px!important}
 .fsteps{margin:10px 0 4px;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.5}.fsteps b{color:#F6DA8E}
 @media all and (display-mode: standalone){body{padding-top:env(safe-area-inset-top,0px)}}
 @media (max-width:899px), (max-height:560px){body.nogame .mtabs{display:none!important}body.nogame .wrap{bottom:0!important;padding-bottom:env(safe-area-inset-bottom,0px)!important}}
+
+/* v73: phone fixes (iPhone) */
+@media (max-width:899px), (max-height:560px){
+  body>#overlay .overlay{position:fixed!important;inset:0 0 calc(60px + env(safe-area-inset-bottom,0px)) 0!important;z-index:65!important;
+    padding:max(10px,env(safe-area-inset-top,0px)) max(10px,env(safe-area-inset-right,0px)) 10px max(10px,env(safe-area-inset-left,0px))!important}
+  .deed{width:min(100%,360px)!important}
+  .fate{width:min(100%,330px)!important}
+  .deed .ph-scene{aspect-ratio:2/1!important}
+  .deed-h b{font-size:22px!important}
+  .deed .rt{font-size:13px}
+}
+@media (max-width:899px) and (orientation:landscape), (max-height:560px) and (orientation:landscape){
+  .wrap{padding-left:max(6px,env(safe-area-inset-left,0px))!important;padding-right:max(6px,env(safe-area-inset-right,0px))!important}
+  .stage{--bs:min(calc(100dvh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)),52vw)!important}
+  .mtabs{left:calc(min(100dvh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px),52vw) + 12px + max(6px,env(safe-area-inset-left,0px)))!important;right:max(0px,env(safe-area-inset-right,0px))!important}
+  body>#overlay .overlay{inset:0!important}
+  .deed .ph-scene{display:none!important}
+  .deed{width:min(100%,560px)!important;max-height:calc(100dvh - 16px);overflow:auto}
+  .deed .deed-h{margin-top:0!important;padding:10px 14px 0!important;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .deed .deed-h b{margin:0!important;font-size:20px!important}
+  .deed .price{font-size:18px!important}
+  .deed-body{padding:4px 14px 12px!important}
+  .deed .rt tbody{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}
+  .deed .rt tr{display:flex;justify-content:space-between;align-items:center;border-bottom:1px dashed rgba(140,150,173,.25)}
+  .deed .rt td{border:0!important;padding:3px 0!important}
+  .deed .rt td small{display:none}
+  .deed .acts{margin-top:8px!important}
+  .tk{width:5.4%!important}
+}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1500,8 +1529,8 @@ const CARDS=[
 
 /* ================= AUDIO ================= */
 const AU={ctx:null,music:false,sfx:true,mg:null,sg:null,timer:null,next:0,ix:0,drone:null,gen:0};
-const CLICKS_OK=['soft','bubble','wood','tick','off'];let PREF={click:'soft',view3d:false,zoom:0,theme:'dark',anim:true,mvol:.6,svol:.8,step:'tap',gfx:true,ui:true};const ZOOMS=[1,1.45,1.9,2.4];let SHEET=null;
-try{const pr=JSON.parse(localStorage.getItem('tm-audio')||'{}');AU.wantMusic=!!pr.music;AU.sfx=pr.sfx!==false;PREF.view3d=false;PREF.zoom=Math.min(3,Math.max(0,pr.zoom|0));
+const CLICKS_OK=['soft','bubble','wood','tick','off'];let PREF={click:'soft',view3d:false,zoom:0,theme:'dark',anim:true,mvol:.6,svol:.8,step:'tap',gfx:true,ui:true};const ZOOMS=[1,1.4,1.8];let SHEET=null;
+try{const pr=JSON.parse(localStorage.getItem('tm-audio')||'{}');AU.wantMusic=!!pr.music;AU.sfx=pr.sfx!==false;PREF.view3d=false;PREF.zoom=Math.min(2,Math.max(0,pr.zoom|0));
 if(typeof pr.mvol==='number')PREF.mvol=pr.mvol;if(typeof pr.svol==='number')PREF.svol=pr.svol;if(pr.step)PREF.step=pr.step;if(typeof pr.gfx==='boolean')PREF.gfx=pr.gfx;if(typeof pr.ui==='boolean')PREF.ui=pr.ui;if(pr.click&&CLICKS_OK.includes(pr.click))PREF.click=pr.click}catch(e){}
 function applyPrefs(){RM=!PREF.anim;const h=document.documentElement;h.classList.toggle('rm',RM);h.classList.toggle('light',PREF.theme==='light');
   if(AU.ctx&&AU.mv){AU.mv.gain.value=PREF.mvol;AU.sv.gain.value=PREF.svol}}
@@ -3051,6 +3080,7 @@ function placeTokens(hopIdx){
   });
   placePin(typeof hlCell!=='undefined'?hlCell:null);
   placeHouses();
+  if(isPhone()&&(PREF.zoom||0)>0&&S&&!S.players[S.turn].out){const k=S.turn+':'+S.players[S.turn].pos;if(placeTokens._f!==k){placeTokens._f=k;setTimeout(()=>scrollToCell(S.players[S.turn].pos),250)}}
 }
 function placePin(hl){
   const L=document.getElementById('tk');if(!L)return;
@@ -3317,6 +3347,7 @@ let overlayKey=null,OVER_HIDE=null;
 function overId(){return S?(NET.code||'local')+':'+(S.round)+':'+(S.winner)+':'+S.players.map(p=>p.name).join(','):''}
 function renderOverlay(){
   const ov=document.getElementById('overlay');
+  if(ov){const want=isPhone()?document.body:document.getElementById('stage');if(want&&ov.parentElement!==want)want.appendChild(ov)}
   let h='',key='';
   if(NET.on&&NET.stats&&S){
     key='lstats'+S.round+'|'+S.hist.length;h=`<div class="overlay ov-scroll">${statsHTML()}</div>`;
