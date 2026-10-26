@@ -1296,6 +1296,14 @@ html.forceland #chatbtn{bottom:10px!important}
 .spyrow b{background:rgba(42,24,6,.15);padding:2px 9px;border-radius:999px}
 .spyrow:disabled{opacity:.45;cursor:not-allowed}
 .spyrow.on{background:rgba(46,230,214,.12);color:#8FF5EA;box-shadow:inset 0 0 0 1px rgba(46,230,214,.45);cursor:default;justify-content:center}
+
+/* 2.3: clearer owners: no colour wash; dark gap + owner frame, big owner badge */
+.cell.prop.own:not(.mine):not(.m)::after{display:none!important}
+.cell.prop.own:not(.mine){box-shadow:inset 0 0 0 calc(var(--u)*.3) rgba(8,6,14,.95),inset 0 0 0 calc(var(--u)*.85) var(--pc),inset 0 0 0 calc(var(--u)*1.05) rgba(8,6,14,.7)!important}
+.cell.prop.own .mineb{width:calc(var(--u)*3.2)!important;height:calc(var(--u)*3.2)!important;min-width:13px!important;min-height:13px!important;top:calc(var(--u)*.35)!important;right:calc(var(--u)*.35)!important}
+.cell.prop.own:not(.mine) .mineb{background:#14121A!important;box-shadow:0 0 0 calc(var(--u)*.35) var(--pc),0 2px 6px rgba(0,0,0,.8)!important}
+.mineb svg{width:76%!important;height:86%!important}
+.cell.prop.own:not(.mine) .cprice{background:#14121A!important;color:#fff!important;box-shadow:0 0 0 calc(var(--u)*.3) var(--pc)!important}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -3836,7 +3844,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=220;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=230;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 async function checkUpdate(){
   if(NET.mode!=='site')return;
