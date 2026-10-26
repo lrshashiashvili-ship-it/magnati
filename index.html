@@ -1290,6 +1290,7 @@ html.forceland #chatbtn{bottom:10px!important}
 .verl{font-family:var(--body);font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;-webkit-text-fill-color:var(--muted)}
 @media (max-width:899px), (max-height:560px){body>#overlay{position:fixed;inset:0;z-index:200;pointer-events:none}body>#overlay>*{pointer-events:auto}body>#overlay .overlay{z-index:200!important}}
 .afields{position:relative}.afields #acc_pw{padding-right:48px}.pweye{position:absolute;right:6px;bottom:6px;width:40px;height:36px;border:0;background:transparent;font-size:18px;cursor:pointer;color:#EADFC6}
+.cash b.hid{color:var(--muted)!important;font-size:14px!important;letter-spacing:.02em}.wbar.hid{opacity:.25}.spyb{font-size:11px!important;padding:.2em .6em!important;margin-left:6px;vertical-align:middle}.spyon{font-size:11px;color:#8FF5EA;font-family:var(--body)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1945,7 +1946,7 @@ function syncCfg(){
 function adminWatch(){
   if(!NET.ready)return;
   NET.db.doc('config/admins').onSnapshot(s=>{const d=s.exists?s.data():null;ADM.admins=d&&Array.isArray(d.uids)?d.uids:[];ADM.hasAdmins=!!d;NET.isAdmin=ADM.admins.includes(NET.uid);renderSide();refreshSettings();if(ADM.open)renderAdmin()},()=>{});
-  NET.db.doc('config/game').onSnapshot(s=>{const d=s.exists?s.data():{};ADM.cfg=d;GCFG={start:+d.start||2000,pass:+d.pass||250};syncCfg();if(!S)renderSide();if(ADM.open)renderAdmin()},()=>{});
+  NET.db.doc('config/game').onSnapshot(s=>{const d=s.exists?s.data():{};ADM.cfg=d;GCFG={start:+d.start||2000,pass:+d.pass||250,spy:+d.spy||279};syncCfg();if(!S)renderSide();if(ADM.open)renderAdmin()},()=>{});
   NET.db.doc('config/announce').onSnapshot(s=>{ADM.ann=s.exists?s.data():{};renderAnnounce();if(ADM.open)renderAdmin()},()=>{});
 }
 async function adminClaim(){
@@ -2034,6 +2035,7 @@ function renderAdmin(){
     b=`<p class="note">ცვლილება ახალ თამაშებზე მოქმედებს. დაწყებული თამაშები ძველი წესით გაგრძელდება.</p>
       <label class="lrow">საწყისი თანხა <input id="cfg_start" type="number" min="500" max="10000" step="50" value="${c.start||2000}"> ₾</label>
       <label class="lrow">სტარტის ბონუსი <input id="cfg_pass" type="number" min="0" max="2000" step="10" value="${c.pass||250}"> ₾</label>
+      <label class="lrow">ფულის ნახვის ფასი <input id="cfg_spy" type="number" min="0" max="5000" step="1" value="${c.spy||279}"> ₾</label>
       <label class="lrow">GIPHY API key <input id="cfg_giphy" class="ain sm" value="${esc(c.giphy||'')}" placeholder="ჩატის GIF-ების ძებნისთვის (არასავალდებულო)"></label>
       <p class="note">GIF-ების ძებნისთვის უფასო გასაღები აიღე developers.giphy.com-ზე (Create an App → API). გარეშეც მუშაობს: ჩატში ანიმირებული სტიკერები და GIF-ის ბმულის ჩასმა.</p>
       <div class="setup-acts"><button class="btn gold" data-act="cfgsave">შენახვა</button><button class="btn ghost" data-act="cfgreset">ნაგულისხმევი (2000 / 250)</button></div>`;
@@ -2073,8 +2075,8 @@ async function adminAct(a,el){
   else if(a==='annsend'){const t=(document.getElementById('anntxt')||{}).value||'';if(!t.trim()){ADM.note='ჩაწერე ტექსტი.';return renderAdmin()}await NET.db.doc('config/announce').set({text:t.trim().slice(0,200),on:true,at:Date.now(),by:NET.uid});ADM.note='განცხადება გაიგზავნა.';renderAdmin()}
   else if(a==='annoff'){await NET.db.doc('config/announce').set({text:'',on:false,at:Date.now()});ADM.note='განცხადება მოიხსნა.';renderAdmin()}
   else if(a==='cfgsave'){const s=Math.min(10000,Math.max(500,+(document.getElementById('cfg_start')||{}).value||2000)),p=Math.min(2000,Math.max(0,+(document.getElementById('cfg_pass')||{}).value||0));
-    await NET.db.doc('config/game').set({start:Math.round(s/10)*10,pass:Math.round(p/10)*10,giphy:String((document.getElementById('cfg_giphy')||{}).value||'').trim().slice(0,80)});ADM.note='შენახულია.';renderAdmin()}
-  else if(a==='cfgreset'){await NET.db.doc('config/game').set({start:2000,pass:250,giphy:(ADM.cfg||{}).giphy||''});ADM.note='დაბრუნდა ნაგულისხმევზე.';renderAdmin()}
+    await NET.db.doc('config/game').set({start:Math.round(s/10)*10,pass:Math.round(p/10)*10,spy:Math.min(5000,Math.max(0,Math.round(+(document.getElementById('cfg_spy')||{}).value||279))),giphy:String((document.getElementById('cfg_giphy')||{}).value||'').trim().slice(0,80)});ADM.note='შენახულია.';renderAdmin()}
+  else if(a==='cfgreset'){await NET.db.doc('config/game').set({start:2000,pass:250,spy:279,giphy:(ADM.cfg||{}).giphy||''});ADM.note='დაბრუნდა ნაგულისხმევზე.';renderAdmin()}
   else if(a==='admadd'){const c=String((document.getElementById('admcode')||{}).value||'').toUpperCase().trim();const g=c&&await NET.db.doc('codes/'+c).get();
     if(!g||!g.exists){ADM.note='კოდი ვერ მოიძებნა.';return renderAdmin()}const u=g.data().uid;if(!ADM.admins.includes(u))await NET.db.doc('config/admins').set({uids:[...ADM.admins,u]});ADM.note='ადმინი დაემატა.';renderAdmin()}
   else if(a==='admrm'){await NET.db.doc('config/admins').set({uids:ADM.admins.filter(x=>x!==uid)})}
@@ -2333,7 +2335,7 @@ function newGame(){
   });
   dedupe([...players.filter(q=>!q.ai),...players.filter(q=>q.ai)]);
   S={v:8,pot:0,diff:SETUP_DIFF,stats:players.map(newStat),cellRent:{},hist:[],players,own:{},turn:0,phase:'roll',dice:[3,5],dbl:0,again:false,log:[],deck:shuffle(CARDS.map((_,i)=>i)),deckI:0,round:1,pending:null,sel:null,modal:null,view:null,msg:'',exp:null,trade:null,auction:null,debtThen:null};
-  S.cfg={start:START,pass:PASS};S.maxR=SETUP_ROUNDS||0;
+  S.cfg={start:START,pass:PASS,spy:GCFG.spy||279};S.maxR=SETUP_ROUNDS||0;
   lastCash=S.players.map(p=>p.cash);
   log(null,`ახალი თამაში · ${players.length} მოთამაშე · თითოს ${START}₾`);
   recordHist();clearUndo();
@@ -2575,8 +2577,8 @@ function creditorOf(pi){
 function bankrupt(p,to){
   const pi=pidx(p);S.owed=(S.owed||[]).filter(o=>o.pi!==pi);p.out=true;p.outAt=Date.now();p.inJail=false;p.loan=0;
   const ti=to?pidx(to):-1;
-  for(const k in S.own)if(S.own[k].o===pi){if(ti>=0){S.own[k].o=ti;S.own[k].h=0}else delete S.own[k]}
-  log(p,`${p.name} გაკოტრდა${to?`, ქონება გადაეცა ${to.name}-ს`:''}`);
+  for(const k in S.own)if(S.own[k].o===pi)delete S.own[k];
+  log(p,`${p.name} გაკოტრდა. მისი ქონება ბანკს დაუბრუნდა და ისევ თავისუფალია`);
 }
 function finishByRounds(){
   S.round=S.maxR;const alive=S.players.filter(q=>!q.out);
@@ -2662,7 +2664,7 @@ function loanTick(p){
   if(p.loan<=0){p.loan=0;p.lrate=0}
 }
 function beginTurn(){
-  S.dbl=0;S.again=false;S.pending=null;S.modal=null;S.phase='roll';
+  S.dbl=0;S.again=false;S.pending=null;S.modal=null;S.phase='roll';if(S.spy&&S.spy[S.turn])delete S.spy[S.turn];
   const p=cur();
   if(!p.ai)S.view=S.turn;
   if(p.loan>0){loanTick(p);if(p.out){render();if(!checkOver())setTimeout(nextTurn,RM?150:700);return}}
@@ -2713,8 +2715,8 @@ function aiSwap(p){
     const gc=groupCells(g),mine=gc.filter(k=>S.own[k]&&S.own[k].o===pi);
     if(mine.length!==gc.length-1)continue;
     const miss=gc.find(k=>!mine.includes(k)),o=S.own[miss];if(!o||o.o===pi)continue;
-    const q=o.o,Q=S.players[q];if(Q.out||!canTransfer(q,miss))continue;
-    const need=needsOf(q).filter(n=>n.miss.length===1&&n.g!==g).map(n=>n.miss[0]).find(k=>S.own[k]&&S.own[k].o===pi&&canTransfer(pi,k));
+    const q=o.o,Q=S.players[q];if(Q.out||!canTrade(q,miss))continue;
+    const need=needsOf(q).filter(n=>n.miss.length===1&&n.g!==g).map(n=>n.miss[0]).find(k=>S.own[k]&&S.own[k].o===pi&&canTrade(pi,k));
     if(need==null)continue;
     const key='s'+pi+'-'+miss+'-'+need;S.aiOff=S.aiOff||{};if(S.aiOff[key]!=null&&S.round-S.aiOff[key]<4)continue;S.aiOff[key]=S.round;
     const diff=CELLS[miss].price-CELLS[need].price;
@@ -2736,14 +2738,14 @@ function aiTradeOffer(p){
     const gc=groupCells(g),mine=gc.filter(k=>S.own[k]&&S.own[k].o===pi);
     if(mine.length!==gc.length-1)continue;
     const miss=gc.find(k=>!mine.includes(k)),o=S.own[miss];if(!o||o.o===pi)continue;
-    const q=o.o,Q=S.players[q];if(Q.out||!canTransfer(q,miss)||gc.some(k=>S.own[k]&&S.own[k].h>0))continue;
+    const q=o.o,Q=S.players[q];if(Q.out||!canTrade(q,miss)||gc.some(k=>S.own[k]&&S.own[k].h>0))continue;
     const key=pi+'-'+miss;if(S.aiOff[key]!=null&&S.round-S.aiOff[key]<3)continue;
     S.aiOff[key]=S.round;
     const c=CELLS[miss],want=R5(c.price*(S.diff==='hard'?1.8+Math.random()*.35:1.7+Math.random()*.3));
     const T={from:pi,to:q,give:[],get:[miss],cg:0,ct:0,stage:'edit',note:'',ai:true};
     if(p.cash-want>=150)T.cg=want;
     else{
-      const spare=propsOf(pi).filter(k=>canTransfer(pi,k)&&!gc.includes(k)&&!(CELLS[k].t==='p'&&groupCells(CELLS[k].g).filter(x=>S.own[x]&&S.own[x].o===pi).length>1)).sort((a,b)=>CELLS[b].price-CELLS[a].price)[0];
+      const spare=propsOf(pi).filter(k=>canTrade(pi,k)&&!gc.includes(k)&&!(CELLS[k].t==='p'&&groupCells(CELLS[k].g).filter(x=>S.own[x]&&S.own[x].o===pi).length>1)).sort((a,b)=>CELLS[b].price-CELLS[a].price)[0];
       if(spare==null)continue;
       T.give=[spare];T.cg=Math.max(0,Math.min(R5(want-CELLS[spare].price),R5(p.cash-150)));
     }
@@ -2776,6 +2778,10 @@ function buildTag(pi,i,myAct){
   return `<button class="bt go" data-act="build" data-i="${i}" title="ააშენე ${o.h+1}-ე სართული">+🏠 ${cost}₾</button>`;
 }
 function canSell(pi,i){const c=CELLS[i],o=S.own[i];if(!o||o.o!==pi||c.t!=='p'||o.h<=0)return false;return o.h===Math.max(...groupCells(c.g).map(k=>S.own[k]?S.own[k].h:0))}
+const spyPrice=()=>+(S&&S.cfg&&S.cfg.spy)||+(GCFG&&GCFG.spy)||279;
+function canSee(i){if(!S)return true;if(S.phase==='over')return true;const v=viewer();if(i===v)return true;return !!(S.spy&&S.spy[v])}
+const cashTxt=(i,v)=>canSee(i)?v:'🔒';
+function canTrade(pi,i){return canTransfer(pi,i)&&!S.own[i].m}
 function canMortgage(pi,i){return canTransfer(pi,i)&&!S.own[i].m}
 function build(p,i){
   const c=CELLS[i],cost=floorCost(i,S.own[i]?S.own[i].h:0);
@@ -2816,8 +2822,8 @@ const aStep=i=>Math.max(10,Math.round(CELLS[i].price*.05/10)*10);
 const aNeed=A=>A.leader<0?A.start:A.high+A.step;
 function apickHTML(){
   const pi=S.turn,p=S.players[pi],list=propsOf(pi).sort((a,b)=>CELLS[b].price-CELLS[a].price);
-  const rows=list.map(i=>{const c=CELLS[i],o=S.own[i],ok=canTransfer(pi,i);
-    return `<div class="aprow${ok?'':' no'}" style="--gc:${gcol(c)}"><i></i><span><b>${c.n}</b><small>${ok?`ფასი ${c.price}₾${o.m?' · დაგირავებულია':''}`:'სართულიანი უბანი აუქციონზე არ გადის. ჯერ ჯგუფის სართულები გაყიდე'}</small></span>${ok?`<button class="btn sm gold" data-act="apickgo" data-i="${i}">აუქციონზე</button>`:`<button class="btn sm" data-act="apickfl" data-g="${c.g}">სართულების გაყიდვა +${groupCells(c.g).reduce((a,k)=>{let v=0;for(let h=S.own[k]?S.own[k].h:0;h>0;h--)v+=floorRefund(k,h);return a+v},0)}₾</button>`}</div>`}).join('');
+  const rows=list.map(i=>{const c=CELLS[i],o=S.own[i],ok=canTrade(pi,i);
+    return `<div class="aprow${ok?'':' no'}" style="--gc:${gcol(c)}"><i></i><span><b>${c.n}</b><small>${ok?`ფასი ${c.price}₾`:o.m?'დაგირავებულია: ჯერ გამოისყიდე, მერე გაიტან':'სართულიანი უბანი აუქციონზე არ გადის. ჯერ ჯგუფის სართულები გაყიდე'}</small></span>${ok?`<button class="btn sm gold" data-act="apickgo" data-i="${i}">აუქციონზე</button>`:`<button class="btn sm" data-act="apickfl" data-g="${c.g}">სართულების გაყიდვა +${groupCells(c.g).reduce((a,k)=>{let v=0;for(let h=S.own[k]?S.own[k].h:0;h>0;h--)v+=floorRefund(k,h);return a+v},0)}₾</button>`}</div>`}).join('');
   return `<div class="tradebox apick"><h3>🔨 რა გავიტანო აუქციონზე?</h3>
     <p class="note" style="margin:0 0 10px">${p.cash<0?`ვალი: <b class="num" style="color:#FF8A9C">${-p.cash}₾</b>. `:''}აირჩიე უბანი. საწყის ფასს შენ დააწესებ, დანარჩენები ფსონს დადებენ, და ბოლოს შენ გადაწყვეტ, მიყიდი თუ არა.</p>
     <div class="aplist">${rows||'<p class="empty">უბნები არ გაქვს.</p>'}</div>
@@ -2922,7 +2928,8 @@ function validTrade(T){
   if(!T.give.length&&!T.get.length&&!T.cg&&!T.ct)return 'აირჩიე, რას აძლევ ან რას ითხოვ.';
   if(T.cg<0||T.ct<0)return 'თანხა უარყოფითი ვერ იქნება.';
   if(T.cg>Math.max(0,a.cash))return `${a.name}-ს მხოლოდ ${Math.max(0,a.cash)}₾ აქვს.`;
-  if(T.ct>Math.max(0,b.cash))return `${b.name}-ს მხოლოდ ${Math.max(0,b.cash)}₾ აქვს.`;
+  if(T.ct>Math.max(0,b.cash))return canSee(T.to)?`${b.name}-ს მხოლოდ ${Math.max(0,b.cash)}₾ აქვს.`:`${b.name}-ს ამდენი ფული არ აქვს.`;
+  if(T.give.concat(T.get).some(i=>S.own[i]&&S.own[i].m))return 'დაგირავებული უბანი ვერ გადაეცემა. ჯერ მფლობელმა უნდა გამოისყიდოს.';
   if(T.give.some(i=>!canTransfer(T.from,i))||T.get.some(i=>!canTransfer(T.to,i)))return 'სართულებიან ფერს ვერ გაცვლი. ჯერ სართულები გაყიდე.';
   return null;
 }
@@ -3208,7 +3215,7 @@ function chip(i,side,on,dis){
 }
 function tradeHTML(){
   const T=S.trade,a=S.players[T.from],b=S.players[T.to];
-  const sideList=(pi,side,sel)=>{const ids=propsOf(pi);if(!ids.length)return '<p class="empty">ქონება არ აქვს.</p>';return `<div class="tchips">${ids.map(i=>chip(i,side,sel.includes(i),!canTransfer(pi,i))).join('')}</div>`};
+  const sideList=(pi,side,sel)=>{const ids=propsOf(pi);if(!ids.length)return '<p class="empty">ქონება არ აქვს.</p>';return `<div class="tchips">${ids.map(i=>chip(i,side,sel.includes(i),!canTrade(pi,i))).join('')}</div>`};
   const summary=(ids,cash)=>[...ids.map(i=>CELLS[i].n),...(cash?[cash+'₾']:[])].join(', ')||'არაფერი';
   if(T.stage==='confirm'){
     return `<div class="tradebox"><h3>შეთავაზება ${esc(b.name)}-ს</h3>
@@ -3221,7 +3228,7 @@ function tradeHTML(){
   }
   const partners=S.players.map((q,i)=>i).filter(i=>i!==T.from&&!S.players[i].out);
   return `<div class="tradebox"><h3>ვაჭრობა</h3><p class="note">ერთი შეთავაზება რაუნდში. თუ კომპიუტერი უარს გეტყვის, ამავე ფანჯარაში შეგიძლია შეცვალო და ხელახლა გაუგზავნო.</p>
-    <div class="tpartners">${partners.map(i=>{const q=S.players[i];return `<button class="tpart" data-act="tpart" data-i="${i}" aria-pressed="${i===T.to}" style="--pc:${q.col}"><span class="av">${tokSvg(q.tok)}</span>${esc(q.name)}<small class="num">${q.cash}₾</small></button>`}).join('')}</div>
+    <div class="tpartners">${partners.map(i=>{const q=S.players[i];return `<button class="tpart" data-act="tpart" data-i="${i}" aria-pressed="${i===T.to}" style="--pc:${q.col}"><span class="av">${tokSvg(q.tok)}</span>${esc(q.name)}<small class="num">${cashTxt(i,q.cash+'₾')}</small></button>`}).join('')}</div>
     <div class="tcols">
       <div class="tcol"><h4>შენ აძლევ</h4>${sideList(T.from,'give',T.give)}<label class="tcash">ფული <input id="tcg" data-tf="cg" type="number" min="0" step="5" max="${Math.max(0,a.cash)}" value="${T.cg||''}" placeholder="0" inputmode="numeric"> ₾</label></div>
       <div class="tcol"><h4>${esc(b.name)} გაძლევს</h4>${sideList(T.to,'get',T.get)}<label class="tcash">ფული <input id="tct" data-tf="ct" type="number" min="0" step="5" max="${Math.max(0,b.cash)}" value="${T.ct||''}" placeholder="0" inputmode="numeric"> ₾</label></div>
@@ -3246,7 +3253,7 @@ function auctionHTML(){
     const L=A.leader>=0?S.players[A.leader]:null;
     const price=`<div class="aprice${L?' has':''}" style="--pc:${L?L.col:'var(--muted)'}"><small>${A.stage==='done'&&A.result&&A.result.w!=null?'გაიყიდა':L?'მიმდინარე ფსონი':'საწყისი ფასი'}</small><b class="num">${L?A.high:A.start}₾</b><span>${L?`<span class="av">${tokSvg(L.tok)}</span>${esc(L.name)}`:'ფსონი ჯერ არავის დაუდია'}</span></div>`;
     const rows=A.order.map(qi=>{const q=S.players[qi],st=A.leader===qi?'<span class="ast lead">ლიდერი</span>':A.passed[qi]?'<span class="ast out">პასი</span>':A.waiting===qi?`<span class="ast think">${q.ai?'ფიქრობს…':'მისი ჯერია'}</span>`:'<span class="ast">თამაშშია</span>';
-      return `<div class="brow${A.passed[qi]?' gone':''}${A.waiting===qi?' now':''}" style="--pc:${q.col}"><span class="av">${tokSvg(q.tok)}</span><span class="bn">${esc(q.name)}<small class="num">${q.cash}₾</small></span>${st}</div>`}).join('');
+      return `<div class="brow${A.passed[qi]?' gone':''}${A.waiting===qi?' now':''}" style="--pc:${q.col}"><span class="av">${tokSvg(q.tok)}</span><span class="bn">${esc(q.name)}<small class="num">${cashTxt(qi,q.cash+'₾')}</small></span>${st}</div>`}).join('');
     const hist=A.hist.slice(0,6).map(h=>{const q=S.players[h.qi];return `<li style="--pc:${q.col}"><b>${esc(q.name)}</b> ${h.pass?'<span class="out">პასი</span>':`<span class="num">${h.v}₾</span>`}</li>`}).join('');
     body=price+`<div class="bids">${rows}</div>${hist?`<ul class="ahist">${hist}</ul>`:''}`;
     if(A.stage==='bidding'&&A.waiting!=null&&!S.players[A.waiting].ai&&!mine(A.waiting)){acts=`<span class="tnote">${esc(S.players[A.waiting].name)} ფიქრობს…</span>`}
@@ -3281,6 +3288,7 @@ function chartSVG(){
   const step=Math.max(1,Math.ceil((n-1)/8));
   for(let k=0;k<n;k+=step)g+=`<text x="${X(k).toFixed(1)}" y="${Ht-9}" text-anchor="middle" font-size="11" fill="#94A1C8">${k+1}</text>`;
   S.players.forEach((p,i)=>{
+    if(!canSee(i))return;
     const pts=H.map((row,k)=>`${X(k).toFixed(1)},${Y(row[i]??0).toFixed(1)}`).join(' ');
     const last=H[n-1][i]??0;
     g+=`<polyline points="${pts}" fill="none" stroke="${p.col}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" opacity="${p.out?.4:1}"/><circle cx="${X(n-1).toFixed(1)}" cy="${Y(last).toFixed(1)}" r="4.5" fill="${p.col}" stroke="#fff" stroke-width="1.5"/>`;
@@ -3289,7 +3297,7 @@ function chartSVG(){
     <div class="clegend">${S.players.map(p=>`<span><i style="background:${p.col}"></i>${esc(p.name)}</span>`).join('')}<span class="cx">ჰორიზონტალურად: რაუნდი · ვერტიკალურად: ქონება ₾</span></div>`;
 }
 function statsTable(){
-  return `<div class="stbl-wrap"><table class="stbl"><thead><tr><th>მოთამაშე</th><th>ქონება</th><th>მიღ. ქირა</th><th>გადახ. ქირა</th><th>სტარტი</th><th>ჯარიმა და გად.</th><th>საშ. კამათელი</th><th>დუბლი</th></tr></thead><tbody>${S.players.map((p,i)=>{const t=S.stats[i];return `<tr><td><span class="dot" style="background:${p.col}"></span>${esc(p.name)}</td><td>${p.out?'გაკოტრდა':worth(p)+'₾'}</td><td>${t.rentIn}₾</td><td>${t.rentOut}₾</td><td>${t.pass}₾</td><td>${t.taxes}₾</td><td>${t.rolls?(t.sum/t.rolls).toFixed(1):'—'}</td><td>${t.dbl}</td></tr>`}).join('')}</tbody></table></div>`;
+  return `<div class="stbl-wrap"><table class="stbl"><thead><tr><th>მოთამაშე</th><th>ქონება</th><th>მიღ. ქირა</th><th>გადახ. ქირა</th><th>სტარტი</th><th>ჯარიმა და გად.</th><th>საშ. კამათელი</th><th>დუბლი</th></tr></thead><tbody>${S.players.map((p,i)=>{const t=S.stats[i];return `<tr><td><span class="dot" style="background:${p.col}"></span>${esc(p.name)}</td><td>${p.out?'გაკოტრდა':canSee(i)?worth(p)+'₾':'🔒'}</td><td>${t.rentIn}₾</td><td>${t.rentOut}₾</td><td>${t.pass}₾</td><td>${t.taxes}₾</td><td>${t.rolls?(t.sum/t.rolls).toFixed(1):'—'}</td><td>${t.dbl}</td></tr>`}).join('')}</tbody></table></div>`;
 }
 function awardsHTML(){
   const ps=S.players,T=S.stats;
@@ -3397,6 +3405,8 @@ function rulesHTML(){
    ['🏗️','სართულები','სართულები ფერში თანაბრად შენდება, მაქსიმუმ 4. ყოველი შემდეგი სართული უფრო ძვირია. გაყიდვისას ნახევარს იბრუნებ. უბნის დაგირავება ფულს გაძლევს, მაგრამ ქირას აღარ იღებ.'],
    ['Ⓜ️','მეტრო',`ოთხი სადგურია, თითო დაფის თითოეული მხარის შუაში. რაც მეტი სადგური გაქვს, მით მეტია ქირა: ${TR_RENT.join(' / ')}₾. ორი ხაზია: სამგორი ↔ მარჯანიშვილი და თავისუფლება ↔ უნივერსიტეტი. ხაზი მხოლოდ მაშინ იხსნება, როცა ერთი მოთამაშე მის ორივე სადგურს ფლობს. მფლობელი უფასოდ მგზავრობს, სხვები მას ${FLY.ride}₾-ს უხდიან. ჩასვლის სადგურზე ქირა აღარ იხდება. გადასვლა კამათლის ნაცვლად შეიძლება, თუ სვლას სადგურზე იწყებ. მეტროთი ჩასული ეგრევე უკან ვერ დაბრუნდება: ჯერ კამათლით უნდა იაროს და სადგურზე ხელახლა დადგეს. სტარტის ბონუსი მეტროთი არ ერიცხება.`],
    ['⚠️','დაბრკოლებები','პოლიცია აჯარიმებს, ორმო უკან გაბრუნებს, გადაკეტილი ქუჩა სვლას გაგაცდენინებს. ციხიდან გამოსასვლელად დუბლი უნდა გააგორო ან '+JAILFEE+'₾ გადაიხადო.'],
+   ['👁','სხვების ფული',`მოწინააღმდეგეების ნაღდი ფული დამალულია. შენს სვლაზე შეგიძლია გადაიხადო ${spyPrice()}₾ (ჯეკპოტში მიდის) და ერთი წრით, შენს შემდეგ სვლამდე, ყველას ფულს დაინახავ.`],
+   ['🏳','გაკოტრება','ვინც გაკოტრდება, მისი ყველა უბანი ბანკს უბრუნდება და ისევ თავისუფალია. მოწინააღმდეგე მის ქონებას არ იღებს. დაგირავებული უბნის გაცვლა ან აუქციონზე გატანა არ შეიძლება: ჯერ მფლობელმა უნდა გამოისყიდოს.'],
    ['⏱','თამაშის ხანგრძლივობა','თამაშის დაწყებისას ირჩევ: ულიმიტო (თამაში გრძელდება, სანამ ერთი არ დარჩება), ან 30, 45, 60 რაუნდი. ლიმიტის ბოლოს იგებს ყველაზე მდიდარი: ნაღდი ფული + უბნები + სართულები, მინუს სესხი.'],
    ['💰','ჯეკპოტი',`ყველა ჯარიმა და გადასახადი ბოტანიკურ ბაღში გროვდება. ვინც იქ დადგება, ჯეკპოტიდან იღებს მაქსიმუმ ${JACK_MAX}₾-ს, დანარჩენი რჩება შემდეგისთვის.`],
    ['🧾','გადასახადები','დაფაზე 6 გადასახადია: დასუფთავება 80₾, კომუნალური 150₾ ან ქონების 4%, მიწის გადასახადი 120₾ ან ქონების 2%, საშემოსავლო 150₾ ან ნაღდი ფულის 10%, ფუფუნება 250₾ ან ქონების 7%, ქონების გადასახადი 200₾ ან ქონების 5%. ყველგან იხდი იმას, რომელიც მეტია. ყველა გადასახადი ჯეკპოტში მიდის.'],
@@ -3599,7 +3609,7 @@ function deedHTML(i,auto){
       h+=o.m?`<button class="btn sm" data-act="unmort" data-i="${i}" ${myAct&&me.cash>=unmortCost(i)?'':'disabled'}>გამოსყიდვა ${unmortCost(i)}₾</button>`
             :`<button class="btn sm ghost" data-act="mort" data-i="${i}" ${myAct&&canMortgage(vi,i)?'':'disabled'}>დაგირავება +${mortVal(i)}₾</button>`;
       h+=`<button class="btn sm ghost" data-act="sellbank" data-i="${i}" ${myAct&&tr?'':'disabled'}>ბანკს +${bankVal(i)}₾</button>`;
-      h+=`<button class="btn sm ghost wide" data-act="auction" data-i="${i}" ${myAct&&tr&&S.players.filter(q=>!q.out).length>1?'':'disabled'}>აუქციონზე გატანა</button>`;
+      h+=`<button class="btn sm ghost wide" data-act="auction" data-i="${i}" ${myAct&&tr&&!o.m&&S.players.filter(q=>!q.out).length>1?'':'disabled'}>აუქციონზე გატანა</button>`;
       h+=`</div>`;
       let note='';
       if(!myAct)note='ცვლილებები შეგიძლია შენი სვლისას.';
@@ -3674,7 +3684,7 @@ function renderSide0(){
     return;
   }
   const vi=viewer(),me=S.players[vi],myAct=myActNow();
-  let l=toolbar()+`<div class="panel plpanel"><div class="ph"><h2>მოთამაშეები</h2><span class="num">რაუნდი ${S.round}${S.maxR?'/'+S.maxR:''} · ${TODN[todOf(S.round)]}${S.players.some(q=>q.ai)?` · ${AIP[S.diff||'medium'].n}`:''}</span></div><div class="scroll" id="plbody" data-k="p"><ul class="plist${S.players.length>4?' many':''}">`;
+  let l=toolbar()+`<div class="panel plpanel"><div class="ph"><h2>მოთამაშეები${S.players.some((q,k)=>k!==vi&&!q.out)&&S.phase!=='over'?(S.spy&&S.spy[vi]?' <small class="spyon">👁 ხედავ</small>':` <button class="btn xs ghost spyb" data-act="spy" ${myAct&&me.cash>=spyPrice()?'':'disabled'} title="ერთი წრით დაინახე ყველას ფული">👁 ${spyPrice()}₾</button>`):''}</h2><span class="num">რაუნდი ${S.round}${S.maxR?'/'+S.maxR:''} · ${TODN[todOf(S.round)]}${S.players.some(q=>q.ai)?` · ${AIP[S.diff||'medium'].n}`:''}</span></div><div class="scroll" id="plbody" data-k="p"><ul class="plist${S.players.length>4?' many':''}">`;
   S.players.forEach((p,i)=>{
     if(p.out&&S.phase!=='over'&&Date.now()-(p.outAt||0)>20000)return;
     if(p.out&&S.phase!=='over'&&!OUT_T.has(i+':'+p.outAt)){OUT_T.add(i+':'+p.outAt);setTimeout(()=>{if(S)renderSide()},20500-(Date.now()-(p.outAt||0)))}
@@ -3685,11 +3695,11 @@ function renderSide0(){
       <button class="pc-main" data-act="pexp" data-i="${i}" aria-expanded="${open}" title="ქონების ნახვა">
       <span class="av" data-coin="${i}" title="${TOKENS[p.tok].n}">${tokSvg(p.tok)}</span>
       <span class="pc-mid"><span class="pname">${esc(p.name)}${p.ai?'<span class="tag ai">AI</span>':''}${isCur?'<span class="tag turn">სვლა</span>':''}${p.inJail?'<span class="tag">ციხეში</span>':''}${p.skip?'<span class="tag">გამოტოვებს</span>':''}${p.loan?`<span class="tag loan">სესხი ${p.loan}₾</span>`:''}${p.out?'<span class="tag">გავიდა</span>':''}${(()=>{if(p.out)return '';const sets=GROUPS.map((g,gi)=>gi).filter(gi=>hasSet(i,gi));return sets.length?`<span class="psets" title="სრული ფერები: აშენება შეუძლია">🏠${sets.map(gi=>{const fl=groupCells(gi).reduce((a,k)=>a+(S.own[k]?S.own[k].h:0),0);return `<i style="--gc:${GROUPS[gi].c}" title="${esc(GROUPS[gi].n)}${fl?' · '+fl+' სართ.':''}">${fl||''}</i>`}).join('')}</span>`:''})()}${!p.out&&NET.on&&!p.ai&&p.uid&&!isFresh(p.uid)?'<span class="tag off">📵 კავშირი გაწყდა</span>':''}</span>
-      <span class="wbar" title="ქონების წილი"><i style="width:${Math.max(2,Math.round(100*Math.max(0,worth(p))/Math.max(1,S.players.reduce((a,q)=>a+(q.out?0:Math.max(0,worth(q))),0))))}%"></i></span>
+      <span class="wbar${canSee(i)?'':' hid'}" title="ქონების წილი"><i style="${canSee(i)?'':'display:none;'}width:${Math.max(2,Math.round(100*Math.max(0,worth(p))/Math.max(1,S.players.reduce((a,q)=>a+(q.out?0:Math.max(0,worth(q))),0))))}%"></i></span>
       <span class="chips">${props.length?props.map(k=>{const o=S.own[k];return `<i class="${o.m?'m':''}" style="--gc:${gcol(CELLS[k])}" title="${esc(CELLS[k].n)}${o.h?' · '+o.h+' სართ.':''}">${o.h||''}</i>`}).join(''):'<span class="none">უბნები ჯერ არ აქვს</span>'}</span></span>
-      <span class="cash"><b class="${p.cash<0?'neg':''}">${p.cash}₾</b><small>${props.length} უბ. · ${floorsOf(p)} სართ.</small></span></button>
+      <span class="cash"><b class="${p.cash<0&&canSee(i)?'neg':''}${canSee(i)?'':' hid'}">${canSee(i)?p.cash+'₾':'🔒 ???'}</b><small>${props.length} უბ. · ${floorsOf(p)} სართ.</small></span></button>
       ${open?playerProps(i):''}
-      ${d&&!RM?`<span class="delta ${d>0?'up':'down'}">${d>0?'+':'−'}${Math.abs(d)}₾</span>`:''}</li>`;
+      ${d&&!RM&&canSee(i)?`<span class="delta ${d>0?'up':'down'}">${d>0?'+':'−'}${Math.abs(d)}₾</span>`:''}</li>`;
   });
   l+=`</ul></div></div>`;
   lastCash=S.players.map(p=>p.cash);
@@ -3715,7 +3725,7 @@ function renderSide0(){
         if(o&&o.o===vi){
           l+=`<div class="oi${S.sel===i?' on':''}${o.m?' m':''}" data-i="${i}"><button class="oib" data-act="sel" data-i="${i}"><span class="oin">${c.n}</span><span class="oif">${o.m?'<em>დაგირავებული</em>':o.h?Array.from({length:o.h},()=>'🏠').join(''):''}</span><span class="oir num">${o.m?'—':rentOf(i)+'₾'}</span></button>${buildTag(vi,i,myAct)}</div>`;
         }else if(!isTr){
-          const ow=o?S.players[o.o]:null,canTr=ow&&!ow.out&&myAct&&canTransfer(o.o,i);
+          const ow=o?S.players[o.o]:null,canTr=ow&&!ow.out&&myAct&&canTrade(o.o,i);
           l+=`<div class="om" data-i="${i}"><button class="omb" data-act="sel" data-i="${i}"><span class="oin">${c.n}</span><span class="oiw">${ow?`<i style="--pc:${ow.col}"></i>${esc(ow.name)}-ს აქვს`:`თავისუფალია · ${c.price}₾`}</span></button>${canTr?`<button class="btn xs" data-act="tradefor" data-i="${i}">ვაჭრობა</button>`:''}</div>`;
         }
       });
@@ -3819,7 +3829,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=75;
+const APP_VER=76;
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 async function checkUpdate(){
   if(NET.mode!=='site')return;
@@ -4006,16 +4016,17 @@ document.addEventListener('click',e=>{
   }
   else if(a==='declare'&&S.phase==='debt'){clearUndo();bankrupt(p,creditorOf(ti));p.cash=0;S.owed=(S.owed||[]).filter(o=>o.pi!==ti);S.debtThen=null;sfx('lose');if(!checkOver()){render();setTimeout(nextTurn,700)}}
   else if(['trade','tradewith','tradefor'].includes(a)&&myAct&&!canOffer(ti)){say(offerWhy(ti));sfx('pay');render()}
+  else if(a==='spy'&&myAct&&!(S.spy&&S.spy[ti])&&me.cash>=spyPrice()){snap();fine(me,spyPrice());S.spy=S.spy||{};S.spy[ti]=1;log(me,`${me.name}-მა ${spyPrice()}₾ გადაიხადა და მოწინააღმდეგეების ფულს ხედავს`);sfx('coin');render()}
   else if(a==='trade'&&myAct)openTrade();
   else if(a==='apick'&&myAct){S.modal={t:'apick'};render()}
-  else if(a==='apickgo'&&S.modal&&S.modal.t==='apick'&&mine(S.turn)){const i=+el.dataset.i;S.modal=null;if(canTransfer(S.turn,i))startAuction(i);else render()}
+  else if(a==='apickgo'&&S.modal&&S.modal.t==='apick'&&mine(S.turn)){const i=+el.dataset.i;S.modal=null;if(canTrade(S.turn,i))startAuction(i);else render()}
   else if(a==='apickfl'&&S.modal&&S.modal.t==='apick'&&mine(S.turn)){
     const g=+el.dataset.g,me=cur();let tot=0,guard=0;snap();
     while(guard++<40){const gc=groupCells(g).filter(k=>S.own[k]&&S.own[k].o===S.turn&&S.own[k].h>0);if(!gc.length)break;const k=gc.sort((x,y)=>S.own[y].h-S.own[x].h)[0];const v=floorRefund(k,S.own[k].h);S.own[k].h--;me.cash+=v;tot+=v}
     if(tot){log(me,`${me.name}-მა ბანკს მიჰყიდა სართულები (${GROUPS[g].n}) +${tot}₾`);sfx('coin')}render()}
   else if(a==='bank'&&myAct){S.modal={t:'bank'};S.lnote='';S.lamt='';render()}
   else if(a==='tradewith'&&myAct)openTrade(+el.dataset.i);
-  else if(a==='tradefor'&&myAct){const i=+el.dataset.i,o=S.own[i];if(o){openTrade(o.o);if(S.trade&&canTransfer(o.o,i)){S.trade.get=[i];S.trade.note='';render()}}}
+  else if(a==='tradefor'&&myAct){const i=+el.dataset.i,o=S.own[i];if(o){openTrade(o.o);if(S.trade&&canTrade(o.o,i)){S.trade.get=[i];S.trade.note='';render()}}}
   else if(myAct){
     const i=+el.dataset.i,c=CELLS[i];
     if(['build','sellf','mort','unmort','sellbank'].includes(a))snap();
@@ -4024,7 +4035,7 @@ document.addEventListener('click',e=>{
     else if(a==='mort'&&canMortgage(ti,i)){S.own[i].m=true;me.cash+=mortVal(i);log(me,`${me.name} დააგირავა ${c.n} +${mortVal(i)}₾`);sfx('coin');render()}
     else if(a==='unmort'&&S.own[i]&&S.own[i].o===ti&&S.own[i].m&&me.cash>=unmortCost(i)){S.own[i].m=false;me.cash-=unmortCost(i);log(me,`${me.name} გამოისყიდა ${c.n} −${unmortCost(i)}₾`);sfx('pay');render()}
     else if(a==='sellbank'&&canTransfer(ti,i)){sellBank(me,i);if(S.sel===i)S.sel=null;render()}
-    else if(a==='auction'&&canTransfer(ti,i)){startAuction(i)}
+    else if(a==='auction'&&canTrade(ti,i)){startAuction(i)}
   }
 });
 
