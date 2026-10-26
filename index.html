@@ -1304,6 +1304,16 @@ html.forceland #chatbtn{bottom:10px!important}
 .cell.prop.own:not(.mine) .mineb{background:#14121A!important;box-shadow:0 0 0 calc(var(--u)*.35) var(--pc),0 2px 6px rgba(0,0,0,.8)!important}
 .mineb svg{width:76%!important;height:86%!important}
 .cell.prop.own:not(.mine) .cprice{background:#14121A!important;color:#fff!important;box-shadow:0 0 0 calc(var(--u)*.3) var(--pc)!important}
+/* 2.4: tokens stand out on busy cells */
+.tk-hop svg{filter:drop-shadow(0 0 1.2px #fff) drop-shadow(0 0 1.2px #fff) drop-shadow(0 0 4px rgba(255,255,255,.55)) drop-shadow(0 3px 3px rgba(0,0,0,.85))!important}
+.tk-base{box-shadow:0 0 0 2px #fff,0 0 10px 2px var(--pc),0 3px 6px rgba(0,0,0,.8)!important}
+.tk.cur .tk-base{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--gold-hi),0 0 16px 4px rgba(255,216,137,.8)!important}
+@media (min-width:900px) and (min-height:561px){.tk{width:6.1%!important}}
+#chatpeek{position:fixed;right:76px;bottom:18px;z-index:74;max-width:min(280px,calc(100vw - 100px));display:flex;gap:8px;align-items:center;padding:8px 12px;border-radius:14px 14px 4px 14px;cursor:pointer;
+  background:#1A1820;border:1px solid rgba(232,183,88,.7);box-shadow:0 10px 26px rgba(0,0,0,.7);font-size:13px;color:#F3E9D2;animation:pop .2s ease-out}
+#chatpeek b{color:var(--pc,#F6DA8E)}#chatpeek[hidden]{display:none}
+#chatpeek .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+@media (max-width:899px), (max-height:560px){#chatpeek{right:66px;bottom:calc(72px + env(safe-area-inset-bottom,0px))}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1933,7 +1943,7 @@ function netRemovePlayer(pi,why){
   const wasTurn=S.turn===pi;
   if(S.auction){const A=S.auction;if(A.seller===pi){S.auction=null;if(S.modal&&S.modal.t==='auction')S.modal=null}else{A.passed[pi]=true;if(A.leader===pi){A.leader=-1;A.high=0}if(A.waiting===pi)A.waiting=null}}
   if(S.trade&&(S.trade.from===pi||S.trade.to===pi)){S.trade=null;if(S.modal&&S.modal.t==='trade')S.modal=null}
-  bankrupt(p,null);p.cash=0;
+  settleOwed(pi);bankrupt(p,null);p.cash=0;
   log(p,`${p.name} ${why}. მისი ქონება ბანკს დაუბრუნდა`);
   if(checkOver())return true;
   if(wasTurn){S.modal=null;S.pending=null;S.debtThen=null;S.phase='end';render();nextTurn()}
@@ -2555,7 +2565,7 @@ function pay(p,amt,to){
   if(p.out)return false;
   if(p.ai){
     if(p.cash<amt)raise(p,amt);
-    if(p.cash<amt){if(to)to.cash+=Math.max(0,p.cash);p.cash=0;bankrupt(p,to);return false}
+    if(p.cash<amt){if(to){to.cash+=amt;flyCoins(pidx(p),pidx(to),amt);log(to,`${to.name} მიიღო სრული ვალი ${amt}₾ (${p.name} გაკოტრდა)`)}p.cash=0;bankrupt(p,to);return false}
   }
   const avail=Math.max(0,p.cash),now=p.ai?amt:Math.min(amt,avail),later=amt-now;
   p.cash-=amt;if(to&&now)to.cash+=now;
@@ -2833,7 +2843,15 @@ function aiMax(qi,i){
   v=Math.min(v,q.cash-(S.diff==='hard'?60:150));
   return Math.max(0,Math.floor(v/5)*5);
 }
-const aStep=i=>Math.max(10,Math.round(CELLS[i].price*.05/10)*10);
+const aStep=i=>10;const BID_MS=9000;
+let BID_LOCAL={k:null,at:0};
+function bidLeft(){const A=S&&S.auction;if(!A||A.stage!=='bidding'||A.waiting==null||S.players[A.waiting].ai)return 0;const k=A.gen+':'+A.wKey+':'+A.waiting;if(BID_LOCAL.k!==k)BID_LOCAL={k,at:Date.now()+BID_MS};return Math.max(0,Math.ceil((BID_LOCAL.at-Date.now())/1000))}
+setInterval(()=>{const A=S&&S.auction;if(!A||A.stage!=='bidding'||A.waiting==null||S.players[A.waiting].ai)return;
+  const left=bidLeft(),e=document.getElementById('bidcd');if(e){e.textContent=left;e.classList.toggle('low',left<=3)}
+  if(left>0)return;const qi=A.waiting,over=Date.now()-BID_LOCAL.at;
+  if(!NET.on||mine(qi)){auctionPass(qi);return}
+  if(NET.on&&isDriver()&&over>6000&&!isFresh(S.players[qi].uid))auctionPass(qi);
+},300);
 const aNeed=A=>A.leader<0?A.start:A.high+A.step;
 function apickHTML(){
   const pi=S.turn,p=S.players[pi],list=propsOf(pi).sort((a,b)=>CELLS[b].price-CELLS[a].price);
@@ -2844,13 +2862,16 @@ function apickHTML(){
     <div class="aplist">${rows||'<p class="empty">უბნები არ გაქვს.</p>'}</div>
     <div class="acts"><button class="btn ghost" data-act="mclose">დახურვა</button></div></div>`;
 }
+const aucUsed=pi=>!!(S.aucUsed&&S.aucUsed[pi]===S.round);
 function startAuction(i){
+  if(aucUsed(S.turn)){say('აუქციონი წრეში მხოლოდ ერთხელ შეიძლება. შემდეგ რაუნდში ისევ შეძლებ.');render();return}
   clearUndo();
   const seller=S.turn,c=CELLS[i];
   S.auction={i,seller,stage:'setup',start:R5(c.price*.5),step:aStep(i),high:0,leader:-1,passed:{},order:[],at:0,hist:[],maxv:{},waiting:null,note:'',custom:'',gen:Date.now()};
   S.modal={t:'auction'};render();
 }
 function auctionBegin(){
+  S.aucUsed=S.aucUsed||{};S.aucUsed[S.auction.seller]=S.round;
   const A=S.auction,c=CELLS[A.i],minS=R5(c.price*.1);
   A.start=R5(+A.start||0);
   if(A.start<minS){A.note=`საწყისი ფასი მინიმუმ ${minS}₾ უნდა იყოს.`;render();return}
@@ -2874,7 +2895,7 @@ function auctionStep(){
   for(let k=0;k<A.order.length;k++){const c=A.order[(A.at+k)%A.order.length];if(!A.passed[c]&&c!==A.leader){qi=c;A.at=(A.at+k+1)%A.order.length;break}}
   if(qi==null){A.stage='decide';render();return}
   const q=S.players[qi],need=aNeed(A);
-  if(!q.ai){A.waiting=qi;A.custom='';A.note='';render();return}
+  if(!q.ai){A.waiting=qi;A.custom='';A.note='';A.wKey=(A.wKey||0)+1;render();return}
   A.waiting=qi;render();
   const gen=A.gen;
   setTimeout(()=>{
@@ -3205,7 +3226,7 @@ function renderDesk(){
   else if(human&&S.phase==='debt'){
     h=p.cash>=0?`<button class="btn gold" data-act="debtok">ვალი დაფარულია, გაგრძელება</button>`:`<span class="debtpill num">ვალი ${-p.cash}₾</span>`;
     const alive=S.players.filter(q=>!q.out).length>1;
-    h+=`<button class="btn" data-act="apick" ${alive&&propsOf(S.turn).length?'':'disabled'}>🔨 აუქციონი</button><button class="btn" data-act="trade" ${alive&&propsOf(S.turn).length?'':'disabled'}>🤝 მიყიდე მოთამაშეს</button><button class="btn" data-act="bank">🏦 ბანკი</button><button class="btn red" data-act="declare">გაკოტრება</button>`;
+    h+=`<button class="btn" data-act="apick" ${alive&&propsOf(S.turn).length&&!aucUsed(S.turn)?'':'disabled'} title="${aucUsed(S.turn)?'აუქციონი ამ რაუნდში უკვე ჩაატარე':''}">🔨 აუქციონი${aucUsed(S.turn)?' ✓':''}</button><button class="btn" data-act="trade" ${alive&&propsOf(S.turn).length?'':'disabled'}>🤝 მიყიდე მოთამაშეს</button><button class="btn" data-act="bank">🏦 ბანკი</button><button class="btn red" data-act="declare">გაკოტრება</button>`;
   }
   if(human&&!NET.on&&UNDO.length&&['roll','end','debt'].includes(S.phase))h+=`<button class="btn ghost undo" data-act="undo" title="ბოლო მოქმედების გაუქმება">↶ გაუქმება</button>`;
   acts.innerHTML=h;
@@ -3271,13 +3292,13 @@ function auctionHTML(){
       return `<div class="brow${A.passed[qi]?' gone':''}${A.waiting===qi?' now':''}" style="--pc:${q.col}"><span class="av">${tokSvg(q.tok)}</span><span class="bn">${esc(q.name)}<small class="num">${cashTxt(qi,q.cash+'₾')}</small></span>${st}</div>`}).join('');
     const hist=A.hist.slice(0,6).map(h=>{const q=S.players[h.qi];return `<li style="--pc:${q.col}"><b>${esc(q.name)}</b> ${h.pass?'<span class="out">პასი</span>':`<span class="num">${h.v}₾</span>`}</li>`}).join('');
     body=price+`<div class="bids">${rows}</div>${hist?`<ul class="ahist">${hist}</ul>`:''}`;
-    if(A.stage==='bidding'&&A.waiting!=null&&!S.players[A.waiting].ai&&!mine(A.waiting)){acts=`<span class="tnote">${esc(S.players[A.waiting].name)} ფიქრობს…</span>`}
+    if(A.stage==='bidding'&&A.waiting!=null&&!S.players[A.waiting].ai&&!mine(A.waiting)){acts=`<span class="tnote">${esc(S.players[A.waiting].name)} ფიქრობს… <span class="endcd" id="bidcd">${bidLeft()||9}</span></span>`}
     else if(A.stage==='bidding'&&A.waiting!=null&&!S.players[A.waiting].ai){
       const qi=A.waiting,q=S.players[qi],need=aNeed(A);
       const opts=[need,need+A.step,need+A.step*3,need+A.step*6].filter(v=>v<=q.cash);
-      body+=`<div class="abid" style="--pc:${q.col}"><p><b>${esc(q.name)}</b>, შენი ჯერია. მინიმუმ <b>${need}₾</b>${q.cash<need?' · ამდენი ფული არ გაქვს':''}</p>
+      body+=`<div class="abid" style="--pc:${q.col}"><p><b>${esc(q.name)}</b>, შენი ჯერია <span class="endcd" id="bidcd">${bidLeft()||9}</span> მინიმუმ <b>${need}₾</b>${q.cash<need?' · ამდენი ფული არ გაქვს':''}</p>
         <div class="quick">${opts.map(v=>`<button class="btn sm" data-act="abid" data-v="${v}">${v}₾</button>`).join('')}</div>
-        <label class="lrow">სხვა თანხა <input id="acustom" data-acustom="1" type="number" min="${need}" step="5" max="${Math.max(0,q.cash)}" value="${A.custom||''}" inputmode="numeric"> <button class="btn sm ghost" data-act="abidc">ფსონი</button></label></div>`;
+        <label class="lrow">სხვა თანხა <input id="acustom" data-acustom="1" type="number" min="${need}" step="10" max="${Math.max(0,q.cash)}" value="${A.custom||''}" inputmode="numeric"> <button class="btn sm ghost" data-act="abidc">ფსონი</button></label></div>`;
       acts=`<button class="btn ghost" data-act="apass">პასი</button>`;
     }else if(A.stage==='bidding'){acts=`<span class="tnote">ფსონები იდება…</span>`}
     else if(A.stage==='decide'){
@@ -3421,7 +3442,7 @@ function rulesHTML(){
    ['Ⓜ️','მეტრო',`ოთხი სადგურია, თითო დაფის თითოეული მხარის შუაში. რაც მეტი სადგური გაქვს, მით მეტია ქირა: ${TR_RENT.join(' / ')}₾. ორი ხაზია: სამგორი ↔ მარჯანიშვილი და თავისუფლება ↔ უნივერსიტეტი. ხაზი მხოლოდ მაშინ იხსნება, როცა ერთი მოთამაშე მის ორივე სადგურს ფლობს. მფლობელი უფასოდ მგზავრობს, სხვები მას ${FLY.ride}₾-ს უხდიან. ჩასვლის სადგურზე ქირა აღარ იხდება. გადასვლა კამათლის ნაცვლად შეიძლება, თუ სვლას სადგურზე იწყებ. მეტროთი ჩასული ეგრევე უკან ვერ დაბრუნდება: ჯერ კამათლით უნდა იაროს და სადგურზე ხელახლა დადგეს. სტარტის ბონუსი მეტროთი არ ერიცხება.`],
    ['⚠️','დაბრკოლებები','პოლიცია აჯარიმებს, ორმო უკან გაბრუნებს, გადაკეტილი ქუჩა სვლას გაგაცდენინებს. ციხიდან გამოსასვლელად დუბლი უნდა გააგორო ან '+JAILFEE+'₾ გადაიხადო.'],
    ['👁','სხვების ფული',`მოწინააღმდეგეების ნაღდი ფული დამალულია. შენს სვლაზე შეგიძლია გადაიხადო ${spyPrice()}₾ (ჯეკპოტში მიდის) და 15 წამით ყველას ფულს დაინახავ, მერე ისევ დაიმალება.`],
-   ['🏳','გაკოტრება','ვინც გაკოტრდება, მისი ყველა უბანი ბანკს უბრუნდება და ისევ თავისუფალია. მოწინააღმდეგე მის ქონებას არ იღებს. დაგირავებული უბნის გაცვლა ან აუქციონზე გატანა არ შეიძლება: ჯერ მფლობელმა უნდა გამოისყიდოს.'],
+   ['🏳','გაკოტრება','ვინც გაკოტრდება, მისი ყველა უბანი ბანკს უბრუნდება და ისევ თავისუფალია. მოწინააღმდეგე მის ქონებას არ იღებს, მაგრამ ვალს (ფულს) სრულად იღებს. აუქციონი რაუნდში მხოლოდ ერთხელ შეიძლება. დაგირავებული უბნის გაცვლა ან აუქციონზე გატანა არ შეიძლება: ჯერ მფლობელმა უნდა გამოისყიდოს.'],
    ['⏱','თამაშის ხანგრძლივობა','თამაშის დაწყებისას ირჩევ: ულიმიტო (თამაში გრძელდება, სანამ ერთი არ დარჩება), ან 30, 45, 60 რაუნდი. ლიმიტის ბოლოს იგებს ყველაზე მდიდარი: ნაღდი ფული + უბნები + სართულები, მინუს სესხი.'],
    ['💰','ჯეკპოტი',`ყველა ჯარიმა და გადასახადი ბოტანიკურ ბაღში გროვდება. ვინც იქ დადგება, ჯეკპოტიდან იღებს მაქსიმუმ ${JACK_MAX}₾-ს, დანარჩენი რჩება შემდეგისთვის.`],
    ['🧾','გადასახადები','დაფაზე 6 გადასახადია: დასუფთავება 80₾, კომუნალური 150₾ ან ქონების 4%, მიწის გადასახადი 120₾ ან ქონების 2%, საშემოსავლო 150₾ ან ნაღდი ფულის 10%, ფუფუნება 250₾ ან ქონების 7%, ქონების გადასახადი 200₾ ან ქონების 5%. ყველგან იხდი იმას, რომელიც მეტია. ყველა გადასახადი ჯეკპოტში მიდის.'],
@@ -3624,7 +3645,7 @@ function deedHTML(i,auto){
       h+=o.m?`<button class="btn sm" data-act="unmort" data-i="${i}" ${myAct&&me.cash>=unmortCost(i)?'':'disabled'}>გამოსყიდვა ${unmortCost(i)}₾</button>`
             :`<button class="btn sm ghost" data-act="mort" data-i="${i}" ${myAct&&canMortgage(vi,i)?'':'disabled'}>დაგირავება +${mortVal(i)}₾</button>`;
       h+=`<button class="btn sm ghost" data-act="sellbank" data-i="${i}" ${myAct&&tr?'':'disabled'}>ბანკს +${bankVal(i)}₾</button>`;
-      h+=`<button class="btn sm ghost wide" data-act="auction" data-i="${i}" ${myAct&&tr&&!o.m&&S.players.filter(q=>!q.out).length>1?'':'disabled'}>აუქციონზე გატანა</button>`;
+      h+=`<button class="btn sm ghost wide" data-act="auction" data-i="${i}" ${myAct&&tr&&!o.m&&!aucUsed(vi)&&S.players.filter(q=>!q.out).length>1?'':'disabled'}>აუქციონზე გატანა</button>`;
       h+=`</div>`;
       let note='';
       if(!myAct)note='ცვლილებები შეგიძლია შენი სვლისას.';
@@ -3773,12 +3794,18 @@ function chatSync(){
       const arr=q.docs.map(d=>Object.assign({id:d.id},d.data())).filter(m=>m&&m.at).sort((x,y)=>x.at-y.at);
       const known=new Set(CHAT.msgs.map(m=>m.id)),fresh=arr.filter(m=>!known.has(m.id)&&m.uid!==NET.uid);
       CHAT.msgs=arr;
-      if(!CHAT.first&&fresh.length){if(!CHAT.open)CHAT.unread+=fresh.length;sfx('chat')}
+      if(!CHAT.first&&fresh.length){if(!CHAT.open){CHAT.unread+=fresh.length;chatPeek(fresh[fresh.length-1])}sfx('chat')}
       CHAT.first=false;chatBadge();chatList();
     },()=>{});
   }
   if(!b){b=document.createElement('button');b.id='chatbtn';b.dataset.act='chattoggle';b.setAttribute('aria-label','ჩატი');b.innerHTML='💬<b id="chatbadge" hidden></b>';document.body.appendChild(b)}
   b.hidden=false;chatBadge();
+}
+function chatPeek(m){
+  let d=document.getElementById('chatpeek');if(!d){d=document.createElement('div');d.id='chatpeek';d.dataset.act='chattoggle';document.body.appendChild(d)}
+  const k=STICKERS.find(x=>x[0]===m.k),txt=m.t==='gif'?'GIF':m.t==='stk'?(k?k[1]+' '+k[3]:'სტიკერი'):String(m.text||'');
+  d.style.setProperty('--pc',m.col||'#F6DA8E');d.innerHTML=`<span>💬</span><span class="t"><b>${esc(m.name||'')}:</b> ${esc(txt).slice(0,80)}</span>`;d.hidden=false;
+  clearTimeout(chatPeek.t);chatPeek.t=setTimeout(()=>{d.hidden=true},5000);
 }
 function chatBadge(){const e=document.getElementById('chatbadge');if(!e)return;e.hidden=!CHAT.unread;e.textContent=CHAT.unread>9?'9+':CHAT.unread}
 function chatMsgHTML(m){
@@ -3832,7 +3859,7 @@ async function chatSend(m){
   CHAT.stick=true;try{await NET.db.collection('games/'+CHAT.code+'/chat').add(doc)}catch(e){toast2('ვერ გაიგზავნა: '+(e&&e.code||''))}
 }
 function chatAct(a,el){
-  if(a==='chattoggle'){chatOpen(!CHAT.open);return}
+  if(a==='chattoggle'){const pk=document.getElementById('chatpeek');if(pk)pk.hidden=true;chatOpen(!CHAT.open);return}
   if(a==='chatclose'){chatOpen(false);return}
   if(a==='chattab'){CHAT.tab=CHAT.tab===el.dataset.v?'':el.dataset.v;chatPick();return}
   if(a==='chatemo'){const i=document.getElementById('chatin');if(i){const p=i.selectionStart??i.value.length;i.value=(i.value.slice(0,p)+el.dataset.e+i.value.slice(p)).slice(0,200);i.focus();i.selectionStart=i.selectionEnd=p+el.dataset.e.length}return}
@@ -3844,7 +3871,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=230;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=250;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 async function checkUpdate(){
   if(NET.mode!=='site')return;
@@ -4030,7 +4057,7 @@ document.addEventListener('click',e=>{
     const then=S.debtThen;S.debtThen=null;settleOwed(ti);log(p,`${p.name}-მა ვალი დაფარა`);
     if(then==='roll'){S.phase='roll';say(`${esc(p.name)}, ვალი დაფარულია. გააგორე კამათელი.`);render()}else toEnd();
   }
-  else if(a==='declare'&&S.phase==='debt'){clearUndo();bankrupt(p,creditorOf(ti));p.cash=0;S.owed=(S.owed||[]).filter(o=>o.pi!==ti);S.debtThen=null;sfx('lose');if(!checkOver()){render();setTimeout(nextTurn,700)}}
+  else if(a==='declare'&&S.phase==='debt'){clearUndo();settleOwed(ti);bankrupt(p,null);p.cash=0;S.debtThen=null;sfx('lose');if(!checkOver()){render();setTimeout(nextTurn,700)}}
   else if(['trade','tradewith','tradefor'].includes(a)&&myAct&&!canOffer(ti)){say(offerWhy(ti));sfx('pay');render()}
   else if(a==='spy'&&myAct&&!spyLeft(ti)&&me.cash>=spyPrice()){snap();fine(me,spyPrice());SPY[ti]=Date.now()+SPY_MS;log(me,`${me.name}-მა ${spyPrice()}₾ გადაიხადა და მოწინააღმდეგეების ფულს ხედავს`);sfx('coin');render()}
   else if(a==='trade'&&myAct)openTrade();
