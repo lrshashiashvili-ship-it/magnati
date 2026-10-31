@@ -1315,6 +1315,37 @@ html.forceland #chatbtn{bottom:10px!important}
 #chatpeek .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 @media (max-width:899px), (max-height:560px){#chatpeek{right:66px;bottom:calc(72px + env(safe-area-inset-bottom,0px))}}
 .agpanel{border-color:rgba(232,183,88,.7)!important}.agrow{display:grid;grid-template-columns:26px minmax(0,1fr) 84px auto auto;gap:6px;align-items:center;margin-bottom:6px}.agrow .av{width:26px;height:26px}.agrow .av svg{width:15px;height:19px}.agrow b{font-size:13px;color:var(--pc);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.agacts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+
+/* tournament */
+.tourhb{position:relative;border-color:rgba(232,183,88,.7)!important;background:linear-gradient(180deg,#2A2213,#120E07)!important}
+.tourhb.hot{animation:thot 2.2s ease-in-out infinite}@keyframes thot{50%{box-shadow:0 0 0 1px rgba(246,214,140,.5),0 0 26px rgba(232,183,88,.45)}}
+.tdot{position:absolute;top:10px;right:12px;width:11px;height:11px;border-radius:50%;background:#E2456C;box-shadow:0 0 0 2px #120E07,0 0 10px #E2456C}
+#tourbar{position:fixed;left:50%;top:max(56px,calc(env(safe-area-inset-top,0px) + 50px));transform:translateX(-50%);z-index:96;display:flex;align-items:center;gap:8px;padding:8px 8px 8px 14px;border-radius:14px;background:#1A1820;border:1px solid #E8B758;box-shadow:0 12px 32px rgba(0,0,0,.75);font-size:13.5px;max-width:calc(100vw - 20px)}
+#tourbar[hidden]{display:none}#tourbar b{color:#F6DA8E}
+.tourbox{width:min(100%,640px)!important}
+.thead{display:flex;gap:14px;align-items:center;margin:4px 0 10px}
+.timg{width:120px;height:90px;object-fit:cover;border-radius:12px;flex:none;border:1px solid rgba(232,183,88,.5);background:#000}
+.timg.ph{display:grid;place-items:center;font-size:44px;background:radial-gradient(circle,#3A2E16,#120E07)}
+.tinfo h3{margin:0 0 6px;font-family:var(--display);font-size:22px;color:#fff}
+.tprize{margin-top:6px;font-size:14px;color:#F3E9D2}.tprize b{color:#F6DA8E}
+.tst{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:800}
+.tst.reg{background:rgba(67,216,138,.18);color:#7BE0A8}.tst.full{background:rgba(232,183,88,.18);color:#F6DA8E}.tst.play{background:rgba(46,230,214,.18);color:#8FF5EA}.tst.done{background:rgba(255,255,255,.08);color:var(--muted)}
+.tdesc{font-size:14px;line-height:1.5;color:#E8DCC2;white-space:pre-wrap;margin:0 0 10px}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.tgrid div{display:flex;flex-direction:column;padding:10px 12px;border-radius:12px;background:rgba(255,240,200,.04);border:1px solid rgba(214,172,92,.2)}
+.tgrid small{font-size:11.5px;color:var(--muted);font-weight:700}.tgrid b{font-size:16px;color:#fff;margin-top:2px}.tgrid em{font-style:normal;font-size:12px;color:#7BE0A8;margin-top:2px}
+.trules{margin:0 0 10px;padding:8px 12px;border-radius:12px;background:rgba(255,240,200,.03);border:1px solid rgba(214,172,92,.2)}
+.trules summary{cursor:pointer;font-weight:800;color:#F6DA8E}.trules ol{margin:8px 0 2px;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;line-height:1.45;color:#E8DCC2}.trules b{color:#fff}
+.tlh{margin:6px 0 6px;font-size:13px;color:var(--muted)}
+.tplist{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-bottom:10px}
+.tpl{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:10px;background:rgba(255,240,200,.05)}.tpl.me{box-shadow:inset 0 0 0 1px #E8B758}
+.tpl .tn{font-size:11px;color:var(--muted);width:16px}.tpl .av{width:26px;height:26px}.tpl .av svg{width:15px;height:19px}.tpl b{font-size:13.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tpl small{color:var(--muted);font-size:11px}
+.tok2{color:#7BE0A8;font-weight:700;margin:0}
+.tadm{margin-top:12px;padding-top:10px;border-top:1px dashed rgba(214,172,92,.3)}.tadm h4{margin:0 0 6px;color:#F6DA8E}
+.tform{display:flex;flex-direction:column;gap:9px}.tform h3{margin:0;color:#F6DA8E}.tform label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted);font-weight:700}
+.tform textarea{resize:vertical;font:inherit}.tf2,.tf3{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tf3{grid-template-columns:1fr 1fr 1fr}
+@media (max-width:520px){.tf2,.tf3{grid-template-columns:1fr}.tgrid b{font-size:14.5px}.thead{flex-direction:column;align-items:stretch}.timg{width:100%;height:150px}.timg.ph{height:90px}}
+.timg.ph{justify-content:center;align-content:center;text-align:center}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1756,7 +1787,7 @@ async function socialStart(){
     p={uid:NET.uid,name:(NET.myName||'მოთამაშე').slice(0,14),tok:NET.myTok,code,seen:Date.now(),created:Date.now(),room:null,friends:[],xp:0,wins:0,games:0,solo:0};
     await ref.set(p);await NET.db.doc('codes/'+code).set({uid:NET.uid});
   }else{loginBackfill(p);if(!NET.myName&&p.name)NET.myName=p.name;if(p.tok!=null&&!localStorage.getItem('tm-net'))NET.myTok=p.tok;if(!p.created)ref.update({created:p.seen||Date.now()}).catch(()=>{})}
-  SOC.profile=p;adminWatch();
+  SOC.profile=p;adminWatch();tourWatch();
   ref.onSnapshot(s=>{if(!s.exists)return;SOC.profile=s.data();if(SOC.profile.registered&&SOC.profile.name&&!NET.myName)NET.myName=SOC.profile.name;socialWatchFriends();socialRender()},()=>{});
   NET.db.collection(`users/${NET.uid}/inbox`).onSnapshot(q=>{
     const now=Date.now();SOC.inbox=q.docs.map(d=>Object.assign({id:d.id},d.data())).filter(x=>x&&now-(x.at||0)<20*60e3).sort((a,b)=>a.at-b.at);
@@ -2009,6 +2040,142 @@ function openAdmin(){
   ADM.unsubs.push(NET.db.collection('stats').onSnapshot(q=>{ADM.days={};q.docs.forEach(x=>{if(x.id==='global')ADM.stats=x.data()||{};else if(x.id.startsWith('day-'))ADM.days[x.id]=x.data()||{}});renderAdmin()},()=>{}));
   ADM.tick=setInterval(()=>{if(ADM.open&&ADM.tab==='over'){ADM._t=Date.now();renderAdmin()}},5000);
   renderAdmin();
+}
+/* ================= TOURNAMENT (announcement + registration) ================= */
+const TOUR={list:[],cur:null,players:[],pUnsub:null,pId:null,open:false,edit:false,note:'',started:false,busy:false};
+const TOUR_PTS=[10,6,4,2,1];
+const fmtDT=t=>{if(!t)return '—';const d=new Date(t),M=['იან','თებ','მარ','აპრ','მაი','ივნ','ივლ','აგვ','სექ','ოქტ','ნოე','დეკ'];return `${d.getDate()} ${M[d.getMonth()]}, ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`};
+const fmtLeft=ms=>{if(ms<=0)return '0 წთ';const m=Math.floor(ms/60000),d=Math.floor(m/1440),h=Math.floor(m%1440/60),mm=m%60,ss=Math.floor(ms%60000/1000);return d?`${d} დღე ${h} სთ`:h?`${h} სთ ${mm} წთ`:mm?`${mm} წთ ${ss} წმ`:`${ss} წმ`};
+function tourWatch(){
+  if(TOUR.started||!NET.ready)return;TOUR.started=true;
+  NET.db.collection('tournaments').orderBy('createdAt','desc').limit(6).onSnapshot(q=>{
+    TOUR.list=q.docs.map(d=>Object.assign({id:d.id},d.data())).filter(t=>t&&t.createdAt).sort((a,b)=>b.createdAt-a.createdAt);
+    TOUR.cur=TOUR.list.find(t=>!['done','cancel'].includes(t.status))||TOUR.list.find(t=>t.status==='done')||null;
+    tourPlayersWatch();tourNotify();try{renderHome()}catch(e){}if(TOUR.open)renderTour();
+  },()=>{});
+}
+function tourPlayersWatch(){
+  const id=TOUR.cur&&TOUR.cur.id||null;if(id===TOUR.pId)return;TOUR.pId=id;
+  if(TOUR.pUnsub){try{TOUR.pUnsub()}catch(e){}TOUR.pUnsub=null}TOUR.players=[];
+  if(!id)return;
+  TOUR.pUnsub=NET.db.collection('tournaments/'+id+'/players').onSnapshot(q=>{TOUR.players=q.docs.map(d=>d.data()).filter(Boolean).sort((a,b)=>(a.at||0)-(b.at||0));try{renderHome()}catch(e){}if(TOUR.open)renderTour()},()=>{});
+}
+function tourState(t){
+  t=t||TOUR.cur;if(!t)return 'none';
+  if(t.status==='cancel')return 'cancel';if(t.status==='done')return 'done';if(t.status==='play')return 'play';
+  if(t.status==='closed')return 'closed';
+  const full=TOUR.players.length>=(t.max||8),late=t.regEnd&&Date.now()>=t.regEnd;
+  return full?'full':late?'closed':'reg';
+}
+const tourMine=()=>!!TOUR.players.find(p=>p.uid===NET.uid);
+function tourHomeBtn(){
+  const t=TOUR.cur,st=tourState(t);
+  const sub=!t?'ჯერ ტურნირი არ არის':st==='reg'?(tourMine()?'✓ დარეგისტრირებული ხარ':`რეგისტრაცია ღიაა · ${TOUR.players.length}/${t.max||8}`):st==='full'||st==='closed'?`შემადგენლობა შევსებულია · იწყება ${fmtDT(t.startAt)}`:st==='play'?'მიმდინარეობს':st==='done'?'დასრულდა':'';
+  const dot=t&&st==='reg'&&!tourMine();
+  return `<button class="hb tourhb${dot?' hot':''}" data-act="tour"><span>🏆</span><b>ტურნირი${t?': '+esc(t.title||''):''}</b><small>${sub}</small>${dot?'<i class="tdot"></i>':''}</button>`;
+}
+function tourNotify(){
+  const t=TOUR.cur;if(!t||tourState(t)!=='reg'||tourMine()||t.by===NET.uid||TOUR.open)return;
+  let seen='';try{seen=localStorage.getItem('tm-tour-seen:'+NET.uid)||''}catch(e){}
+  if(seen===t.id)return;try{localStorage.setItem('tm-tour-seen:'+NET.uid,t.id)}catch(e){}
+  let b=document.getElementById('tourbar');if(!b){b=document.createElement('div');b.id='tourbar';document.body.appendChild(b)}
+  b.innerHTML=`<span>🏆 ახალი ტურნირი: <b>${esc(t.title||'')}</b>${t.prize?` · პრიზი: ${esc(t.prize)}`:''}</span><button class="btn sm gold" data-act="tour">დეტალები</button><button class="btn sm ghost" data-act="tourbarx">✕</button>`;
+  b.hidden=false;ANN_PENDING=true;try{annRing()}catch(e){}
+}
+function showTour(){TOUR.open=true;let d=document.getElementById('tourov');if(!d){d=document.createElement('div');d.id='tourov';d.className='overlay rulesov';document.body.appendChild(d)}d.hidden=false;renderTour();const b=document.getElementById('tourbar');if(b)b.hidden=true}
+function hideTour(){TOUR.open=false;TOUR.edit=false;const d=document.getElementById('tourov');if(d)d.hidden=true}
+setInterval(()=>{if(TOUR.open&&!TOUR.edit)renderTour()},1000);
+const dtVal=t=>{if(!t)return '';const d=new Date(t-new Date(t).getTimezoneOffset()*60000);return d.toISOString().slice(0,16)};
+function tourForm(t){
+  t=t||{};const now=Date.now(),def={title:'მეგობრების ტურნირი',prize:'',img:'',desc:'',regEnd:now+86400e3,startAt:now+90000e3,max:8,games:3,rounds:30};const v=Object.assign({},def,t);
+  return `<div class="tform"><h3>${t.id?'ტურნირის რედაქტირება':'ახალი ტურნირი'}</h3>
+    <label>სახელი<input class="ain" id="tf_title" maxlength="40" value="${esc(v.title)}"></label>
+    <label>პრიზი<input class="ain" id="tf_prize" maxlength="80" value="${esc(v.prize)}" placeholder="მაგ. KEYZ ELITE 400 HE კლავიატურა"></label>
+    <label>პრიზის სურათის ბმული (არასავალდებულო)<input class="ain" id="tf_img" maxlength="400" value="${esc(v.img)}" placeholder="https://..."></label>
+    <label>აღწერა / დამატებითი წესები<textarea class="ain" id="tf_desc" maxlength="600" rows="3">${esc(v.desc)}</textarea></label>
+    <div class="tf2"><label>რეგისტრაცია მთავრდება<input class="ain" type="datetime-local" id="tf_regEnd" value="${dtVal(v.regEnd)}"></label>
+      <label>ტურნირი იწყება<input class="ain" type="datetime-local" id="tf_startAt" value="${dtVal(v.startAt)}"></label></div>
+    <div class="tf3"><label>მაქს. მოთამაშე<input class="ain" type="number" id="tf_max" min="2" max="28" value="${v.max}"></label>
+      <label>პარტიები<input class="ain" type="number" id="tf_games" min="1" max="10" value="${v.games}"></label>
+      <label>რაუნდი პარტიაში<input class="ain" type="number" id="tf_rounds" min="10" max="100" value="${v.rounds}"></label></div>
+    ${TOUR.note?`<p class="tnote">${esc(TOUR.note)}</p>`:''}
+    <div class="setup-acts"><button class="btn gold" data-act="toursave">${t.id?'შენახვა':'გამოცხადება 📢'}</button><button class="btn ghost" data-act="touredit0">გაუქმება</button></div>
+    ${t.id?'':'<p class="note">გამოცხადებისთანავე ყველას, ვინც საიტზეა, ზარით ამოუვა შეტყობინება, დანარჩენები კი მთავარ მენიუში დაინახავენ.</p>'}</div>`;
+}
+function renderTour(){
+  const d=document.getElementById('tourov');if(!d)return;
+  const t=TOUR.cur,st=tourState(t),adm=NET.isAdmin,now=Date.now();
+  let h=`<div class="setbox tourbox" role="dialog" aria-label="ტურნირი"><div class="rh"><h2>🏆 ტურნირი</h2><button class="btn sm ghost" data-act="tourclose">← უკან</button></div>`;
+  if(TOUR.edit&&adm){h+=tourForm(TOUR.edit==='new'?null:t)+'</div>';d.innerHTML=h;return}
+  if(!t||st==='cancel'){
+    h+=`<p class="note" style="font-size:15px">ჯერ ტურნირი არ არის გამოცხადებული. როცა გამოცხადდება, აქ გამოჩნდება და შეტყობინებაც მოგივა.</p>`;
+    if(adm)h+=`<div class="setup-acts"><button class="btn gold" data-act="tournew">+ ტურნირის გამოცხადება</button></div>`;
+    d.innerHTML=h+'</div>';return;
+  }
+  const n=TOUR.players.length,max=t.max||8,mine=tourMine();
+  const badge={reg:'<span class="tst reg">რეგისტრაცია ღიაა</span>',full:'<span class="tst full">შემადგენლობა შევსებულია</span>',closed:'<span class="tst full">რეგისტრაცია დასრულდა</span>',play:'<span class="tst play">მიმდინარეობს</span>',done:'<span class="tst done">დასრულდა</span>'}[st]||'';
+  h+=`<div class="thead">${t.img?`<img class="timg" src="${esc(t.img)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`:'<div class="timg ph">🏆</div>'}
+    <div class="tinfo"><h3>${esc(t.title||'')}</h3>${badge}${t.prize?`<div class="tprize">🎁 პრიზი: <b>${esc(t.prize)}</b></div>`:''}</div></div>`;
+  if(t.desc)h+=`<p class="tdesc">${esc(t.desc)}</p>`;
+  const regLeft=t.regEnd-now,startLeft=t.startAt-now;
+  h+=`<div class="tgrid">
+    <div><small>რეგისტრაცია მთავრდება</small><b>${fmtDT(t.regEnd)}</b>${st==='reg'&&regLeft>0?`<em>დარჩა ${fmtLeft(regLeft)}</em>`:''}</div>
+    <div><small>ტურნირი იწყება</small><b>${fmtDT(t.startAt)}</b>${startLeft>0&&st!=='done'?`<em>${fmtLeft(startLeft)}-ში</em>`:''}</div>
+    <div><small>მონაწილეები</small><b>${n} / ${max}</b><em>${st==='reg'?`თავისუფალია ${Math.max(0,max-n)} ადგილი`:''}</em></div>
+    <div><small>ფორმატი</small><b>${t.games||3} პარტია × ${t.rounds||30} რაუნდი</b><em>მხოლოდ ადამიანები</em></div></div>`;
+  h+=`<details class="trules" ${mine||st!=='reg'?'':'open'}><summary>📜 როგორ ტარდება</summary><ol>
+    <li>რეგისტრაცია ღიაა <b>${fmtDT(t.regEnd)}</b>-მდე ან სანამ ${max} ადგილი არ შეივსება.</li>
+    <li>ტურნირი იწყება <b>${fmtDT(t.startAt)}</b>-ზე. ყველა მონაწილეს ზარი და შეტყობინება მოუვა.</li>
+    <li>ტარდება <b>${t.games||3} პარტია</b>, თითო <b>${t.rounds||30} რაუნდით</b>. კომპიუტერი არ თამაშობს.</li>
+    <li>ყოველი პარტიის ბოლოს ქულები ადგილის მიხედვით: ${['1-ლი','მე-2','მე-3','მე-4','დანარჩენი'].map((n,i)=>`${n} <b>${TOUR_PTS[i]}</b>`).join(' · ')}.</li>
+    <li>იგებს ვინც ყველა პარტიაში ჯამში <b>ყველაზე მეტ ქულას</b> დააგროვებს. თანაბარი ქულისას: მეტი ჯამური ქონება.</li>
+    <li>პარტიიდან გასული ან გაკოტრებული ამ პარტიაში ბოლო ადგილების ქულას იღებს, შემდეგ პარტიაში ისევ თამაშობს.</li></ol></details>`;
+  h+=`<h4 class="tlh">მონაწილეები (${n}/${max})</h4><div class="tplist">${TOUR.players.map((p,i)=>`<div class="tpl${p.uid===NET.uid?' me':''}"><span class="tn">${i+1}</span><span class="av">${tokSvg(p.tok||0)}</span><b>${esc(p.name||'მოთამაშე')}</b>${p.uid===NET.uid?'<small>(შენ)</small>':''}${adm?`<button class="btn xs ghost" data-act="tourkick" data-uid="${esc(p.uid)}">✕</button>`:''}</div>`).join('')||'<p class="note">ჯერ არავინ დარეგისტრირებულა. იყავი პირველი!</p>'}</div>`;
+  if(TOUR.note)h+=`<p class="tnote">${esc(TOUR.note)}</p>`;
+  h+=`<div class="setup-acts">`;
+  if(st==='reg')h+=mine?`<button class="btn ghost" data-act="tourleave" ${TOUR.busy?'disabled':''}>რეგისტრაციის გაუქმება</button>`:`<button class="btn gold wide" data-act="tourjoin" ${TOUR.busy?'disabled':''}>✋ მონაწილეობა</button>`;
+  else if(mine&&(st==='full'||st==='closed'))h+=`<p class="tok2">✓ შენ მონაწილე ხარ. დაელოდე დაწყებას: ${fmtDT(t.startAt)}</p>`;
+  else if(st==='full'||st==='closed')h+=`<p class="note">რეგისტრაცია დასრულებულია. შემდეგ ტურნირზე დარეგისტრირდი!</p>`;
+  h+=`</div>`;
+  if(adm)h+=`<div class="tadm"><h4>🛡 ადმინი</h4><div class="setup-acts"><button class="btn sm" data-act="touredit">✏️ რედაქტირება</button>
+    ${st==='reg'?'<button class="btn sm" data-act="tourcloseReg">რეგისტრაციის დახურვა</button>':['closed','full'].includes(st)?'<button class="btn sm" data-act="tourreopen">რეგისტრაციის გახსნა</button>':''}
+    <button class="btn sm red" data-act="tourcancel">${TOUR.confirm?'დარწმუნებული ხარ?':'ტურნირის გაუქმება'}</button><button class="btn sm ghost" data-act="tournew">+ ახალი</button></div>
+    <p class="note">ტურნირის თამაშების ნაწილი (პარტიების დაწყება და ქულების ცხრილი) შემდეგ ეტაპზე დაემატება.</p></div>`;
+  d.innerHTML=h+'</div>';
+}
+async function tourAct(a,el){
+  const t=TOUR.cur;TOUR.note='';
+  if(a==='tour'){showTour();return}
+  if(a==='tourclose'){hideTour();return}
+  if(a==='tourbarx'){const b=document.getElementById('tourbar');if(b)b.hidden=true;return}
+  if(a==='tourjoin'&&t){
+    if(tourState(t)!=='reg'){TOUR.note='რეგისტრაცია დახურულია.';return renderTour()}
+    TOUR.busy=true;renderTour();
+    try{await NET.db.doc(`tournaments/${t.id}/players/${NET.uid}`).set({uid:NET.uid,name:(NET.myName||SOC.profile&&SOC.profile.name||'მოთამაშე').slice(0,14),tok:NET.myTok||0,at:Date.now()});sfx('buy');toast2('✋ დარეგისტრირდი ტურნირზე!')}
+    catch(e){TOUR.note='ვერ მოხერხდა: '+(e&&e.code||e)}TOUR.busy=false;return renderTour()}
+  if(a==='tourleave'&&t){TOUR.busy=true;await NET.db.doc(`tournaments/${t.id}/players/${NET.uid}`).delete().catch(()=>{});TOUR.busy=false;return renderTour()}
+  if(!NET.isAdmin)return;
+  if(a==='tournew'){TOUR.edit='new';return renderTour()}
+  if(a==='touredit'){TOUR.edit='edit';return renderTour()}
+  if(a==='touredit0'){TOUR.edit=false;return renderTour()}
+  if(a==='toursave'){
+    const g=id=>(document.getElementById(id)||{}).value||'';const tm=id=>{const v=g(id);return v?new Date(v).getTime():0};
+    const data={title:g('tf_title').trim().slice(0,40)||'ტურნირი',prize:g('tf_prize').trim().slice(0,80),img:/^https:\/\//.test(g('tf_img').trim())?g('tf_img').trim().slice(0,400):'',desc:g('tf_desc').trim().slice(0,600),
+      regEnd:tm('tf_regEnd'),startAt:tm('tf_startAt'),max:Math.min(28,Math.max(2,+g('tf_max')||8)),games:Math.min(10,Math.max(1,+g('tf_games')||3)),rounds:Math.min(100,Math.max(10,+g('tf_rounds')||30))};
+    if(!data.regEnd||!data.startAt){TOUR.note='მიუთითე თარიღები.';return renderTour()}
+    if(data.startAt<data.regEnd){TOUR.note='ტურნირი რეგისტრაციის დასრულების შემდეგ უნდა დაიწყოს.';return renderTour()}
+    try{
+      if(TOUR.edit==='edit'&&t){await NET.db.doc('tournaments/'+t.id).update(data)}
+      else{if(t&&!['done','cancel'].includes(t.status))await NET.db.doc('tournaments/'+t.id).update({status:'cancel'});await NET.db.collection('tournaments').add(Object.assign(data,{status:'reg',createdAt:Date.now(),by:NET.uid,pts:TOUR_PTS}))}
+      TOUR.edit=false;toast2('📢 ტურნირი გამოცხადდა');
+    }catch(e){TOUR.note='ვერ შეინახა: '+(e&&e.code||e)}
+    return renderTour();
+  }
+  if(!t)return;
+  if(a==='tourcloseReg'){await NET.db.doc('tournaments/'+t.id).update({status:'closed'});return}
+  if(a==='tourreopen'){await NET.db.doc('tournaments/'+t.id).update({status:'reg',regEnd:Math.max(t.regEnd||0,Date.now()+3600e3)});return}
+  if(a==='tourkick'){await NET.db.doc(`tournaments/${t.id}/players/${el.dataset.uid}`).delete().catch(()=>{});return}
+  if(a==='tourcancel'){if(!TOUR.confirm){TOUR.confirm=true;renderTour();setTimeout(()=>{TOUR.confirm=false;if(TOUR.open)renderTour()},3000);return}TOUR.confirm=false;await NET.db.doc('tournaments/'+t.id).update({status:'cancel'});return}
 }
 function closeAdmin(){ADM.open=false;clearInterval(ADM.tick);ADM.unsubs.forEach(u=>{try{u()}catch(e){}});ADM.unsubs=[];const d=document.getElementById('admov');if(d)d.hidden=true}
 const ago=t=>{if(!t)return '—';const s=(Date.now()-t)/1000;return s<100?'ახლა':s<3600?Math.round(s/60)+' წთ':s<86400?Math.round(s/3600)+' სთ':Math.round(s/86400)+' დღე'};
@@ -3604,6 +3771,7 @@ function renderHome(){
       ${saved?`<button class="hb" data-act="resume"><span>▶</span><b>გაგრძელება</b><small>შენახული თამაში</small></button>`:''}
       <button class="hb" data-act="go_local"><span>🎲</span><b>თამაში კომპიუტერთან</b><small>ან რამდენიმე ადამიანი ერთ ეკრანზე</small></button>
       <button class="hb" data-act="go_online"><span>🌐</span><b>ონლაინ მეგობრებთან</b><small>${NET.ready?(inv?`${inv} მოწვევა გელოდება`:'ოთახები, მოწვევა, მეგობრები'):NET.unavailable?'ამ ვერსიაში ხელმისაწვდომი არ არის':'უკავშირდება…'}</small></button>
+      ${NET.ready?tourHomeBtn():''}
       <div class="hmrow${NET.ready?' three':''}"><button class="hb sm" data-act="settings"><span>⚙</span><b>პარამეტრები</b></button>${NET.ready?'<button class="hb sm" data-act="lboard"><span>🏆</span><b>რეიტინგი</b></button>':''}<button class="hb sm" data-act="rules"><span>❓</span><b>წესები</b></button></div>
       ${NET.isAdmin?'<button class="hb sm" data-act="admin"><span>🛡</span><b>ადმინ პანელი</b></button>':''}
       ${NET.ready&&SOC.profile?`<div class="hprof">${esc(SOC.profile.name||'')} · ლეველი ${lvlOf(SOC.profile.xp)} · 🏆 ${SOC.profile.wins||0}</div>`:''}
@@ -3907,7 +4075,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=270;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=280;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 async function checkUpdate(){
   if(NET.mode!=='site')return;
@@ -4004,6 +4172,7 @@ document.addEventListener('click',e=>{
   if(a==='netjoin'){NET.myName=(document.getElementById('netname')||{}).value||NET.myName;netSavePrefs();netJoin(el.dataset.code||(document.getElementById('netcode')||{}).value);return}
   if(a==='netabandon'){const c=el.dataset.code;if(SOC.abandon===c){SOC.abandon=null;netAbandon(c)}else{SOC.abandon=c;renderSide();setTimeout(()=>{if(SOC.abandon===c){SOC.abandon=null;renderSide()}},4000)}return}
   if(a==='lboard'){showBoard();return}
+  if(a&&a.startsWith('tour')){tourAct(a,el);return}
   if(a==='lbclose'){hideBoard();return}
   if(a&&a.startsWith('ag')&&['agcash','agkick','agskip','agend'].includes(a)){adminGameAct(a,el);return}
   if(a==='faddu'){socialAddFriendUid(el.dataset.uid).then(()=>{const d=document.getElementById('lbov');if(d&&!d.hidden)d.innerHTML=boardHTML()});return}
