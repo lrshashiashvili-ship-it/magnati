@@ -1346,6 +1346,14 @@ html.forceland #chatbtn{bottom:10px!important}
 .tform textarea{resize:vertical;font:inherit}.tf2,.tf3{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tf3{grid-template-columns:1fr 1fr 1fr}
 @media (max-width:520px){.tf2,.tf3{grid-template-columns:1fr}.tgrid b{font-size:14.5px}.thead{flex-direction:column;align-items:stretch}.timg{width:100%;height:150px}.timg.ph{height:90px}}
 .timg.ph{justify-content:center;align-content:center;text-align:center}
+.tpop{width:min(100%,420px)!important;text-align:center;border-color:#E8B758!important;animation:pop .3s ease-out}
+.tpop-h{font-family:var(--display);font-weight:900;font-size:24px;color:#F6DA8E;margin:2px 0 8px}
+.tpop-img{width:100%;max-height:220px;object-fit:cover;border-radius:14px;border:1px solid rgba(232,183,88,.5);margin-bottom:8px}
+.tpop h3{margin:2px 0 8px;color:#fff;font-size:19px}
+.tpop-prize{display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:14px;background:linear-gradient(180deg,#3A2E16,#1A140A);border:1px solid #E8B758;margin-bottom:8px}
+.tpop-prize small{color:#E8B758;font-weight:800;font-size:12px}.tpop-prize b{font-size:18px;color:#FFE7A8}
+.tpop-when{font-size:13px;color:var(--muted);margin:0 0 12px}.tpop-when b{color:#F3E9D2}
+.tpop-acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.tpop-acts .wide{flex:1 1 100%}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -2075,12 +2083,20 @@ function tourHomeBtn(){
   return `<button class="hb tourhb${dot?' hot':''}" data-act="tour"><span>🏆</span><b>ტურნირი${t?': '+esc(t.title||''):''}</b><small>${sub}</small>${dot?'<i class="tdot"></i>':''}</button>`;
 }
 function tourNotify(){
-  const t=TOUR.cur;if(!t||tourState(t)!=='reg'||tourMine()||t.by===NET.uid||TOUR.open)return;
-  let seen='';try{seen=localStorage.getItem('tm-tour-seen:'+NET.uid)||''}catch(e){}
-  if(seen===t.id)return;try{localStorage.setItem('tm-tour-seen:'+NET.uid,t.id)}catch(e){}
-  let b=document.getElementById('tourbar');if(!b){b=document.createElement('div');b.id='tourbar';document.body.appendChild(b)}
-  b.innerHTML=`<span>🏆 ახალი ტურნირი: <b>${esc(t.title||'')}</b>${t.prize?` · პრიზი: ${esc(t.prize)}`:''}</span><button class="btn sm gold" data-act="tour">დეტალები</button><button class="btn sm ghost" data-act="tourbarx">✕</button>`;
-  b.hidden=false;ANN_PENDING=true;try{annRing()}catch(e){}
+  const t=TOUR.cur;if(!t||tourState(t)!=='reg'||tourMine()||TOUR.open)return;
+  let seen='';try{seen=sessionStorage.getItem('tm-tour-pop:'+NET.uid)||''}catch(e){}
+  if(seen===t.id)return;
+  if(S&&S.phase!=='over')return;
+  try{sessionStorage.setItem('tm-tour-pop:'+NET.uid,t.id)}catch(e){}
+  let d=document.getElementById('tourpop');if(!d){d=document.createElement('div');d.id='tourpop';d.className='overlay rulesov';document.body.appendChild(d)}
+  d.innerHTML=`<div class="setbox tpop"><div class="tpop-h">🏆 ახალი ტურნირი!</div>
+    ${t.img?`<img class="tpop-img" src="${esc(t.img)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`:''}
+    <h3>${esc(t.title||'')}</h3>
+    ${t.prize?`<div class="tpop-prize"><small>🎁 პრიზი</small><b>${esc(t.prize)}</b></div>`:''}
+    <p class="tpop-when">იწყება <b>${fmtDT(t.startAt)}</b> · რეგისტრაცია <b>${fmtDT(t.regEnd)}</b>-მდე · ადგილები ${TOUR.players.length}/${t.max||8}</p>
+    <div class="tpop-acts"><button class="btn gold wide" data-act="tourpopjoin">✋ რეგისტრაცია</button>
+      <button class="btn ghost" data-act="tourpopinfo">დეტალები</button><button class="btn ghost" data-act="tourpopx">მოგვიანებით</button></div></div>`;
+  d.hidden=false;ANN_PENDING=true;try{annRing()}catch(e){}
 }
 function showTour(){TOUR.open=true;let d=document.getElementById('tourov');if(!d){d=document.createElement('div');d.id='tourov';d.className='overlay rulesov';document.body.appendChild(d)}d.hidden=false;renderTour();const b=document.getElementById('tourbar');if(b)b.hidden=true}
 function hideTour(){TOUR.open=false;TOUR.edit=false;const d=document.getElementById('tourov');if(d)d.hidden=true}
@@ -2147,6 +2163,7 @@ async function tourAct(a,el){
   const t=TOUR.cur;TOUR.note='';
   if(a==='tour'){showTour();return}
   if(a==='tourclose'){hideTour();return}
+  if(a==='tourpopx'||a==='tourpopinfo'||a==='tourpopjoin'){const d=document.getElementById('tourpop');if(d)d.hidden=true;if(a==='tourpopx')return;showTour();if(a==='tourpopjoin')return tourAct('tourjoin',el);return}
   if(a==='tourbarx'){const b=document.getElementById('tourbar');if(b)b.hidden=true;return}
   if(a==='tourjoin'&&t){
     if(tourState(t)!=='reg'){TOUR.note='რეგისტრაცია დახურულია.';return renderTour()}
@@ -3759,7 +3776,7 @@ function renderHome(){
   let d=document.getElementById('home');
   renderAccount();
   const show=!S&&APP.screen==='home'&&!NET.code&&!needAccount();
-  homeBg(show||needAccount());
+  homeBg(show||needAccount());if(show&&typeof tourNotify==='function'&&TOUR.cur)setTimeout(tourNotify,400);
   if(!show){if(d)d.hidden=true;return}
   if(!d){d=document.createElement('div');d.id='home';d.className='home';document.body.appendChild(d)}
   d.hidden=false;
@@ -4075,7 +4092,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=280;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=290;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 async function checkUpdate(){
   if(NET.mode!=='site')return;
