@@ -1403,6 +1403,26 @@ body.tourmode .ph h2{color:#F6DA8E}
 .tover-r{display:grid;grid-template-columns:24px 26px 1fr auto;gap:8px;align-items:center;padding:5px 6px;border-radius:8px}
 .tover-r.me{background:rgba(232,183,88,.14)}.tover-r .av{width:24px;height:24px;display:grid}.tover-r .av svg{width:100%;height:100%}
 .tover-r em{font-style:normal;font-weight:800;color:#9fe0a8}.tover .note{margin:8px 0 0;text-align:center}
+
+/* v3.7: refined tournament board centre */
+.tdesk{position:absolute;inset:0;display:none;pointer-events:none;z-index:0}
+.tdsvg{position:absolute;inset:0;width:100%;height:100%}
+.tdesk::before{content:'';position:absolute;inset:clamp(5px,2.2cqw,12px);border:1px solid rgba(232,196,99,.55);border-radius:4px;box-shadow:inset 0 0 0 3px rgba(10,4,6,.6),inset 0 0 0 4px rgba(232,196,99,.22)}
+.tdesk::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(232,196,99,.028) 0 1px,transparent 1px 14px),repeating-linear-gradient(-45deg,rgba(232,196,99,.028) 0 1px,transparent 1px 14px);mix-blend-mode:screen}
+.tdesk .tc{position:absolute;width:clamp(18px,7cqw,40px);height:auto}
+.tdesk .tc.tl{left:clamp(3px,1.2cqw,8px);top:clamp(3px,1.2cqw,8px)}
+.tdesk .tc.tr{right:clamp(3px,1.2cqw,8px);top:clamp(3px,1.2cqw,8px);transform:scaleX(-1)}
+.tdesk .tc.bl{left:clamp(3px,1.2cqw,8px);bottom:clamp(3px,1.2cqw,8px);transform:scaleY(-1)}
+.tdesk .tc.br{right:clamp(3px,1.2cqw,8px);bottom:clamp(3px,1.2cqw,8px);transform:scale(-1,-1)}
+.brand .orn-t{display:none}
+body.tourmode .desk{background:radial-gradient(75% 70% at 50% 46%,#4A1020 0%,#2A0912 42%,#120408 78%,#080305 100%)!important}
+body.tourmode .desk .pano,body.tourmode .desk .skyl{display:none!important}
+body.tourmode .tdesk{display:block}
+body.tourmode .brand .orn:not(.orn-t){display:none}
+body.tourmode .brand .orn-t{display:block;color:#F6DA8E;-webkit-text-fill-color:#F6DA8E;letter-spacing:.42em}
+body.tourmode .desk .msg{text-shadow:0 1px 3px rgba(0,0,0,.8)}
+body.tourmode .glegend{opacity:.85}
+@media (max-width:760px){body.tourmode .frame::after{display:none}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -3470,7 +3490,7 @@ function buildBoard(){
   let h='';
   CELLS.forEach((c,i)=>{const [r,col]=rc(i);
     h+=`<button class="cell${cornerCls(i)}" id="c${i}" style="grid-row:${r};grid-column:${col}" data-act="sel" data-i="${i}" aria-label="${esc(c.n)}${c.price?', '+c.price+' ლარი':''}"></button>`});
-  h+=`<div class="desk" id="desk"><div class="skyl sky-day"></div><div class="skyl sky-dusk"></div><div class="skyl sky-dawn"></div>${panorama()}<div class="desk-in"><div class="brand">თბილისელი მაგნატი<span class="orn">✦ ქალაქი შენს ხელშია ✦</span></div>
+  h+=`<div class="desk" id="desk"><div class="skyl sky-day"></div><div class="skyl sky-dusk"></div><div class="skyl sky-dawn"></div>${panorama()}${tourDeskHTML()}<div class="desk-in"><div class="brand">თბილისელი მაგნატი<span class="orn">✦ ქალაქი შენს ხელშია ✦</span><span class="orn orn-t">✦ ტურნირი ✦</span></div>
     <div class="dice" id="dice">${dieHTML()}${dieHTML()}</div><div class="dsum num" id="dsum"></div><div class="msg" id="msg"></div><div class="actslot" id="actsSlot"></div><div class="glegend">${GROUPS.map(g=>`<span><i style="--gc:${g.c}"></i>${g.n}</span>`).join('')}</div><div class="round num" id="round"></div></div></div>
     <div class="tklayer" id="tk"></div>`;
   b.innerHTML=h;cellCache=[];setDice(false);
@@ -3535,6 +3555,28 @@ function placeHouses(){
     h+=`<div class="hrow${vert?' v':''}${big?' big':''}" style="left:${x}%;top:${y}%;z-index:${Math.round(y*10)}"><div class="hrow-in">${Array.from({length:n},()=>houseSvg(col,big)).join('')}</div></div>`;
   }
   if(H._last!==h){H.innerHTML=h;H._last=h}
+}
+
+function tourDeskHTML(){
+  const cx=100,cy=78;let rays='';
+  for(let i=0;i<40;i++){const a=i/40*Math.PI*2,w=Math.PI/40*.55,r=240;
+    const p=(t)=>`${(cx+Math.cos(t)*r).toFixed(1)},${(cy+Math.sin(t)*r).toFixed(1)}`;
+    rays+=`<polygon points="${cx},${cy} ${p(a-w)} ${p(a+w)}" opacity="${i%2?.035:.075}"/>`}
+  let leaves='';
+  const leaf=(th,side)=>{const r=44,x=cx+Math.cos(th)*r,y=cy+Math.sin(th)*r,deg=th*180/Math.PI+90+(side*28);return `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="5" ry="1.9" transform="rotate(${deg.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`};
+  for(let k=0;k<11;k++){const t=(118+k*12)*Math.PI/180;leaves+=leaf(t,1);const t2=(62-k*12)*Math.PI/180;leaves+=leaf(t2,-1)}
+  let stars='';[-28,-14,0,14,28].forEach((dx,i)=>{const x=cx+dx,y=cy-56+Math.abs(dx)*.18,r=i===2?3.2:2.2;let d='';for(let k=0;k<10;k++){const a=-Math.PI/2+k*Math.PI/5,rr=k%2?r*.42:r;d+=(k?'L':'M')+(x+Math.cos(a)*rr).toFixed(2)+' '+(y+Math.sin(a)*rr).toFixed(2)}stars+=`<path d="${d}Z"/>`});
+  const corner=c=>`<svg class="tc ${c}" viewBox="0 0 40 40" aria-hidden="true"><path d="M2 38V8a6 6 0 0 1 6-6h30" fill="none" stroke="#E8C463" stroke-width="1.4"/><path d="M8 38V14a6 6 0 0 1 6-6h24" fill="none" stroke="#E8C463" stroke-width=".7" opacity=".7"/><path d="M8 8l5 0 0 5-5 0z" fill="#E8C463" transform="rotate(45 10.5 10.5)"/><circle cx="2" cy="38" r="1.6" fill="#E8C463"/><circle cx="38" cy="2" r="1.6" fill="#E8C463"/></svg>`;
+  return `<div class="tdesk" aria-hidden="true"><svg class="tdsvg" viewBox="0 0 200 160" preserveAspectRatio="xMidYMid slice">
+    <defs><radialGradient id="tdg" cx="50%" cy="48%" r="60%"><stop offset="0" stop-color="#F6DA8E"/><stop offset="1" stop-color="#B8862B"/></radialGradient></defs>
+    <g fill="url(#tdg)">${rays}</g>
+    <circle cx="${cx}" cy="${cy}" r="54" fill="none" stroke="#E8C463" stroke-width=".45" opacity=".35"/>
+    <circle cx="${cx}" cy="${cy}" r="58" fill="none" stroke="#E8C463" stroke-width=".3" stroke-dasharray="1 2.2" opacity=".35"/>
+    <circle cx="${cx}" cy="${cy}" r="36" fill="none" stroke="#E8C463" stroke-width=".3" opacity=".2"/>
+    <g fill="#E8C463" opacity=".26">${leaves}</g>
+    <g fill="#E8C463" opacity=".35">${stars}</g>
+    <g fill="#E8C463" opacity=".13" transform="translate(${cx} ${cy}) scale(1.05)"><path d="M-17-24h34v6c0 13-7 22-17 24-10-2-17-11-17-24z"/><path d="M-17-19h-7c0 9 5 14 10 15l1-4c-3-1-5-4-5-7h3zM17-19h7c0 9-5 14-10 15l-1-4c3-1 5-4 5-7h-3z"/><path d="M-4 6h8v8h6v5h-20v-5h6z"/><rect x="-14" y="19" width="28" height="5" rx="1"/></g>
+    </svg>${corner('tl')}${corner('tr')}${corner('bl')}${corner('br')}</div>`;
 }
 function applyTod(){
   const d=document.getElementById('desk');if(!d)return;
@@ -4342,7 +4384,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=360;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=370;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 const IS_SITE=!!document.querySelector('script[src="config.js"]');
 function applyUpdate(){try{if(S&&!NET.on&&!(S.tour&&S.tour.preview)&&S.phase!=='moving')localStorage.setItem('tm-save-v7',JSON.stringify(S));sessionStorage.setItem('tm-after-upd',JSON.stringify({code:NET.code||null,local:!!(S&&!NET.on)}))}catch(e){}location.replace(location.pathname+'?v='+Date.now())}
