@@ -2077,7 +2077,7 @@ function tourPlayersWatch(){
   if(!id)return;
   TOUR.pUnsub=NET.db.collection('tournaments/'+id+'/players').onSnapshot(q=>{TOUR.players=q.docs.map(d=>d.data()).filter(Boolean).sort((a,b)=>(a.at||0)-(b.at||0));try{renderHome()}catch(e){}if(TOUR.open)renderTour()},()=>{});
 }
-const KEYZ_LINK='https://www.ldlc.com/en/product/PB00714045.html';
+const KEYZ_LINK='';
 function tourFix(t){if(!t)return t;const kz=/keyz|კლავიატ/i.test(t.prize||'');return Object.assign({},t,{img:t.img||(kz?'prize-keyboard.jpg':''),link:t.link||(kz?KEYZ_LINK:'')})}
 function tourState(t){
   t=t||TOUR.cur;if(!t)return 'none';
@@ -2118,7 +2118,7 @@ const TIMG_BAD=new Set();
 function timgErr(el){const src=el.getAttribute('src');TIMG_BAD.add(src);if(src!=='prize-keyboard.jpg'&&/keyz|კლავიატ/i.test((TOUR.cur&&TOUR.cur.prize)||'')){el.setAttribute('src','prize-keyboard.jpg');return}const d=document.createElement('div');d.className='timg ph';d.textContent='🏆';el.replaceWith(d)}
 const dtVal=t=>{if(!t)return '';const d=new Date(t-new Date(t).getTimezoneOffset()*60000);return d.toISOString().slice(0,16)};
 function tourForm(t){
-  t=t||{};const now=Date.now(),def={title:'მეგობრების ტურნირი',prize:'KEYZ ELITE 400 HE BW კლავიატურა',img:'prize-keyboard.jpg',link:KEYZ_LINK,desc:'',regEnd:now+86400e3,startAt:now+90000e3,max:8,games:3,rounds:30};const v=Object.assign({},def,t);
+  t=t||{};const now=Date.now(),def={title:'მეგობრების ტურნირი',prize:'THE G-LAB KEYZ ELITE 400 HE BW',img:'prize-keyboard.jpg',link:KEYZ_LINK,desc:'',regEnd:now+86400e3,startAt:now+90000e3,max:8,games:3,rounds:30};const v=Object.assign({},def,t);
   return `<div class="tform"><h3>${t.id?'ტურნირის რედაქტირება':'ახალი ტურნირი'}</h3>
     <label>სახელი<input class="ain" id="tf_title" maxlength="40" value="${esc(v.title)}"></label>
     <label>პრიზი<input class="ain" id="tf_prize" maxlength="80" value="${esc(v.prize)}" placeholder="მაგ. KEYZ ELITE 400 HE კლავიატურა"></label>
@@ -4112,7 +4112,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=330;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=340;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 const IS_SITE=!!document.querySelector('script[src="config.js"]');
 function applyUpdate(){try{if(S&&!NET.on&&S.phase!=='moving')localStorage.setItem('tm-save-v7',JSON.stringify(S));sessionStorage.setItem('tm-after-upd',JSON.stringify({code:NET.code||null,local:!!(S&&!NET.on)}))}catch(e){}location.replace(location.pathname+'?v='+Date.now())}
