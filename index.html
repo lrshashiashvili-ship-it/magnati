@@ -1354,6 +1354,7 @@ html.forceland #chatbtn{bottom:10px!important}
 .tpop-prize small{color:#E8B758;font-weight:800;font-size:12px}.tpop-prize b{font-size:18px;color:#FFE7A8}
 .tpop-when{font-size:13px;color:var(--muted);margin:0 0 12px}.tpop-when b{color:#F3E9D2}
 .tpop-acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.tpop-acts .wide{flex:1 1 100%}
+.tgrid em.off{color:var(--muted)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -2052,7 +2053,7 @@ function openAdmin(){
 /* ================= TOURNAMENT (announcement + registration) ================= */
 const TOUR={list:[],cur:null,players:[],pUnsub:null,pId:null,open:false,edit:false,note:'',started:false,busy:false};
 const TOUR_PTS=[10,6,4,2,1];
-const fmtDT=t=>{if(!t)return '—';const d=new Date(t),M=['იან','თებ','მარ','აპრ','მაი','ივნ','ივლ','აგვ','სექ','ოქტ','ნოე','დეკ'];return `${d.getDate()} ${M[d.getMonth()]}, ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`};
+const fmtDT=t=>{if(!t)return '—';const d=new Date(t),M=['იან','თებ','მარ','აპრ','მაი','ივნ','ივლ','აგვ','სექ','ოქტ','ნოე','დეკ'];return `${['კვ','ორ','სმ','ოთ','ხთ','პრ','შბ'][d.getDay()]}, ${d.getDate()} ${M[d.getMonth()]}, ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`};
 const fmtLeft=ms=>{if(ms<=0)return '0 წთ';const m=Math.floor(ms/60000),d=Math.floor(m/1440),h=Math.floor(m%1440/60),mm=m%60,ss=Math.floor(ms%60000/1000);return d?`${d} დღე ${h} სთ`:h?`${h} სთ ${mm} წთ`:mm?`${mm} წთ ${ss} წმ`:`${ss} წმ`};
 function tourWatch(){
   if(TOUR.started||!NET.ready)return;TOUR.started=true;
@@ -2090,7 +2091,7 @@ function tourNotify(){
   try{sessionStorage.setItem('tm-tour-pop:'+NET.uid,t.id)}catch(e){}
   let d=document.getElementById('tourpop');if(!d){d=document.createElement('div');d.id='tourpop';d.className='overlay rulesov';document.body.appendChild(d)}
   d.innerHTML=`<div class="setbox tpop"><div class="tpop-h">🏆 ახალი ტურნირი!</div>
-    ${t.img?`<img class="tpop-img" src="${esc(t.img)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`:''}
+    ${t.img&&!TIMG_BAD.has(t.img)?`<img class="tpop-img" src="${esc(t.img)}" alt="" referrerpolicy="no-referrer" onerror="TIMG_BAD.add(this.getAttribute('src'));this.remove()">`:''}
     <h3>${esc(t.title||'')}</h3>
     ${t.prize?`<div class="tpop-prize"><small>🎁 პრიზი</small><b>${esc(t.prize)}</b></div>`:''}
     <p class="tpop-when">იწყება <b>${fmtDT(t.startAt)}</b> · რეგისტრაცია <b>${fmtDT(t.regEnd)}</b>-მდე · ადგილები ${TOUR.players.length}/${t.max||8}</p>
@@ -2100,14 +2101,18 @@ function tourNotify(){
 }
 function showTour(){TOUR.open=true;let d=document.getElementById('tourov');if(!d){d=document.createElement('div');d.id='tourov';d.className='overlay rulesov';document.body.appendChild(d)}d.hidden=false;renderTour();const b=document.getElementById('tourbar');if(b)b.hidden=true}
 function hideTour(){TOUR.open=false;TOUR.edit=false;const d=document.getElementById('tourov');if(d)d.hidden=true}
-setInterval(()=>{if(TOUR.open&&!TOUR.edit)renderTour()},1000);
+setInterval(()=>{if(!TOUR.open||TOUR.edit)return;
+  if(tourState()!==TOUR.lastSt){renderTour();return}
+  document.querySelectorAll('#tourov [data-cd]').forEach(e=>{const ms=+e.dataset.cd-Date.now();e.textContent=ms>0?(e.dataset.pre||'')+fmtLeft(ms)+(e.dataset.post||''):''})},1000);
+const TIMG_BAD=new Set();
+function timgErr(el){TIMG_BAD.add(el.getAttribute('src'));const d=document.createElement('div');d.className='timg ph';d.textContent='🏆';el.replaceWith(d)}
 const dtVal=t=>{if(!t)return '';const d=new Date(t-new Date(t).getTimezoneOffset()*60000);return d.toISOString().slice(0,16)};
 function tourForm(t){
   t=t||{};const now=Date.now(),def={title:'მეგობრების ტურნირი',prize:'',img:'',desc:'',regEnd:now+86400e3,startAt:now+90000e3,max:8,games:3,rounds:30};const v=Object.assign({},def,t);
   return `<div class="tform"><h3>${t.id?'ტურნირის რედაქტირება':'ახალი ტურნირი'}</h3>
     <label>სახელი<input class="ain" id="tf_title" maxlength="40" value="${esc(v.title)}"></label>
     <label>პრიზი<input class="ain" id="tf_prize" maxlength="80" value="${esc(v.prize)}" placeholder="მაგ. KEYZ ELITE 400 HE კლავიატურა"></label>
-    <label>პრიზის სურათის ბმული (არასავალდებულო)<input class="ain" id="tf_img" maxlength="400" value="${esc(v.img)}" placeholder="https://..."></label>
+    <label>პრიზის სურათის ბმული (არასავალდებულო)<input class="ain" id="tf_img" maxlength="400" value="${esc(v.img)}" placeholder="https://...jpg / png / webp"><small class="note" style="font-weight:500">სურათზე მარჯვენა ღილაკი → „Copy image address". ბმული უნდა მთავრდებოდეს .jpg, .png ან .webp-ით.</small></label>
     <label>აღწერა / დამატებითი წესები<textarea class="ain" id="tf_desc" maxlength="600" rows="3">${esc(v.desc)}</textarea></label>
     <div class="tf2"><label>რეგისტრაცია მთავრდება<input class="ain" type="datetime-local" id="tf_regEnd" value="${dtVal(v.regEnd)}"></label>
       <label>ტურნირი იწყება<input class="ain" type="datetime-local" id="tf_startAt" value="${dtVal(v.startAt)}"></label></div>
@@ -2130,13 +2135,14 @@ function renderTour(){
   }
   const n=TOUR.players.length,max=t.max||8,mine=tourMine();
   const badge={reg:'<span class="tst reg">რეგისტრაცია ღიაა</span>',full:'<span class="tst full">შემადგენლობა შევსებულია</span>',closed:'<span class="tst full">რეგისტრაცია დასრულდა</span>',play:'<span class="tst play">მიმდინარეობს</span>',done:'<span class="tst done">დასრულდა</span>'}[st]||'';
-  h+=`<div class="thead">${t.img?`<img class="timg" src="${esc(t.img)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`:'<div class="timg ph">🏆</div>'}
+  TOUR.lastSt=st;
+  h+=`<div class="thead">${t.img&&!TIMG_BAD.has(t.img)?`<img class="timg" src="${esc(t.img)}" alt="პრიზი" referrerpolicy="no-referrer" onerror="timgErr(this)">`:'<div class="timg ph">🏆</div>'}
     <div class="tinfo"><h3>${esc(t.title||'')}</h3>${badge}${t.prize?`<div class="tprize">🎁 პრიზი: <b>${esc(t.prize)}</b></div>`:''}</div></div>`;
   if(t.desc)h+=`<p class="tdesc">${esc(t.desc)}</p>`;
   const regLeft=t.regEnd-now,startLeft=t.startAt-now;
   h+=`<div class="tgrid">
-    <div><small>რეგისტრაცია მთავრდება</small><b>${fmtDT(t.regEnd)}</b>${st==='reg'&&regLeft>0?`<em>დარჩა ${fmtLeft(regLeft)}</em>`:''}</div>
-    <div><small>ტურნირი იწყება</small><b>${fmtDT(t.startAt)}</b>${startLeft>0&&st!=='done'?`<em>${fmtLeft(startLeft)}-ში</em>`:''}</div>
+    <div><small>რეგისტრაცია მთავრდება</small><b>${fmtDT(t.regEnd)}</b>${st==='reg'&&regLeft>0?`<em data-cd="${t.regEnd}" data-pre="დარჩა ">დარჩა ${fmtLeft(regLeft)}</em>`:st!=='reg'?'<em class="off">დასრულდა</em>':''}</div>
+    <div><small>ტურნირი იწყება</small><b>${fmtDT(t.startAt)}</b>${startLeft>0&&st!=='done'?`<em data-cd="${t.startAt}" data-post="-ში">${fmtLeft(startLeft)}-ში</em>`:''}</div>
     <div><small>მონაწილეები</small><b>${n} / ${max}</b><em>${st==='reg'?`თავისუფალია ${Math.max(0,max-n)} ადგილი`:''}</em></div>
     <div><small>ფორმატი</small><b>${t.games||3} პარტია × ${t.rounds||30} რაუნდი</b><em>მხოლოდ ადამიანები</em></div></div>`;
   h+=`<details class="trules" ${mine||st!=='reg'?'':'open'}><summary>📜 როგორ ტარდება</summary><ol>
@@ -2180,6 +2186,7 @@ async function tourAct(a,el){
     const data={title:g('tf_title').trim().slice(0,40)||'ტურნირი',prize:g('tf_prize').trim().slice(0,80),img:/^https:\/\//.test(g('tf_img').trim())?g('tf_img').trim().slice(0,400):'',desc:g('tf_desc').trim().slice(0,600),
       regEnd:tm('tf_regEnd'),startAt:tm('tf_startAt'),max:Math.min(28,Math.max(2,+g('tf_max')||8)),games:Math.min(10,Math.max(1,+g('tf_games')||3)),rounds:Math.min(100,Math.max(10,+g('tf_rounds')||30))};
     if(!data.regEnd||!data.startAt){TOUR.note='მიუთითე თარიღები.';return renderTour()}
+    if(TOUR.edit==='new'&&data.regEnd<Date.now()+60000){TOUR.note='რეგისტრაციის დასრულება მომავალში უნდა იყოს.';return renderTour()}
     if(data.startAt<data.regEnd){TOUR.note='ტურნირი რეგისტრაციის დასრულების შემდეგ უნდა დაიწყოს.';return renderTour()}
     try{
       if(TOUR.edit==='edit'&&t){await NET.db.doc('tournaments/'+t.id).update(data)}
@@ -4092,7 +4099,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=290;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=300;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 async function checkUpdate(){
   if(NET.mode!=='site')return;
