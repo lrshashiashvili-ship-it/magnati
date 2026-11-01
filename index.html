@@ -1355,6 +1355,10 @@ html.forceland #chatbtn{bottom:10px!important}
 .tpop-when{font-size:13px;color:var(--muted);margin:0 0 12px}.tpop-when b{color:#F3E9D2}
 .tpop-acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.tpop-acts .wide{flex:1 1 100%}
 .tgrid em.off{color:var(--muted)}
+.tlink{position:relative;display:block;flex:none;border-radius:12px}.tlink span{position:absolute;left:6px;bottom:6px;padding:2px 8px;border-radius:999px;background:rgba(0,0,0,.7);color:#F6DA8E;font-size:11px;font-weight:800}
+.tlink:hover .timg{border-color:#F6DA8E;filter:brightness(1.1)}.tprize a{color:inherit;text-decoration:none}.tprize a:hover b{text-decoration:underline}
+.timg{width:160px;height:110px}.tfchk{display:flex;align-items:center;gap:6px;font-weight:600;color:#E8DCC2;margin-top:4px}
+@media (max-width:520px){.tlink{width:100%}.tlink .timg{width:100%;height:180px}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -2079,7 +2083,7 @@ function tourState(t){
 const tourMine=()=>!!TOUR.players.find(p=>p.uid===NET.uid);
 function tourHomeBtn(){
   const t=TOUR.cur,st=tourState(t);
-  const sub=!t?'ჯერ ტურნირი არ არის':st==='reg'?(tourMine()?'✓ დარეგისტრირებული ხარ':`რეგისტრაცია ღიაა · ${TOUR.players.length}/${t.max||8}`):st==='full'||st==='closed'?`შემადგენლობა შევსებულია · იწყება ${fmtDT(t.startAt)}`:st==='play'?'მიმდინარეობს':st==='done'?'დასრულდა':'';
+  const sub=!t?'ჯერ ტურნირი არ არის':st==='reg'?(tourMine()?'✓ დარეგისტრირებული ხარ':`რეგისტრაცია ღიაა · ${TOUR.players.length}/${t.max||8}`):st==='full'||st==='closed'?`შემადგენლობა შევსებულია${t.startAt?' · იწყება '+fmtDT(t.startAt):''}`:st==='play'?'მიმდინარეობს':st==='done'?'დასრულდა':'';
   const dot=t&&st==='reg'&&!tourMine();
   return `<button class="hb tourhb${dot?' hot':''}" data-act="tour"><span>🏆</span><b>ტურნირი${t?': '+esc(t.title||''):''}</b><small>${sub}</small>${dot?'<i class="tdot"></i>':''}</button>`;
 }
@@ -2091,10 +2095,10 @@ function tourNotify(){
   try{sessionStorage.setItem('tm-tour-pop:'+NET.uid,t.id)}catch(e){}
   let d=document.getElementById('tourpop');if(!d){d=document.createElement('div');d.id='tourpop';d.className='overlay rulesov';document.body.appendChild(d)}
   d.innerHTML=`<div class="setbox tpop"><div class="tpop-h">🏆 ახალი ტურნირი!</div>
-    ${t.img&&!TIMG_BAD.has(t.img)?`<img class="tpop-img" src="${esc(t.img)}" alt="" referrerpolicy="no-referrer" onerror="TIMG_BAD.add(this.getAttribute('src'));this.remove()">`:''}
+    ${t.img&&!TIMG_BAD.has(t.img)?`${t.link?`<a href="${esc(t.link)}" target="_blank" rel="noopener">`:''}<img class="tpop-img" src="${esc(t.img)}" alt="" referrerpolicy="no-referrer" onerror="if(this.getAttribute('src')!=='prize-keyboard.jpg'&&/keyz|კლავიატ/i.test(TOUR.cur&&TOUR.cur.prize||'')){this.src='prize-keyboard.jpg'}else{TIMG_BAD.add(this.getAttribute('src'));this.remove()}">${t.link?'</a>':''}`:''}
     <h3>${esc(t.title||'')}</h3>
     ${t.prize?`<div class="tpop-prize"><small>🎁 პრიზი</small><b>${esc(t.prize)}</b></div>`:''}
-    <p class="tpop-when">იწყება <b>${fmtDT(t.startAt)}</b> · რეგისტრაცია <b>${fmtDT(t.regEnd)}</b>-მდე · ადგილები ${TOUR.players.length}/${t.max||8}</p>
+    <p class="tpop-when">${t.startAt?`იწყება <b>${fmtDT(t.startAt)}</b> · `:''}რეგისტრაცია <b>${fmtDT(t.regEnd)}</b>-მდე · ადგილები ${TOUR.players.length}/${t.max||8}</p>
     <div class="tpop-acts"><button class="btn gold wide" data-act="tourpopjoin">✋ რეგისტრაცია</button>
       <button class="btn ghost" data-act="tourpopinfo">დეტალები</button><button class="btn ghost" data-act="tourpopx">მოგვიანებით</button></div></div>`;
   d.hidden=false;ANN_PENDING=true;try{annRing()}catch(e){}
@@ -2105,17 +2109,18 @@ setInterval(()=>{if(!TOUR.open||TOUR.edit)return;
   if(tourState()!==TOUR.lastSt){renderTour();return}
   document.querySelectorAll('#tourov [data-cd]').forEach(e=>{const ms=+e.dataset.cd-Date.now();e.textContent=ms>0?(e.dataset.pre||'')+fmtLeft(ms)+(e.dataset.post||''):''})},1000);
 const TIMG_BAD=new Set();
-function timgErr(el){TIMG_BAD.add(el.getAttribute('src'));const d=document.createElement('div');d.className='timg ph';d.textContent='🏆';el.replaceWith(d)}
+function timgErr(el){const src=el.getAttribute('src');TIMG_BAD.add(src);if(src!=='prize-keyboard.jpg'&&/keyz|კლავიატ/i.test((TOUR.cur&&TOUR.cur.prize)||'')){el.setAttribute('src','prize-keyboard.jpg');return}const d=document.createElement('div');d.className='timg ph';d.textContent='🏆';el.replaceWith(d)}
 const dtVal=t=>{if(!t)return '';const d=new Date(t-new Date(t).getTimezoneOffset()*60000);return d.toISOString().slice(0,16)};
 function tourForm(t){
-  t=t||{};const now=Date.now(),def={title:'მეგობრების ტურნირი',prize:'',img:'',desc:'',regEnd:now+86400e3,startAt:now+90000e3,max:8,games:3,rounds:30};const v=Object.assign({},def,t);
+  t=t||{};const now=Date.now(),def={title:'მეგობრების ტურნირი',prize:'KEYZ ELITE 400 HE BW კლავიატურა',img:'prize-keyboard.jpg',link:'',desc:'',regEnd:now+86400e3,startAt:now+90000e3,max:8,games:3,rounds:30};const v=Object.assign({},def,t);
   return `<div class="tform"><h3>${t.id?'ტურნირის რედაქტირება':'ახალი ტურნირი'}</h3>
     <label>სახელი<input class="ain" id="tf_title" maxlength="40" value="${esc(v.title)}"></label>
     <label>პრიზი<input class="ain" id="tf_prize" maxlength="80" value="${esc(v.prize)}" placeholder="მაგ. KEYZ ELITE 400 HE კლავიატურა"></label>
     <label>პრიზის სურათის ბმული (არასავალდებულო)<input class="ain" id="tf_img" maxlength="400" value="${esc(v.img)}" placeholder="https://...jpg / png / webp"><small class="note" style="font-weight:500">სურათზე მარჯვენა ღილაკი → „Copy image address". ბმული უნდა მთავრდებოდეს .jpg, .png ან .webp-ით.</small></label>
+    <label>პრიზის ბმული (სად ნახონ)<input class="ain" id="tf_link" maxlength="400" value="${esc(v.link||'')}" placeholder="https://... (პროდუქტის გვერდი)"></label>
     <label>აღწერა / დამატებითი წესები<textarea class="ain" id="tf_desc" maxlength="600" rows="3">${esc(v.desc)}</textarea></label>
     <div class="tf2"><label>რეგისტრაცია მთავრდება<input class="ain" type="datetime-local" id="tf_regEnd" value="${dtVal(v.regEnd)}"></label>
-      <label>ტურნირი იწყება<input class="ain" type="datetime-local" id="tf_startAt" value="${dtVal(v.startAt)}"></label></div>
+      <label>ტურნირი იწყება<input class="ain" type="datetime-local" id="tf_startAt" value="${v.startAt?dtVal(v.startAt):''}"><span class="tfchk"><input type="checkbox" id="tf_nostart" ${t.id&&!t.startAt?'checked':''}> დრო ჯერ უცნობია (არ გამოჩნდება)</span></label></div>
     <div class="tf3"><label>მაქს. მოთამაშე<input class="ain" type="number" id="tf_max" min="2" max="28" value="${v.max}"></label>
       <label>პარტიები<input class="ain" type="number" id="tf_games" min="1" max="10" value="${v.games}"></label>
       <label>რაუნდი პარტიაში<input class="ain" type="number" id="tf_rounds" min="10" max="100" value="${v.rounds}"></label></div>
@@ -2136,18 +2141,19 @@ function renderTour(){
   const n=TOUR.players.length,max=t.max||8,mine=tourMine();
   const badge={reg:'<span class="tst reg">რეგისტრაცია ღიაა</span>',full:'<span class="tst full">შემადგენლობა შევსებულია</span>',closed:'<span class="tst full">რეგისტრაცია დასრულდა</span>',play:'<span class="tst play">მიმდინარეობს</span>',done:'<span class="tst done">დასრულდა</span>'}[st]||'';
   TOUR.lastSt=st;
-  h+=`<div class="thead">${t.img&&!TIMG_BAD.has(t.img)?`<img class="timg" src="${esc(t.img)}" alt="პრიზი" referrerpolicy="no-referrer" onerror="timgErr(this)">`:'<div class="timg ph">🏆</div>'}
-    <div class="tinfo"><h3>${esc(t.title||'')}</h3>${badge}${t.prize?`<div class="tprize">🎁 პრიზი: <b>${esc(t.prize)}</b></div>`:''}</div></div>`;
+  const IMG=t.img&&!TIMG_BAD.has(t.img)?`<img class="timg" src="${esc(t.img)}" alt="პრიზი" referrerpolicy="no-referrer" onerror="timgErr(this)">`:'<div class="timg ph">🏆</div>';
+  h+=`<div class="thead">${t.link?`<a class="tlink" href="${esc(t.link)}" target="_blank" rel="noopener" title="პრიზის ნახვა">${IMG}<span>🔗 ნახვა</span></a>`:IMG}
+    <div class="tinfo"><h3>${esc(t.title||'')}</h3>${badge}${t.prize?`<div class="tprize">🎁 პრიზი: ${t.link?`<a href="${esc(t.link)}" target="_blank" rel="noopener"><b>${esc(t.prize)}</b> ↗</a>`:`<b>${esc(t.prize)}</b>`}</div>`:''}</div></div>`;
   if(t.desc)h+=`<p class="tdesc">${esc(t.desc)}</p>`;
   const regLeft=t.regEnd-now,startLeft=t.startAt-now;
   h+=`<div class="tgrid">
     <div><small>რეგისტრაცია მთავრდება</small><b>${fmtDT(t.regEnd)}</b>${st==='reg'&&regLeft>0?`<em data-cd="${t.regEnd}" data-pre="დარჩა ">დარჩა ${fmtLeft(regLeft)}</em>`:st!=='reg'?'<em class="off">დასრულდა</em>':''}</div>
-    <div><small>ტურნირი იწყება</small><b>${fmtDT(t.startAt)}</b>${startLeft>0&&st!=='done'?`<em data-cd="${t.startAt}" data-post="-ში">${fmtLeft(startLeft)}-ში</em>`:''}</div>
+    <div><small>ტურნირი იწყება</small><b>${t.startAt?fmtDT(t.startAt):'მალე გამოცხადდება'}</b>${t.startAt&&startLeft>0&&st!=='done'?`<em data-cd="${t.startAt}" data-post="-ში">${fmtLeft(startLeft)}-ში</em>`:''}</div>
     <div><small>მონაწილეები</small><b>${n} / ${max}</b><em>${st==='reg'?`თავისუფალია ${Math.max(0,max-n)} ადგილი`:''}</em></div>
     <div><small>ფორმატი</small><b>${t.games||3} პარტია × ${t.rounds||30} რაუნდი</b><em>მხოლოდ ადამიანები</em></div></div>`;
   h+=`<details class="trules" ${mine||st!=='reg'?'':'open'}><summary>📜 როგორ ტარდება</summary><ol>
     <li>რეგისტრაცია ღიაა <b>${fmtDT(t.regEnd)}</b>-მდე ან სანამ ${max} ადგილი არ შეივსება.</li>
-    <li>ტურნირი იწყება <b>${fmtDT(t.startAt)}</b>-ზე. ყველა მონაწილეს ზარი და შეტყობინება მოუვა.</li>
+    <li>${t.startAt?`ტურნირი იწყება <b>${fmtDT(t.startAt)}</b>-ზე.`:'დაწყების დრო მოგვიანებით გამოცხადდება.'} ყველა მონაწილეს ზარი და შეტყობინება მოუვა.</li>
     <li>ტარდება <b>${t.games||3} პარტია</b>, თითო <b>${t.rounds||30} რაუნდით</b>. კომპიუტერი არ თამაშობს.</li>
     <li>ყოველი პარტიის ბოლოს ქულები ადგილის მიხედვით: ${['1-ლი','მე-2','მე-3','მე-4','დანარჩენი'].map((n,i)=>`${n} <b>${TOUR_PTS[i]}</b>`).join(' · ')}.</li>
     <li>იგებს ვინც ყველა პარტიაში ჯამში <b>ყველაზე მეტ ქულას</b> დააგროვებს. თანაბარი ქულისას: მეტი ჯამური ქონება.</li>
@@ -2156,7 +2162,7 @@ function renderTour(){
   if(TOUR.note)h+=`<p class="tnote">${esc(TOUR.note)}</p>`;
   h+=`<div class="setup-acts">`;
   if(st==='reg')h+=mine?`<button class="btn ghost" data-act="tourleave" ${TOUR.busy?'disabled':''}>რეგისტრაციის გაუქმება</button>`:`<button class="btn gold wide" data-act="tourjoin" ${TOUR.busy?'disabled':''}>✋ მონაწილეობა</button>`;
-  else if(mine&&(st==='full'||st==='closed'))h+=`<p class="tok2">✓ შენ მონაწილე ხარ. დაელოდე დაწყებას: ${fmtDT(t.startAt)}</p>`;
+  else if(mine&&(st==='full'||st==='closed'))h+=`<p class="tok2">✓ შენ მონაწილე ხარ. ${t.startAt?'დაელოდე დაწყებას: '+fmtDT(t.startAt):'დაწყების დროს შეგატყობინებთ.'}</p>`;
   else if(st==='full'||st==='closed')h+=`<p class="note">რეგისტრაცია დასრულებულია. შემდეგ ტურნირზე დარეგისტრირდი!</p>`;
   h+=`</div>`;
   if(adm)h+=`<div class="tadm"><h4>🛡 ადმინი</h4><div class="setup-acts"><button class="btn sm" data-act="touredit">✏️ რედაქტირება</button>
@@ -2183,11 +2189,12 @@ async function tourAct(a,el){
   if(a==='touredit0'){TOUR.edit=false;return renderTour()}
   if(a==='toursave'){
     const g=id=>(document.getElementById(id)||{}).value||'';const tm=id=>{const v=g(id);return v?new Date(v).getTime():0};
-    const data={title:g('tf_title').trim().slice(0,40)||'ტურნირი',prize:g('tf_prize').trim().slice(0,80),img:/^https:\/\//.test(g('tf_img').trim())?g('tf_img').trim().slice(0,400):'',desc:g('tf_desc').trim().slice(0,600),
-      regEnd:tm('tf_regEnd'),startAt:tm('tf_startAt'),max:Math.min(28,Math.max(2,+g('tf_max')||8)),games:Math.min(10,Math.max(1,+g('tf_games')||3)),rounds:Math.min(100,Math.max(10,+g('tf_rounds')||30))};
-    if(!data.regEnd||!data.startAt){TOUR.note='მიუთითე თარიღები.';return renderTour()}
+    const data={title:g('tf_title').trim().slice(0,40)||'ტურნირი',prize:g('tf_prize').trim().slice(0,80),img:/^(https:\/\/|[\w.-]+\.(jpg|jpeg|png|webp)$)/i.test(g('tf_img').trim())?g('tf_img').trim().slice(0,400):'',link:/^https?:\/\//.test(g('tf_link').trim())?g('tf_link').trim().slice(0,400):'',desc:g('tf_desc').trim().slice(0,600),
+      regEnd:tm('tf_regEnd'),startAt:(document.getElementById('tf_nostart')||{}).checked?0:tm('tf_startAt'),max:Math.min(28,Math.max(2,+g('tf_max')||8)),games:Math.min(10,Math.max(1,+g('tf_games')||3)),rounds:Math.min(100,Math.max(10,+g('tf_rounds')||30))};
+    if(!data.regEnd){TOUR.note='მიუთითე რეგისტრაციის დასრულების დრო.';return renderTour()}
+    if(!data.startAt&&!(document.getElementById('tf_nostart')||{}).checked){TOUR.note='მიუთითე დაწყების დრო ან მონიშნე “დრო ჯერ უცნობია”.';return renderTour()}
     if(TOUR.edit==='new'&&data.regEnd<Date.now()+60000){TOUR.note='რეგისტრაციის დასრულება მომავალში უნდა იყოს.';return renderTour()}
-    if(data.startAt<data.regEnd){TOUR.note='ტურნირი რეგისტრაციის დასრულების შემდეგ უნდა დაიწყოს.';return renderTour()}
+    if(data.startAt&&data.startAt<data.regEnd){TOUR.note='ტურნირი რეგისტრაციის დასრულების შემდეგ უნდა დაიწყოს.';return renderTour()}
     try{
       if(TOUR.edit==='edit'&&t){await NET.db.doc('tournaments/'+t.id).update(data)}
       else{if(t&&!['done','cancel'].includes(t.status))await NET.db.doc('tournaments/'+t.id).update({status:'cancel'});await NET.db.collection('tournaments').add(Object.assign(data,{status:'reg',createdAt:Date.now(),by:NET.uid,pts:TOUR_PTS}))}
@@ -4099,7 +4106,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=300;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=310;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 async function checkUpdate(){
   if(NET.mode!=='site')return;
