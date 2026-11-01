@@ -1359,6 +1359,10 @@ html.forceland #chatbtn{bottom:10px!important}
 .tlink:hover .timg{border-color:#F6DA8E;filter:brightness(1.1)}.tprize a{color:inherit;text-decoration:none}.tprize a:hover b{text-decoration:underline}
 .timg{width:160px;height:110px}.tfchk{display:flex;align-items:center;gap:6px;font-weight:600;color:#E8DCC2;margin-top:4px}
 @media (max-width:520px){.tlink{width:100%}.tlink .timg{width:100%;height:180px}}
+.vcheck #home,.vcheck #acct,.vcheck #homebg .hb-city{visibility:hidden}
+.home .hb{min-width:0}.home .hb b,.home .hb small{min-width:0;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+.home .hb:not(.sm){grid-template-columns:42px minmax(0,1fr)!important}
+.hmrow .hb.sm b{font-size:clamp(11px,3.4vw,14px)!important}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -2083,7 +2087,7 @@ function tourState(t){
 const tourMine=()=>!!TOUR.players.find(p=>p.uid===NET.uid);
 function tourHomeBtn(){
   const t=TOUR.cur,st=tourState(t);
-  const sub=!t?'ჯერ ტურნირი არ არის':st==='reg'?(tourMine()?'✓ დარეგისტრირებული ხარ':`რეგისტრაცია ღიაა · ${TOUR.players.length}/${t.max||8}`):st==='full'||st==='closed'?`შემადგენლობა შევსებულია${t.startAt?' · იწყება '+fmtDT(t.startAt):''}`:st==='play'?'მიმდინარეობს':st==='done'?'დასრულდა':'';
+  const sub=!NET.ready||!TOUR.started?'იტვირთება…':!t?'ჯერ ტურნირი არ არის':st==='reg'?(tourMine()?'✓ დარეგისტრირებული ხარ':`რეგისტრაცია ღიაა · ${TOUR.players.length}/${t.max||8}`):st==='full'||st==='closed'?`შემადგენლობა შევსებულია${t.startAt?' · იწყება '+fmtDT(t.startAt):''}`:st==='play'?'მიმდინარეობს':st==='done'?'დასრულდა':'';
   const dot=t&&st==='reg'&&!tourMine();
   return `<button class="hb tourhb${dot?' hot':''}" data-act="tour"><span>🏆</span><b>ტურნირი${t?': '+esc(t.title||''):''}</b><small>${sub}</small>${dot?'<i class="tdot"></i>':''}</button>`;
 }
@@ -3802,7 +3806,7 @@ function renderHome(){
       ${saved?`<button class="hb" data-act="resume"><span>▶</span><b>გაგრძელება</b><small>შენახული თამაში</small></button>`:''}
       <button class="hb" data-act="go_local"><span>🎲</span><b>თამაში კომპიუტერთან</b><small>ან რამდენიმე ადამიანი ერთ ეკრანზე</small></button>
       <button class="hb" data-act="go_online"><span>🌐</span><b>ონლაინ მეგობრებთან</b><small>${NET.ready?(inv?`${inv} მოწვევა გელოდება`:'ოთახები, მოწვევა, მეგობრები'):NET.unavailable?'ამ ვერსიაში ხელმისაწვდომი არ არის':'უკავშირდება…'}</small></button>
-      ${NET.ready?tourHomeBtn():''}
+      ${tourHomeBtn()}
       <div class="hmrow${NET.ready?' three':''}"><button class="hb sm" data-act="settings"><span>⚙</span><b>პარამეტრები</b></button>${NET.ready?'<button class="hb sm" data-act="lboard"><span>🏆</span><b>რეიტინგი</b></button>':''}<button class="hb sm" data-act="rules"><span>❓</span><b>წესები</b></button></div>
       ${NET.isAdmin?'<button class="hb sm" data-act="admin"><span>🛡</span><b>ადმინ პანელი</b></button>':''}
       ${NET.ready&&SOC.profile?`<div class="hprof">${esc(SOC.profile.name||'')} · ლეველი ${lvlOf(SOC.profile.xp)} · 🏆 ${SOC.profile.wins||0}</div>`:''}
@@ -4106,14 +4110,24 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=310;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=320;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
-async function checkUpdate(){
-  if(NET.mode!=='site')return;
-  try{const r=await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APP_VER=(\d+);/);
-    if(m&&+m[1]>APP_VER&&!document.getElementById('updbar')){const b=document.createElement('div');b.id='updbar';b.innerHTML=`<span>✨ ახალი ვერსია ${VER_LABEL(+m[1])}</span><button class="btn sm gold" data-act="doupdate">განახლება</button>`;document.body.appendChild(b)}}catch(e){}
+const IS_SITE=!!document.querySelector('script[src="config.js"]');
+function applyUpdate(){try{if(S&&!NET.on&&S.phase!=='moving')localStorage.setItem('tm-save-v7',JSON.stringify(S));sessionStorage.setItem('tm-after-upd',JSON.stringify({code:NET.code||null,local:!!(S&&!NET.on)}))}catch(e){}location.replace(location.pathname+'?v='+Date.now())}
+async function checkUpdate(boot){
+  if(!IS_SITE){document.documentElement.classList.remove('vcheck');return}
+  let newer=0;
+  try{const r=await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APP_VER=(\d+);/);if(m&&+m[1]>APP_VER)newer=+m[1]}catch(e){}
+  if(newer){
+    const busy=S&&S.phase!=='over';
+    if(boot||!busy){applyUpdate();return}
+    if(!document.getElementById('updbar')){const b=document.createElement('div');b.id='updbar';b.innerHTML=`<span>✨ ახალი ვერსია ${VER_LABEL(newer)}</span><button class="btn sm gold" data-act="doupdate">განახლება</button>`;document.body.appendChild(b)}
+  }
+  document.documentElement.classList.remove('vcheck');
 }
-setTimeout(checkUpdate,8000);setInterval(checkUpdate,180000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate()});
+if(IS_SITE){document.documentElement.classList.add('vcheck');setTimeout(()=>document.documentElement.classList.remove('vcheck'),2500)}
+checkUpdate(true);
+setInterval(()=>checkUpdate(),120000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate()});
 let LAST_TURN='';
 function turnChime(){
   if(!S||S.phase==='over'){LAST_TURN='';return}
@@ -4194,7 +4208,8 @@ document.addEventListener('click',e=>{
   if(a==='rclose'){hideRules();return}
   if(a==='zoom'){PREF.zoom=Math.min(ZOOMS.length-1,Math.max(0,(PREF.zoom||0)+(+el.dataset.z)));savePrefs();applyZoom(true);return}
   if(a==='rotate'){rotateScreen();return}
-  if(a==='doupdate'){try{if(S&&!NET.on&&S.phase!=='moving')localStorage.setItem('tm-save-v7',JSON.stringify(S));sessionStorage.setItem('tm-after-upd',JSON.stringify({code:NET.code||null,local:!!(S&&!NET.on)}))}catch(e){}location.replace(location.pathname+'?v='+Date.now());return}
+  if(a==='doupdate'){applyUpdate();return}
+  if(false){try{if(S&&!NET.on&&S.phase!=='moving')localStorage.setItem('tm-save-v7',JSON.stringify(S));sessionStorage.setItem('tm-after-upd',JSON.stringify({code:NET.code||null,local:!!(S&&!NET.on)}))}catch(e){}location.replace(location.pathname+'?v='+Date.now());return}
   if(a==='pweye'){const i=document.getElementById('acc_pw');if(i){i.type=i.type==='password'?'text':'password';el.textContent=i.type==='password'?'👁':'🙈'}return}
   if(a==='phonefs'){phoneFullscreen();return}
   if(a==='fstipclose'){const d=document.getElementById('fstip');if(d)d.hidden=true;return}
