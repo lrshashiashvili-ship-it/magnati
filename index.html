@@ -1443,6 +1443,29 @@ body.tourmode .glegend{opacity:.85}
 .mpc .mpi{font-size:26px;line-height:1.1}.mpc b{font-size:14.5px;color:#FFF3D6}.mpc small{font-size:11px;opacity:.75}.mpc i{font-style:normal;font-size:11px;color:#9fe0a8;font-weight:700}
 .mpc:focus-visible{outline:2px solid #F6DA8E}
 .mapnow{margin:0 0 10px;padding:8px 12px;border-radius:10px;background:rgba(232,183,88,.08);border:1px solid rgba(232,183,88,.35)}
+
+/* v4.2: trade info */
+.tinfo-box{margin:12px 0 4px;padding:10px;border-radius:12px;background:rgba(0,0,0,.25);border:1px solid rgba(232,183,88,.3)}
+.tneeds{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.tneeds{grid-template-columns:1fr}}
+.tneeds h5{margin:0 0 4px;font-size:13px;color:#F6DA8E}
+.tneeds ul{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:12px;line-height:1.35}
+.tneeds .empty{margin:0;font-size:12px;opacity:.7}
+.gdot{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--gc);margin-right:5px;vertical-align:-1px}
+.tneeds .own{color:var(--pc);font-weight:700}.tneeds .free{opacity:.65}
+.tmap{margin-top:8px}.tmap summary{cursor:pointer;font-weight:700;font-size:12.5px;color:#F1E3C0}
+.tgrs{display:grid;gap:5px;margin-top:6px}
+.tgr{display:grid;grid-template-columns:120px 1fr;gap:6px;align-items:center;font-size:11.5px}
+@media (max-width:560px){.tgr{grid-template-columns:1fr}}
+.tgn{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tgc{display:flex;flex-wrap:wrap;gap:4px}
+.tpill{display:inline-flex;align-items:center;gap:3px;padding:2px 7px 2px 3px;border-radius:999px;background:color-mix(in srgb,var(--pc) 22%,transparent);border:1px solid color-mix(in srgb,var(--pc) 70%,transparent);font-size:11px;white-space:nowrap}
+.tpill.free{padding-left:7px;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.25);opacity:.75}
+.tpill.me{box-shadow:0 0 0 1.5px #F6DA8E}
+.tpill .av{width:15px;height:15px;display:inline-grid}.tpill .av svg{width:100%;height:100%}
+.tchip em{display:block;font-style:normal;font-size:10.5px;font-weight:800;margin-top:1px}
+.tchip em.tneed,.tinfo.ok{color:#9fe0a8}.tchip em.twarn,.tinfo.warn{color:#FFB37A}
+.tinfo{margin:6px 0;font-size:13px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -3044,10 +3067,13 @@ function newGame(){
     return {name:nm,ai:s.ai,tok,col,cash:START,pos:0,inJail:false,jail:0,skip:0,out:false,loan:0,uid:s.uid||null};
   });
   dedupe([...players.filter(q=>!q.ai),...players.filter(q=>q.ai)]);
+  shuffle(players);
   S={v:8,pot:0,diff:SETUP_DIFF,stats:players.map(newStat),cellRent:{},hist:[],players,own:{},turn:0,phase:'roll',dice:[3,5],dbl:0,again:false,log:[],deck:shuffle(CARDS.map((_,i)=>i)),deckI:0,round:1,pending:null,sel:null,modal:null,view:null,msg:'',exp:null,trade:null,auction:null,debtThen:null};
   S.cfg={start:START,pass:PASS,spy:GCFG.spy||279};S.maxR=SETUP_ROUNDS||0;S.map=MAP.id;S.t0=Date.now();GT.anchor=S.t0;
   lastCash=S.players.map(p=>p.cash);
   log(null,`ახალი თამაში · ${players.length} მოთამაშე · თითოს ${START}₾`);
+  log(null,`🎲 რიგითობა (შემთხვევით): ${players.map(q=>q.name).join(' → ')}`);
+  setTimeout(()=>{try{toast2(`🎲 რიგითობა: ${players.map(q=>q.name).join(' → ')}`)}catch(e){}},400);
   recordHist();clearUndo();
   buildBoard();
   beginTurn();
@@ -4009,17 +4035,35 @@ function rentLevel(i){
   if(c.t==='tr')return trCount(o.o);
   return o.h>0?o.h:(hasSet(o.o,c.g)?-1:0);
 }
-function chip(i,side,on,dis){
+function chip(i,side,on,dis,tag=''){
   const c=CELLS[i],o=S.own[i];
-  return `<button class="tchip" style="--gc:${gcol(c)}" data-act="tchip" data-side="${side}" data-i="${i}" aria-pressed="${on}" ${dis?'disabled title="სართულებიან ფერს ვერ გაცვლი"':''}><span class="th">${scene(c.sc)}</span><span><b>${c.sn||c.n}</b><small>${c.price}₾${o.m?' · დაგირავ.':''}${o.h?` · ${o.h} სართ.`:''}</small></span></button>`;
+  return `<button class="tchip" style="--gc:${gcol(c)}" data-act="tchip" data-side="${side}" data-i="${i}" aria-pressed="${on}" ${dis?'disabled title="სართულებიან ფერს ვერ გაცვლი"':''}><span class="th">${scene(c.sc)}</span><span><b>${c.sn||c.n}</b><small>${c.price}₾${o.m?' · დაგირავ.':''}${o.h?` · ${o.h} სართ.`:''}</small>${tag}</span></button>`;
+}
+function tradeInfoHTML(me,other){
+  const P=S.players,A=P[me],B=P[other];
+  const need=(pi)=>needsOf(pi).map(n=>{const g=GROUPS[n.g];return `<li><i class="gdot" style="--gc:${g.c}"></i><b>${esc(g.n)}</b> ${n.have}/${n.total} · აკლია: ${n.miss.map(k=>{const o=S.own[k];return `${esc(CELLS[k].sn||CELLS[k].n)}${o?` <span class="own" style="--pc:${P[o.o].col}">(${esc(P[o.o].name)})</span>`:' <span class="free">(თავისუფალი)</span>'}`}).join(', ')}</li>`}).join('');
+  const nA=need(me),nB=need(other);
+  let rows='';
+  GROUPS.forEach((g,gi)=>{const gc=groupCells(gi);rows+=`<div class="tgr"><span class="tgn"><i class="gdot" style="--gc:${g.c}"></i>${esc(g.n)}</span><span class="tgc">${gc.map(k=>{const o=S.own[k],q=o?P[o.o]:null;return `<span class="tpill${q?'':' free'}${o&&o.o===me?' me':''}${o&&o.o===other?' oth':''}" style="--pc:${q?q.col:'#555'}" title="${esc(CELLS[k].n)}${q?' · '+esc(q.name):' · თავისუფალი'}">${q?`<span class="av">${tokSvg(q.tok)}</span>`:''}${esc(CELLS[k].sn||CELLS[k].n)}</span>`}).join('')}</span></div>`});
+  const trs=TRS.map(k=>{const o=S.own[k],q=o?P[o.o]:null;return `<span class="tpill${q?'':' free'}${o&&o.o===me?' me':''}${o&&o.o===other?' oth':''}" style="--pc:${q?q.col:'#555'}">${q?`<span class="av">${tokSvg(q.tok)}</span>`:''}${esc(CELLS[k].st||CELLS[k].n)}</span>`}).join('');
+  rows+=`<div class="tgr"><span class="tgn"><i class="gdot" style="--gc:${TRC}"></i>${esc(MAP.trN)}</span><span class="tgc">${trs}</span></div>`;
+  return `<div class="tinfo-box"><div class="tneeds"><div><h5>🎯 შენ გაკლია</h5>${nA?`<ul>${nA}</ul>`:'<p class="empty">დაწყებული ფერი არ გაქვს.</p>'}</div><div><h5 style="color:${B.col}">🎯 ${esc(B.name)}-ს აკლია</h5>${nB?`<ul>${nB}</ul>`:'<p class="empty">დაწყებული ფერი არ აქვს.</p>'}</div></div>
+    <details class="tmap"><summary>📋 ყველა ფერი: ვის რა აქვს</summary><div class="tgrs">${rows}</div></details></div>`;
 }
 function tradeHTML(){
   const T=S.trade,a=S.players[T.from],b=S.players[T.to];
-  const sideList=(pi,side,sel)=>{const ids=propsOf(pi);if(!ids.length)return '<p class="empty">ქონება არ აქვს.</p>';return `<div class="tchips">${ids.map(i=>chip(i,side,sel.includes(i),!canTrade(pi,i))).join('')}</div>`};
+  const nA=needsOf(T.from),nB=needsOf(T.to),missA=new Map(),missB=new Map();
+  nA.forEach(n=>n.miss.forEach(k=>missA.set(k,n.miss.length===1)));nB.forEach(n=>n.miss.forEach(k=>missB.set(k,n.miss.length===1)));
+  const tagOf=(i,side)=>{if(side==='get'&&missA.has(i))return `<em class="tneed">⭐ ${missA.get(i)?'ფერს დაგისრულებს':'შენ გჭირდება'}</em>`;if(side==='give'&&missB.has(i))return `<em class="twarn">⚠ ${missB.get(i)?`${esc(b.name)}-ს ფერს დაუსრულებს`:`${esc(b.name)}-ს სჭირდება`}</em>`;return ''};
+  const sideList=(pi,side,sel)=>{const ids=propsOf(pi);if(!ids.length)return '<p class="empty">ქონება არ აქვს.</p>';return `<div class="tchips">${ids.map(i=>chip(i,side,sel.includes(i),!canTrade(pi,i),tagOf(i,side))).join('')}</div>`};
   const summary=(ids,cash)=>[...ids.map(i=>CELLS[i].n),...(cash?[cash+'₾']:[])].join(', ')||'არაფერი';
   if(T.stage==='confirm'){
     return `<div class="tradebox"><h3>შეთავაზება ${esc(b.name)}-ს</h3>
       <p class="tsum"><b style="color:${a.col}">${esc(a.name)}</b> გთავაზობს: <b>${esc(summary(T.give,T.cg))}</b><br>სანაცვლოდ ითხოვს: <b>${esc(summary(T.get,T.ct))}</b></p>
+      ${(()=>{const nb=needsOf(T.to),mb=new Map();nb.forEach(n=>n.miss.forEach(k=>mb.set(k,n.miss.length===1)));const good=T.give.filter(k=>mb.has(k)).map(k=>`${CELLS[k].n}${mb.get(k)?' (ფერს დაგისრულებს!)':''}`);
+        const na=needsOf(T.from),ma=new Map();na.forEach(n=>n.miss.forEach(k=>ma.set(k,n.miss.length===1)));const risk=T.get.filter(k=>ma.has(k)).map(k=>`${CELLS[k].n}${ma.get(k)?` (${esc(a.name)}-ს ფერს დაუსრულებს!)`:''}`);
+        return (good.length?`<p class="tinfo ok">⭐ შენთვის საჭიროა: <b>${esc(good.join(', '))}</b></p>`:'')+(risk.length?`<p class="tinfo warn">⚠ ${esc(a.name)}-ს სჭირდება: <b>${esc(risk.join(', '))}</b></p>`:'')})()}
+      ${tradeInfoHTML(T.to,T.from)}
       <p class="note">${T.ai?`${esc(b.name)}, თანახმა ხარ? შეთავაზებას ${esc(a.name)} (კომპიუტერი) გიგზავნის.`:`${esc(b.name)}, მოწყობილობა შენ გადმოგეცა. თანახმა ხარ?`}</p>
       <div class="acts"><button class="btn gold" data-act="taccept">მიღება</button><button class="btn ghost" data-act="tdecline">უარი</button></div></div>`;
   }
@@ -4033,6 +4077,7 @@ function tradeHTML(){
       <div class="tcol"><h4>შენ აძლევ</h4>${sideList(T.from,'give',T.give)}<label class="tcash">ფული <input id="tcg" data-tf="cg" type="number" min="0" step="5" max="${Math.max(0,a.cash)}" value="${T.cg||''}" placeholder="0" inputmode="numeric"> ₾</label></div>
       <div class="tcol"><h4>${esc(b.name)} გაძლევს</h4>${sideList(T.to,'get',T.get)}<label class="tcash">ფული <input id="tct" data-tf="ct" type="number" min="0" step="5" max="${Math.max(0,b.cash)}" value="${T.ct||''}" placeholder="0" inputmode="numeric"> ₾</label></div>
     </div>
+    ${tradeInfoHTML(T.from,T.to)}
     ${T.note?`<p class="tnote">${esc(T.note)}</p>`:''}
     <div class="acts"><button class="btn gold" data-act="tsend">შეთავაზება</button><button class="btn ghost" data-act="tclose">გაუქმება</button></div></div>`;
 }
@@ -4645,7 +4690,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=410;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=420;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 const IS_SITE=!!document.querySelector('script[src="config.js"]');
 function applyUpdate(){try{if(S&&!NET.on&&!(S.tour&&S.tour.preview)&&S.phase!=='moving')localStorage.setItem('tm-save-v7',JSON.stringify(S));sessionStorage.setItem('tm-after-upd',JSON.stringify({code:NET.code||null,local:!!(S&&!NET.on)}))}catch(e){}location.replace(location.pathname+'?v='+Date.now())}
