@@ -1423,6 +1423,8 @@ body.tourmode .brand .orn-t{display:block;color:#F6DA8E;-webkit-text-fill-color:
 body.tourmode .desk .msg{text-shadow:0 1px 3px rgba(0,0,0,.8)}
 body.tourmode .glegend{opacity:.85}
 @media (max-width:760px){body.tourmode .frame::after{display:none}}
+.gclock{position:absolute;top:clamp(6px,2.4cqh,16px);right:clamp(6px,2.4cqw,16px);z-index:3;display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid rgba(232,196,99,.55);color:#F1E3C0;font:700 clamp(10px,2.4cqw,14px)/1.2 var(--body);font-variant-numeric:tabular-nums;box-shadow:0 4px 12px rgba(0,0,0,.45);pointer-events:none}
+.gclock b{color:#F6DA8E}.gclock[hidden]{display:none}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1783,6 +1785,10 @@ if(AU.wantMusic){const go=()=>{document.removeEventListener('pointerdown',go);if
 
 /* ================= STATE & RULES ================= */
 const APP={screen:'home'};
+const GT={anchor:Date.now()};
+function gameEl(){if(!S)return 0;if(S.dur!=null)return S.dur;return Math.max(0,Date.now()-GT.anchor)}
+function fmtGT(ms){const t=Math.floor(ms/1000),h=Math.floor(t/3600),m=Math.floor(t%3600/60),x=t%60;return (h?h+':'+String(m).padStart(2,'0'):String(m))+':'+String(x).padStart(2,'0')}
+setInterval(()=>{const gc=document.getElementById('gclock');if(gc)gc.hidden=!S;if(!S)return;const v=fmtGT(gameEl());document.querySelectorAll('.gtime').forEach(e=>{if(e.textContent!==v)e.textContent=v});const rd=document.getElementById('round');if(rd)rd.textContent=`რაუნდი ${S.round} · ⏱ ${v}`},1000);
 let S=null,confirmNew=false,lastCash=[],SETUP_DIFF='medium',SETUP_ROUNDS=60;try{const r=+localStorage.getItem('tm-rounds');if([0,30,45,60].includes(r)&&localStorage.getItem('tm-rounds')!==null)SETUP_ROUNDS=r}catch(e){}try{const d=localStorage.getItem('tm-diff');if(d&&['easy','medium','hard'].includes(d))SETUP_DIFF=d}catch(e){}
 let SEATS=[{ai:false,name:'',tok:0,col:COLORS[0]},{ai:true,name:AIN[0],tok:1,col:COLORS[1]},{ai:true,name:AIN[1],tok:2,col:COLORS[2]}];
 /* ================= ONLINE (shared artifact database) =================
@@ -1807,7 +1813,7 @@ async function fbInit(cfg){
   let u=await new Promise((res,rej)=>{const un=au.onAuthStateChanged(auth,x=>{un();res(x)},rej)});
   if(u&&u.isAnonymous){try{await au.signOut(auth)}catch(e){}u=null}
   const fdb=fs.getFirestore(a);
-  const wd=s=>({id:s.id,exists:s.exists(),data:()=>s.exists()?s.data():undefined,metadata:s.metadata});
+  const wd=s=>({id:s.id,exists:s.exists(),data:()=>s.exists()?s.data({serverTimestamps:'estimate'}):undefined,metadata:s.metadata});
   const wq=q=>{const docs=q.docs.map(wd);return {docs,size:docs.length,empty:!docs.length,docChanges:()=>[],metadata:q.metadata}};
   const err=cb=>e=>{if(cb)cb({code:'unavailable',message:String(e&&e.message||e)})};
   const mq=(path,cons)=>({
@@ -1830,7 +1836,7 @@ async function fbInit(cfg){
     async addEmail(email){await au.verifyBeforeUpdateEmail(auth.currentUser,email.trim())},
     email(){return auth.currentUser&&auth.currentUser.email||''},
     async logout(){await au.signOut(auth)}};
-  return {db:{doc:dr,collection:cr},uid:u?u.uid:null,api};
+  return {db:{doc:dr,collection:cr,now:()=>fs.serverTimestamp?fs.serverTimestamp():Date.now()},uid:u?u.uid:null,api};
 }
 (async()=>{
   await new Promise(r=>setTimeout(r,0));
@@ -2620,6 +2626,7 @@ function netApply(d){
   const first=!NET.on||!S;
   const old=S;
   NET.ver=d.ver;NET.lastJson=d.S;NET.on=true;NET.lastChange=Date.now();
+  if(typeof d.el==='number'&&(first||d.by!==NET.uid))GT.anchor=Date.now()-d.el;else if(first)GT.anchor=ns.t0&&Date.now()-ns.t0<864e5?ns.t0:Date.now();
   NET.seat=ns.players.findIndex(p=>p.uid===NET.uid);
   netWatchPresence(ns.players.filter(p=>!p.ai).map(p=>p.uid));
   if(old&&!first){ns.sel=old.sel;ns.exp=old.exp}else{ns.sel=null;ns.exp=null}
@@ -2652,12 +2659,12 @@ async function netPushNow(status){
   if(json===NET.lastJson&&!status)return;
   if(NET.mode==='site'){ // Firestore keeps one client's writes in order, so send at once without waiting
     NET.lastJson=json;NET.ver+=1;NET.lastChange=Date.now();
-    NET.db.doc('games/'+NET.code).update({S:json,ver:NET.ver,by:NET.uid,status:S.phase==='over'?'over':'play',at:Date.now()}).catch(e=>{NET.note='კავშირის შეცდომა: '+(e&&e.code||'')});
+    NET.db.doc('games/'+NET.code).update({S:json,ver:NET.ver,by:NET.uid,status:S.phase==='over'?'over':'play',at:Date.now(),el:gameEl()}).catch(e=>{NET.note='კავშირის შეცდომა: '+(e&&e.code||'')});
     return;
   }
   if(NET.writing){NET.dirty=true;return}
   NET.writing=true;NET.lastJson=json;NET.ver+=1;NET.lastChange=Date.now();
-  try{await NET.db.doc('games/'+NET.code).update({S:json,ver:NET.ver,by:NET.uid,status:S.phase==='over'?'over':'play',at:Date.now()})}
+  try{await NET.db.doc('games/'+NET.code).update({S:json,ver:NET.ver,by:NET.uid,status:S.phase==='over'?'over':'play',at:Date.now(),el:gameEl()})}
   catch(e){NET.note='კავშირის შეცდომა: '+(e&&e.code||'');}
   NET.writing=false;
   if(NET.dirty){NET.dirty=false;netPushNow()}
@@ -2808,7 +2815,7 @@ function newGame(){
   });
   dedupe([...players.filter(q=>!q.ai),...players.filter(q=>q.ai)]);
   S={v:8,pot:0,diff:SETUP_DIFF,stats:players.map(newStat),cellRent:{},hist:[],players,own:{},turn:0,phase:'roll',dice:[3,5],dbl:0,again:false,log:[],deck:shuffle(CARDS.map((_,i)=>i)),deckI:0,round:1,pending:null,sel:null,modal:null,view:null,msg:'',exp:null,trade:null,auction:null,debtThen:null};
-  S.cfg={start:START,pass:PASS,spy:GCFG.spy||279};S.maxR=SETUP_ROUNDS||0;
+  S.cfg={start:START,pass:PASS,spy:GCFG.spy||279};S.maxR=SETUP_ROUNDS||0;S.t0=Date.now();GT.anchor=S.t0;
   lastCash=S.players.map(p=>p.cash);
   log(null,`ახალი თამაში · ${players.length} მოთამაშე · თითოს ${START}₾`);
   recordHist();clearUndo();
@@ -3055,7 +3062,7 @@ function bankrupt(p,to){
 }
 function finishByRounds(){
   S.round=S.maxR;const alive=S.players.filter(q=>!q.out);
-  S.phase='over';S.trade=null;S.auction=null;clearUndo();
+  S.phase='over';S.trade=null;S.auction=null;clearUndo();S.dur=gameEl();
   const w=alive.slice().sort((a,b)=>worth(b)-worth(a))[0];S.winner=pidx(w);S.modal={t:'over'};
   setTimeout(()=>{try{recordResult(NET.on?'online':'solo')}catch(e){}},800);
   say(`<b>${S.maxR} რაუნდი დასრულდა!</b> იგებს ყველაზე მდიდარი: <b>${esc(w.name)}</b> (${worth(w)}₾).`);
@@ -3065,7 +3072,7 @@ function checkOver(){
   const alive=S.players.filter(q=>!q.out);
   const humansAlive=alive.filter(q=>!q.ai).length;
   if(alive.length===1||(humansAlive===0&&!window.SIMALL)){
-    S.phase='over';S.trade=null;S.auction=null;recordHist();clearUndo();
+    S.phase='over';S.trade=null;S.auction=null;recordHist();clearUndo();S.dur=gameEl();
     setTimeout(()=>{try{recordResult(NET.on?'online':'solo')}catch(e){}},800);
     const w=alive.slice().sort((a,b)=>worth(b)-worth(a))[0];S.winner=pidx(w);S.modal={t:'over'};
     setTimeout(()=>{if(RM||!document.body.animate)return;for(let k=0;k<4;k++)setTimeout(()=>burst(innerWidth*(.25+Math.random()*.5),innerHeight*(.2+Math.random()*.3),PCOL[k%4],34,200),k*350)},300);
@@ -3092,7 +3099,7 @@ function afterLand(){
   }
   toEnd();
 }
-const END_MS=15000,ROLL_MS=5000,DECIDE_MS=8000;
+const END_MS=15000,ROLL_MS=15000,DECIDE_MS=8000;
 let ACT_LOCAL={k:null,at:0};
 function actKey(){if(!S)return null;const p=cur();if(!p||p.ai||p.out)return null;
   if(S.phase==='roll'&&!S.modal&&!S.trade&&!S.auction)return 'r:'+S.round+':'+S.turn+':'+(S.rollN||0)+':'+(S.mv&&S.mv.id||0);
@@ -3490,7 +3497,7 @@ function buildBoard(){
   let h='';
   CELLS.forEach((c,i)=>{const [r,col]=rc(i);
     h+=`<button class="cell${cornerCls(i)}" id="c${i}" style="grid-row:${r};grid-column:${col}" data-act="sel" data-i="${i}" aria-label="${esc(c.n)}${c.price?', '+c.price+' ლარი':''}"></button>`});
-  h+=`<div class="desk" id="desk"><div class="skyl sky-day"></div><div class="skyl sky-dusk"></div><div class="skyl sky-dawn"></div>${panorama()}${tourDeskHTML()}<div class="desk-in"><div class="brand">თბილისელი მაგნატი<span class="orn">✦ ქალაქი შენს ხელშია ✦</span><span class="orn orn-t">✦ ტურნირი ✦</span></div>
+  h+=`<div class="desk" id="desk"><div class="skyl sky-day"></div><div class="skyl sky-dusk"></div><div class="skyl sky-dawn"></div>${panorama()}${tourDeskHTML()}<div class="gclock" id="gclock" hidden title="თამაშის ხანგრძლივობა">⏱ <b class="gtime">0:00</b></div><div class="desk-in"><div class="brand">თბილისელი მაგნატი<span class="orn">✦ ქალაქი შენს ხელშია ✦</span><span class="orn orn-t">✦ ტურნირი ✦</span></div>
     <div class="dice" id="dice">${dieHTML()}${dieHTML()}</div><div class="dsum num" id="dsum"></div><div class="msg" id="msg"></div><div class="actslot" id="actsSlot"></div><div class="glegend">${GROUPS.map(g=>`<span><i style="--gc:${g.c}"></i>${g.n}</span>`).join('')}</div><div class="round num" id="round"></div></div></div>
     <div class="tklayer" id="tk"></div>`;
   b.innerHTML=h;cellCache=[];setDice(false);
@@ -3725,7 +3732,7 @@ function renderDesk(){
   let h='';
   if(S.phase==='over')h=`<button class="btn gold" data-act="setup">ახალი თამაში</button><button class="btn" data-act="showover">📊 შედეგები</button>`;
   else if(human&&S.phase==='roll'){
-    h=`<button class="btn gold" data-act="roll">გააგორე კამათელი <span class="endcd" id="actcd">${actLeft()||5}</span></button>`;
+    h=`<button class="btn gold" data-act="roll">გააგორე კამათელი <span class="endcd" id="actcd">${actLeft()||15}</span></button>`;
     {const F=flyInfo(p);if(F)h+=`<button class="btn fly" data-act="fly" ${F.ok?'':'disabled'} title="${esc(CELLS[F.to].n)}">Ⓜ მეტრო → ${CELLS[F.to].st} · ${F.fee?F.fee+'₾':'უფასო'}</button>`}
     if(p.inJail)h+=`<button class="btn ghost" data-act="bail" ${p.cash<JAILFEE?'disabled':''}>გადაიხადე ${JAILFEE}₾</button>`;
   }else if(human&&S.phase==='end')h=`<button class="btn" data-act="next">სვლის დასრულება <span class="endcd" id="endcd">${endLeft()}</span></button>`;
@@ -3736,7 +3743,7 @@ function renderDesk(){
   }
   if(human&&!NET.on&&UNDO.length&&['roll','end','debt'].includes(S.phase))h+=`<button class="btn ghost undo" data-act="undo" title="ბოლო მოქმედების გაუქმება">↶ გაუქმება</button>`;
   acts.innerHTML=h;
-  rd.textContent=`რაუნდი ${S.round}`;
+  rd.textContent=`რაუნდი ${S.round} · ⏱ ${fmtGT(gameEl())}`;{const gc=document.getElementById('gclock');if(gc){gc.hidden=false;const b=gc.querySelector('.gtime');if(b)b.textContent=fmtGT(gameEl())}}
   applyTod();
   positionHud();
 }
@@ -3859,7 +3866,7 @@ function overHTML(){
   return `<div class="victory"><div class="crown"><svg viewBox="0 0 64 40" aria-hidden="true"><path d="M6 34L2 8l16 12L32 2l14 18L62 8l-4 26z" fill="url(#gCrown)" stroke="#7A5A1A" stroke-width="1.5" stroke-linejoin="round"/><circle cx="32" cy="22" r="4" fill="#C42B4E"/><circle cx="17" cy="25" r="3" fill="#1E9AA0"/><circle cx="47" cy="25" r="3" fill="#1E9AA0"/><path d="M6 34h52" stroke="#7A5A1A" stroke-width="2"/></svg></div>
     <small class="vlbl">გამარჯვებული</small>
     <div class="vwin" style="--pc:${w.col}"><span class="av" data-coin="${S.winner}">${tokSvg(w.tok)}</span><b>${esc(w.name)}</b></div>
-    <p class="vsub num">თამაში დასრულდა ${S.round}-ე რაუნდში · ქონება ${worth(w)}₾</p>
+    <p class="vsub num">თამაში დასრულდა ${S.round}-ე რაუნდში · ⏱ ${fmtGT(gameEl())} · ქონება ${worth(w)}₾</p>
     ${tourOverHTML()}${awardsHTML()}
     <h4 class="vh">ქონება რაუნდების მიხედვით</h4>${chartSVG()}
     <h4 class="vh">სტატისტიკა</h4>${statsTable()}
@@ -4304,7 +4311,7 @@ function chatSync(){
     if(CHAT.unsub){try{CHAT.unsub()}catch(e){}}
     Object.assign(CHAT,{code,msgs:[],unread:0,first:true,open:false});
     CHAT.unsub=NET.db.collection('games/'+code+'/chat').orderBy('at','desc').limit(60).onSnapshot(q=>{
-      const arr=q.docs.map(d=>Object.assign({id:d.id},d.data())).filter(m=>m&&m.at).sort((x,y)=>x.at-y.at);
+      const arr=q.docs.map(d=>Object.assign({id:d.id},d.data())).filter(m=>m&&m.at).sort((x,y)=>chatT(x)-chatT(y)||(x.id<y.id?-1:1));
       const known=new Set(CHAT.msgs.map(m=>m.id)),fresh=arr.filter(m=>!known.has(m.id)&&m.uid!==NET.uid);
       CHAT.msgs=arr;
       if(!CHAT.first&&fresh.length){if(!CHAT.open){CHAT.unread+=fresh.length;chatPeek(fresh[fresh.length-1])}sfx('chat')}
@@ -4314,6 +4321,7 @@ function chatSync(){
   if(!b){b=document.createElement('button');b.id='chatbtn';b.dataset.act='chattoggle';b.setAttribute('aria-label','ჩატი');b.innerHTML='💬<b id="chatbadge" hidden></b>';document.body.appendChild(b)}
   b.hidden=false;chatBadge();
 }
+const chatT=m=>{const t=m.st;return t&&typeof t.toMillis==='function'?t.toMillis():typeof t==='number'?t:m.at};
 function chatPeek(m){
   let d=document.getElementById('chatpeek');if(!d){d=document.createElement('div');d.id='chatpeek';d.dataset.act='chattoggle';document.body.appendChild(d)}
   const k=STICKERS.find(x=>x[0]===m.k),txt=m.t==='gif'?'GIF':m.t==='stk'?(k?k[1]+' '+k[3]:'სტიკერი'):String(m.text||'');
@@ -4368,7 +4376,7 @@ function chatOpen(on){
 }
 async function chatSend(m){
   if(!CHAT.code||!NET.uid)return;const now=Date.now();if(now-CHAT.sendAt<700)return;CHAT.sendAt=now;
-  const doc=Object.assign({uid:NET.uid,name:(NET.myName||(SOC.profile&&SOC.profile.name)||'მოთამაშე').slice(0,14),tok:NET.myTok||0,col:(S&&NET.seat>=0&&S.players[NET.seat]?S.players[NET.seat].col:NET.myCol)||'#E8B758',t:'txt',text:'',at:now},m);
+  const doc=Object.assign({uid:NET.uid,name:(NET.myName||(SOC.profile&&SOC.profile.name)||'მოთამაშე').slice(0,14),tok:NET.myTok||0,col:(S&&NET.seat>=0&&S.players[NET.seat]?S.players[NET.seat].col:NET.myCol)||'#E8B758',t:'txt',text:'',at:now,st:NET.db.now?NET.db.now():now},m);
   CHAT.stick=true;try{await NET.db.collection('games/'+CHAT.code+'/chat').add(doc)}catch(e){toast2('ვერ გაიგზავნა: '+(e&&e.code||''))}
 }
 function chatAct(a,el){
@@ -4384,7 +4392,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=370;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=380;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 const IS_SITE=!!document.querySelector('script[src="config.js"]');
 function applyUpdate(){try{if(S&&!NET.on&&!(S.tour&&S.tour.preview)&&S.phase!=='moving')localStorage.setItem('tm-save-v7',JSON.stringify(S));sessionStorage.setItem('tm-after-upd',JSON.stringify({code:NET.code||null,local:!!(S&&!NET.on)}))}catch(e){}location.replace(location.pathname+'?v='+Date.now())}
@@ -4414,6 +4422,7 @@ function render(){
   if(isPhone()){const L=document.querySelector('#mtabs [data-s=L]');if(L&&SHEET!=='R'&&L.getAttribute('aria-pressed')!=='true')setSheet(SHEET||'L')}
   renderCells();renderDesk();placeTokens();renderOverlay();renderSide();
   if(NET.on){netQueuePush();return}
+  if(S&&S.dur==null)S.el=gameEl();
   try{if(S&&!(S.tour&&S.tour.preview)&&S.phase!=='moving'&&!(S.modal&&S.modal.t==='card'))localStorage.setItem('tm-save-v7',JSON.stringify(S))}catch(e){}
 }
 
@@ -4616,7 +4625,7 @@ function migrateLayout(s){
   (s.players||[]).forEach(p=>{p.pos=m(p.pos);if(p.metroAt!=null)p.metroAt=m(p.metroAt)});
   if(s.pending!=null)s.pending=m(s.pending);if(s.sel!=null)s.sel=m(s.sel);s.mv=null;s.v=8;return s;
 }
-function resumeLocal(){APP.screen='local';try{const raw=localStorage.getItem('tm-save-v7');const d=raw&&fixState(JSON.parse(raw));if(d){S=d;lastCash=S.players.map(p=>p.cash);if(!S.hist.length)recordHist();buildBoard();render();const p=cur();if(p.ai){if(S.phase==='end')setTimeout(nextTurn,500);else{S.phase='roll';setTimeout(aiTurn,600)}}else if(S.phase==='moving'){S.phase='roll';render()}}}catch(e){}}
+function resumeLocal(){APP.screen='local';try{const raw=localStorage.getItem('tm-save-v7');const d=raw&&fixState(JSON.parse(raw));if(d){S=d;GT.anchor=Date.now()-(S.el||0);lastCash=S.players.map(p=>p.cash);if(!S.hist.length)recordHist();buildBoard();render();const p=cur();if(p.ai){if(S.phase==='end')setTimeout(nextTurn,500);else{S.phase='roll';setTimeout(aiTurn,600)}}else if(S.phase==='moving'){S.phase='roll';render()}}}catch(e){}}
 function afterUpdate(){
   let f=null;try{f=JSON.parse(sessionStorage.getItem('tm-after-upd')||'null');sessionStorage.removeItem('tm-after-upd')}catch(e){}
   if(!f)return;
