@@ -1423,8 +1423,16 @@ body.tourmode .brand .orn-t{display:block;color:#F6DA8E;-webkit-text-fill-color:
 body.tourmode .desk .msg{text-shadow:0 1px 3px rgba(0,0,0,.8)}
 body.tourmode .glegend{opacity:.85}
 @media (max-width:760px){body.tourmode .frame::after{display:none}}
-.gclock{position:absolute;top:clamp(6px,2.4cqh,16px);right:clamp(6px,2.4cqw,16px);z-index:3;display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid rgba(232,196,99,.55);color:#F1E3C0;font:700 clamp(10px,2.4cqw,14px)/1.2 var(--body);font-variant-numeric:tabular-nums;box-shadow:0 4px 12px rgba(0,0,0,.45);pointer-events:none}
+.gclock{position:absolute;bottom:clamp(6px,2.4cqh,16px);right:clamp(6px,2.4cqw,16px);z-index:3;display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid rgba(232,196,99,.55);color:#F1E3C0;font:700 clamp(10px,2.4cqw,14px)/1.2 var(--body);font-variant-numeric:tabular-nums;box-shadow:0 4px 12px rgba(0,0,0,.45);pointer-events:none}
 .gclock b{color:#F6DA8E}.gclock[hidden]{display:none}
+
+/* v3.9: map picker + big Georgia board */
+.seg.mapseg button{display:grid;gap:1px;line-height:1.15;padding:6px 10px}.seg.mapseg button b{font-size:13px}.seg.mapseg button small{font-size:10.5px;opacity:.75;font-weight:600}
+#board.big{gap:2px}
+#board.big .tk{width:4.7%!important}
+#board.big .cell.corner .cname{font-size:max(6px,calc(var(--u) * 1.25))}
+.cell.gift .cprice{color:#9fe0a8}
+.cell.gift .ico svg{stroke:#9fe0a8}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1466,7 +1474,7 @@ body.tourmode .glegend{opacity:.85}
 
 <script>
 /* ================= DATA ================= */
-const GROUPS=[
+const GROUPS_TB=[
  {n:'ისანი-ვაზისუბანი',c:'#C8673A',house:60},
  {n:'მტკვრის მარცხენა სანაპირო',c:'#22A9B4',house:80},
  {n:'ძველი ქალაქი',c:'#D2325A',house:150},
@@ -1481,7 +1489,7 @@ const rents=p=>[R5(p*.1),R5(p*.5),R5(p*1.35),R5(p*2.8),R5(p*3.6)];
 const PRICE_MULT=1.5;const R10=x=>Math.round(x/10)*10;
 const P=(n,g,base,sc)=>{const price=R10(base*PRICE_MULT);return {t:'p',n,g,price,r:rents(price),sc}};
 const CARD={t:'card',n:'ბედის ბარათი',sn:'ბედი',ic:'card'};
-const CELLS=[
+const CELLS_TB=[
  {t:'start',n:'სტარტი',sub:'+250₾',c1:'#1E9AA0',c2:'#08434A',ic:'start'},
  P('ვარკეთილი',0,80,'varketili'),
  {...CARD},
@@ -1519,10 +1527,11 @@ const CELLS=[
  P('ვაკე',6,460,'vake'),
  {t:'tax',n:'ქონების გადასახადი',sn:'ქონება',amt:200,rate:.05,ic:'house'},
 ];
-const N=CELLS.length;
-const SIDE=N/4;
-const TRS=CELLS.map((c,i)=>c.t==='tr'?i:-1).filter(i=>i>=0);
-const JAM=CELLS.findIndex(c=>c.t==='jam');
+let CELLS=CELLS_TB,GROUPS=GROUPS_TB;
+let N=CELLS.length;
+let SIDE=N/4;
+let TRS=CELLS.map((c,i)=>c.t==='tr'?i:-1).filter(i=>i>=0);
+let JAM=CELLS.findIndex(c=>c.t==='jam');
 const TR_RENT=[40,100,200,350];
 /* stations face each other across the board: bottom↔top share a column, left↔right share a row */
 const oppTr=i=>i<=SIDE?3*SIDE-i:i<=2*SIDE?5*SIDE-i:i<=3*SIDE?3*SIDE-i:5*SIDE-i;
@@ -1638,7 +1647,7 @@ const tokSvg=(k,cls='')=>`<svg viewBox="0 0 40 48" aria-hidden="true"${cls?` cla
 
 /* ================= CARDS ================= */
 const IDX=sc=>CELLS.findIndex(c=>c.sc===sc);
-const CARDS=[
+const CARDS_TB=[
  {x:'ტურისტების ტალღა ძველ თბილისში. მიიღე 150₾.',f:p=>{gain(p,150)}},
  {x:'მეზობელმა ვალი დაგიბრუნა. მიიღე 75₾.',f:p=>{gain(p,75)}},
  {x:'პარკირების ჯარიმა რუსთაველზე. გადაიხადე 60₾.',f:p=>{fine(p,60)}},
@@ -1665,6 +1674,168 @@ const CARDS=[
  {x:'ბინა ტურისტებს დღიურად მიაქირავე. მიიღე 110₾.',f:p=>{gain(p,110)}},
  {x:'ფილარმონიაში კონცერტი ჩაატარე. მიიღე 90₾.',f:p=>{gain(p,90)}},
 ];
+let CARDS=CARDS_TB;
+/* ================= MAP 2: საქართველოს კუთხეები (48 უჯრა) ================= */
+const GROUPS_GEO=[
+ {n:'რაჭა-ლეჩხუმი',c:'#9A7452',house:50},
+ {n:'გურია',c:'#C8673A',house:60},
+ {n:'სამეგრელო',c:'#2EA36A',house:80},
+ {n:'იმერეთი',c:'#22A9B4',house:100},
+ {n:'სამცხე-ჯავახეთი',c:'#E7A52E',house:110},
+ {n:'ქართლი',c:'#E5483A',house:140},
+ {n:'კახეთი',c:'#B0306A',house:150},
+ {n:'კავკასიონი',c:'#3B7BE0',house:180},
+ {n:'აჭარა',c:'#E85D9C',house:220},
+ {n:'თბილისი',c:'#9A62F0',house:250},
+];
+const GCARD={t:'card',n:'ბედის ბარათი',sn:'ბედი',ic:'card'};
+const TRN=(n,sn,st)=>({t:'tr',n,sn,st,price:330,sc:'train'});
+const CELLS_GEO=[
+ {t:'start',n:'სტარტი',sub:'+250₾',c1:'#1E9AA0',c2:'#08434A',ic:'start'},
+ P('ონი',0,70,'g_oni'),
+ {...GCARD},
+ P('ამბროლაური',0,80,'g_ambrolauri'),
+ {t:'tax',n:'კომუნალური',amt:150,rate:.04,ic:'tax'},
+ P('ლანჩხუთი',1,90,'g_lanchkhuti'),
+ TRN('სადგური „სამტრედია“','🚆 სამტრედია','სამტრედია'),
+ P('ოზურგეთი',1,100,'g_ozurgeti'),
+ {t:'gift',k:'tour',n:'ტურისტული სეზონი',sn:'ტურისტები',amt:120,sub:'+120₾',ic:'tour'},
+ P('ურეკი',1,110,'g_ureki'),
+ {t:'obs',k:'police',n:'საგზაო პოლიცია',sn:'პოლიცია',amt:75,sub:'−75₾',ic:'police'},
+ P('სენაკი',2,120,'g_senaki'),
+ {t:'jam',n:'ციხე',sub:'სტუმრად',c1:'#B42647',c2:'#4A0A1C',ic:'jam'},
+ P('ზუგდიდი',2,130,'g_zugdidi'),
+ {...GCARD},
+ P('ფოთი',2,140,'g_poti'),
+ {t:'tax',n:'მიწის გადასახადი',sn:'მიწის გად.',amt:120,rate:.02,ic:'land'},
+ P('ზესტაფონი',3,150,'g_zestaponi'),
+ TRN('სადგური „ხაშური“','🚆 ხაშური','ხაშური'),
+ P('წყალტუბო',3,160,'g_tskaltubo'),
+ {t:'obs',k:'pothole',n:'ორმო გზაზე',sn:'ორმო',v:2,sub:'← 2 უჯრა',ic:'pothole'},
+ P('ქუთაისი',3,180,'g_kutaisi'),
+ {t:'gift',k:'supra',n:'ქართული სუფრა',sn:'სუფრა',amt:25,sub:'+25₾ ყველასგან',ic:'supra'},
+ P('ახალციხე',4,190,'g_akhaltsikhe'),
+ {t:'rest',n:'ზღვის პლაჟი',sub:'დასვენება',c1:'#1E7FA8',c2:'#0A2C44',ic:'beach'},
+ P('ვარძია',4,200,'g_vardzia'),
+ {...GCARD},
+ P('ბორჯომი',4,220,'g_borjomi'),
+ {t:'tax',n:'საშემოსავლო გადასახადი',sn:'საშემოსავლო',amt:150,cashRate:.10,ic:'income'},
+ P('რუსთავი',5,230,'g_rustavi'),
+ TRN('თბილისის ცენტრალური სადგური','🚆 თბილისი','თბილისი'),
+ P('გორი',5,240,'g_gori'),
+ P('მცხეთა',5,260,'g_mtskheta'),
+ {t:'obs',k:'blocked',n:'გადაკეტილი გზა',sn:'გადაკეტილი',sub:'−1 სვლა',ic:'blocked'},
+ P('თელავი',6,270,'g_telavi'),
+ {t:'gift',k:'wine',n:'ღვინის მარანი',sn:'მარანი',amt:20,sub:'+20₾ უბანზე',ic:'wine'},
+ {t:'gojam',n:'დაგაკავეს',sub:'→ ციხე',c1:'#2C4E9A',c2:'#0E1D45',ic:'police'},
+ P('ყვარელი',6,280,'g_kvareli'),
+ P('სიღნაღი',6,300,'g_sighnaghi'),
+ {t:'tax',n:'ფუფუნების გადასახადი',sn:'ფუფუნება',amt:250,rate:.07,ic:'lux'},
+ P('მესტია',7,310,'g_mestia'),
+ P('გუდაური',7,330,'g_gudauri'),
+ TRN('სადგური „ბათუმი“','🚆 ბათუმი','ბათუმი'),
+ P('ყაზბეგი',7,350,'g_kazbegi'),
+ P('ქობულეთი',8,370,'g_kobuleti'),
+ P('ბათუმი',8,420,'g_batumi'),
+ P('ძველი თბილისი',9,440,'narikala'),
+ P('ვაკე',9,480,'vake'),
+];
+const IDXG=sc=>CELLS_GEO.findIndex(c=>c.sc===sc);
+const CARDS_GEO=[
+ {x:'ბათუმის ბულვარზე ტურისტებს ფოტოები გადაუღე. მიიღე 150₾.',f:p=>{gain(p,150)}},
+ {x:'მეზობელმა ვალი დაგიბრუნა. მიიღე 75₾.',f:p=>{gain(p,75)}},
+ {x:'ქუთაისის ცენტრში არასწორად გააჩერე. ჯარიმა 60₾.',f:p=>{fine(p,60)}},
+ {x:'ტაქსით პირდაპირ სტარტზე.',f:async p=>{await walkTo(p,0)}},
+ {x:'მატარებლის ბილეთი აიღე. წადი ხაშურის სადგურზე.',f:async p=>{await walkTo(p,Math.max(0,CELLS.findIndex(c=>c.st==='ხაშური')));await land(p);return true}},
+ {x:'მთაში გზა აგებნა და პოლიციამ დაგაკავა. წადი ციხეში.',f:p=>{sendJam(p)}},
+ {x:'დაბადების დღეა! ყველა მოთამაშე გჩუქნის 40₾-ს.',f:p=>{S.players.forEach(q=>{if(q!==p&&!q.out)pay(q,40,p)})}},
+ {x:'იმერული სუფრა გაშალე. გადაუხადე ყველა მოთამაშეს 35₾.',f:p=>{S.players.forEach(q=>{if(q!==p&&!q.out&&!p.out)pay(p,35,q)})}},
+ {x:'სახლების სახურავის შეკეთება: 25₾ თითო სართულზე (მაქს. 250₾).',f:p=>{const n=floorsOf(p);if(n)fine(p,Math.min(250,25*n));else log(p,`${p.name}: სართულები არ აქვს, არაფერს იხდის`)}},
+ {x:'გუდაურში თხილამურებით სრიალი ისწავლე. წადი გუდაურში.',f:async p=>{await walkTo(p,IDX('g_gudauri'));await land(p);return true}},
+ {x:'წყალტუბოს აბანოებში დასვენება. წადი წყალტუბოში.',f:async p=>{await walkTo(p,IDX('g_tskaltubo'));await land(p);return true}},
+ {x:'რაღაც სახლში დაგრჩა. დაბრუნდი 3 უჯრით.',f:async p=>{const cells=[];let q=p.pos;for(let k=0;k<3;k++){q=(q+N-1)%N;cells.push(q)}S.mv={id:((S.mv&&S.mv.id)||0)+1,p:pidx(p),from:p.pos,n:3,k:'back'};render();await animatePath(pidx(p),cells,{stepMs:260});p.pos=q;await land(p);return true}},
+ {x:'მატარებელში ბილეთი დაკარგე. გადაიხადე 30₾.',f:p=>{fine(p,30)}},
+ {x:'შემოსავლების სამსახურმა ზედმეტობა დაგიბრუნა. მიიღე 120₾.',f:p=>{gain(p,120)}},
+ {x:'ბანკის დივიდენდი. მიიღე 75₾.',f:p=>{gain(p,75)}},
+ {x:'მანქანას საბურავი გაუსკდა სერპანტინზე. გადაიხადე 45₾.',f:p=>{fine(p,45)}},
+ {x:'ყაზბეგში ზვავის გამო გზა დაიკეტა, სასტუმროში დარჩი. გადაიხადე 50₾.',f:p=>{fine(p,50)}},
+ {x:'რთველზე კახეთში დაეხმარე. მიიღე 130₾.',f:p=>{gain(p,130)}},
+ {x:'ვარძიიდან გადაღებული შენი ვიდეო ვირუსული გახდა. მიიღე 80₾.',f:p=>{gain(p,80)}},
+ {x:'ლატარიაში მოიგე! მიიღე 200₾.',f:p=>{gain(p,200)}},
+ {x:'ბებიამ რაჭიდან ლობიანი და ფული გამოგიგზავნა. მიიღე 60₾.',f:p=>{gain(p,60)}},
+ {x:'ურეკში სახლი ზაფხულისთვის მიაქირავე. მიიღე 110₾.',f:p=>{gain(p,110)}},
+ {x:'ქუთაისის ოპერაში კონცერტი ჩაატარე. მიიღე 90₾.',f:p=>{gain(p,90)}},
+ {x:'მეგრული ხაჭაპურის კონკურსში გაიმარჯვე. მიიღე 100₾.',f:p=>{gain(p,100)}},
+ {x:'სვანეთში მთის გიდად იმუშავე. მიიღე 90₾.',f:p=>{gain(p,90)}},
+];
+/* extra line icons */
+Object.assign(IC,{
+ wine:'<path class="f" d="M14 4h12l-1 9a5 5 0 0 1-10 0z"/><path d="M14 4h12l-1 9a5 5 0 0 1-10 0zM20 18v8M15 27h10M31 9a3 3 0 1 0 6 0 3 3 0 1 0-6 0M34 6c1-2 3-3 5-3M31 15a3 3 0 1 0 6 0 3 3 0 1 0-6 0M37 12a3 3 0 1 0 6 0 3 3 0 1 0-6 0M34 21a3 3 0 1 0 6 0 3 3 0 1 0-6 0"/>',
+ tour:'<path class="f" d="M8 10h20v16H8z"/><path d="M8 10h20v16H8zM13 10V6h10v4M8 16h20M18 14v4M33 26l4-20 4 20M31 20h12M37 6V3"/>',
+ supra:'<path class="f" d="M4 18h40v4H4z"/><path d="M4 18h40v4H4zM8 22v8M40 22v8M12 18a5 3 0 0 1 10 0M26 18a5 3 0 0 1 10 0M24 6v6M21 12h6l-1 6h-4zM9 9l3 9M39 9l-3 9"/>',
+ beach:'<path class="f" d="M6 14a14 8 0 0 1 28 0z"/><path d="M6 14a14 8 0 0 1 28 0zM20 14v14M2 28c5-3 9-3 14 0s9 3 14 0 9-3 14 0M38 6a4 4 0 1 0 0 .1"/>',
+});
+/* ---- scenes for the Georgia map (60×40) ---- */
+const gsnow=(pts,c='#2A3556')=>{const [a,...r]=pts;return `<path d="M${a} ${r.map(x=>'L'+x).join(' ')}Z" fill="${c}"/>`};
+const peaks=(seed,base=30,col='#26304C',snow=true)=>{const r=rng(seed);let x=-4,d=`M-4 40V${base}`,caps='';while(x<64){const w=10+r()*12,h=8+r()*14,px=x+w/2,py=base-h;d+=`L${px.toFixed(1)} ${py.toFixed(1)}L${(x+w).toFixed(1)} ${base}`;if(snow&&h>11)caps+=`<path d="M${(px-w*.16).toFixed(1)} ${(py+h*.3).toFixed(1)}L${px.toFixed(1)} ${py.toFixed(1)}L${(px+w*.16).toFixed(1)} ${(py+h*.3).toFixed(1)}l-1.4 1.2-1.3-1-1.3 1z" fill="#DDE6F5" opacity=".85"/>`;x+=w*.7}return `<path d="${d}V40z" fill="${col}"/>`+caps};
+const sea=(y=30)=>`<rect y="${y}" width="60" height="${40-y}" fill="url(#gWater)"/>`+[[6,y+3,10],[24,y+5,8],[42,y+3,12],[14,y+7,6],[48,y+7,7]].map(([x,yy,w])=>`<path d="M${x} ${yy}h${w}" stroke="#FFD27A" stroke-opacity=".4" stroke-width=".6"/>`).join('');
+const vhouse=(x,y,w,h,c='#1E2537',lit=true)=>`<path d="M${x} ${y+h}V${y}l${w/2} -${(w*.45).toFixed(1)} ${w/2} ${(w*.45).toFixed(1)}V${y+h}z" fill="${c}"/>`+(lit?`<rect x="${x+w*.3}" y="${y+h*.3}" width="${(w*.4).toFixed(1)}" height="${(h*.35).toFixed(1)}" fill="#FFC96A" opacity=".85"/>`:'');
+const church=(x,y,s=1,c='#2C3654')=>`<g transform="translate(${x} ${y}) scale(${s})"><path d="M-6 0V-8h12V0zM-3.5-8v-4h7v4zM-2.4-12l2.4-3 2.4 3z" fill="${c}"/><path d="M0-15v-3M-1-17h2" stroke="#E8B758" stroke-width=".5"/><rect x="-1" y="-5" width="2" height="3" rx="1" fill="#FFC96A"/></g>`;
+const svan=(x,y,h=12)=>`<path d="M${x} ${y}V${y-h}l1.6-1.4 1.6 1.4V${y}z" fill="#2E3856"/><rect x="${x+1}" y="${y-h+2}" width="1.2" height="1.4" fill="#FFC96A"/>`;
+const palm=(x,y)=>`<path d="M${x} ${y}q.6-6 .2-10" stroke="#3A2B1E" stroke-width=".9" fill="none"/><path d="M${x+.2} ${y-10}q-4 -1-5 2M${x+.2} ${y-10}q4-1 5 2M${x+.2} ${y-10}q-2-3-4-3M${x+.2} ${y-10}q2-3 4-3" stroke="#1F5A3A" stroke-width=".9" fill="none"/>`;
+const vines=(y=30,seed=1)=>{let h='';for(let k=0;k<5;k++){const yy=y+k*2.2;h+=`<path d="M0 ${yy}Q30 ${yy-2} 60 ${yy}" stroke="#2D5A2A" stroke-width="1.1" fill="none"/>`;for(let x=2+(k%2)*3;x<60;x+=6)h+=`<circle cx="${x}" cy="${(yy-.4).toFixed(1)}" r=".7" fill="#6B2A5A"/>`}return h};
+Object.assign(SC,{
+ g_oni:()=>sky()+stars(41,12)+moon(48,8)+peaks(11,28)+`<path d="M0 34Q30 29 60 33V40H0z" fill="url(#gHill)"/>`+vhouse(8,28,8,7)+vhouse(20,30,7,6)+church(40,33,.8)+ground(),
+ g_ambrolauri:()=>sky()+stars(42,10)+peaks(12,27,'#223050')+vines(31,2)+vhouse(28,26,9,8)+ground('#0C120C'),
+ g_lanchkhuti:()=>sky()+stars(43,12)+`<path d="M0 32Q20 26 40 30T60 28V40H0z" fill="url(#gHill)"/>`+`<rect x="14" y="24" width="30" height="13" fill="#1E2537"/><path d="M12 24h34" stroke="#E8B758" stroke-width=".6"/>`+wins(16,26,6,2,4.4,4.6,2,2.4,8)+`<path d="M29 37v-4M27 37h4" stroke="#3B4766"/>`+ground(),
+ g_ozurgeti:()=>sky()+stars(44,10)+moon(10,8)+`<path d="M0 30Q30 22 60 30V40H0z" fill="#16301F"/>`+[6,16,26,36,46].map(x=>`<path d="M${x} 33q3-3 6 0" stroke="#2F6B3A" stroke-width="1.6" fill="none"/>`).join('')+vhouse(38,24,9,8)+ground('#0A140C'),
+ g_ureki:()=>sky()+stars(45,12)+moon(46,9)+sea(27)+`<path d="M0 34Q30 31 60 35V40H0z" fill="#3A3428"/>`+palm(10,35)+palm(52,36)+`<path d="M22 33h10l-5-4z" fill="#C23A4C"/><path d="M27 33v3" stroke="#BBB" stroke-width=".4"/>`,
+ g_senaki:()=>sky()+stars(46,12)+`<path d="M0 33Q30 27 60 32V40H0z" fill="url(#gHill)"/>`+vhouse(6,27,9,9)+vhouse(18,29,8,7)+`<rect x="30" y="22" width="20" height="14" fill="#1D2438"/>`+wins(32,24,5,3,3.6,3.8,1.8,2,47)+ground(),
+ g_zugdidi:()=>sky()+stars(47,10)+`<rect y="32" width="60" height="8" fill="#0D1410"/>`+`<path d="M12 32V20h36v12z" fill="#2A2F45"/><path d="M10 20h40l-4-5H14z" fill="#3A3F5C"/>`+[15,22,29,36,43].map(x=>`<rect x="${x}" y="23" width="3" height="6" rx="1.5" fill="#FFC96A"/>`).join('')+`<path d="M4 32q2-8 4-8t4 8M48 32q2-8 4-8t4 8" fill="#1F4A2C"/>`,
+ g_poti:()=>sky()+stars(48,10)+sea(29)+`<path d="M8 29V14h2v15M14 29V18h1.5v11" stroke="#3E4A72" stroke-width="1"/><path d="M9 14h14l-3 4H9z" fill="#C24A3A"/>`+`<rect x="30" y="22" width="9" height="7" fill="#C2803A"/><rect x="40" y="22" width="9" height="7" fill="#3A7AC2"/><rect x="35" y="16" width="9" height="6" fill="#3AA06A"/><path d="M28 29h24l-3 4H31z" fill="#1E2537"/>`,
+ g_zestaponi:()=>sky('gWarm')+stars(49,6,12)+`<rect y="30" width="60" height="10" fill="#0F1220"/>`+`<rect x="8" y="16" width="4" height="16" fill="#2B2F45"/><rect x="16" y="12" width="4" height="20" fill="#2B2F45"/><path d="M10 16q2-6 0-10M18 12q3-6 0-10" stroke="#8A8FA8" stroke-width="1.4" fill="none" opacity=".5"/><rect x="24" y="20" width="30" height="12" fill="#1E2537"/>`+wins(26,22,7,2,3.8,4.4,2,2.2,49),
+ g_tskaltubo:()=>sky()+stars(50,12)+moon(50,8)+`<path d="M0 34Q30 30 60 34V40H0z" fill="#132A1E"/><path d="M12 33V22h36v11z" fill="#2A3150"/><path d="M10 22h40l-20-8z" fill="#3A4366"/>`+[16,22,28,34,40].map(x=>`<rect x="${x}" y="24" width="2" height="9" fill="#C9C2A8" opacity=".7"/>`).join('')+`<path d="M24 14q2-3 0-6M30 13q2-3 0-6M36 14q2-3 0-6" stroke="#cfe" stroke-width=".6" fill="none" opacity=".5"/>`,
+ g_kutaisi:()=>sky()+stars(51,12)+glow(30,18,14)+`<path d="M0 32Q30 22 60 32V40H0z" fill="url(#gHill)"/>`+`<path d="M18 28V20h24v8zM22 20v-5h16v5zM27 15v-4h6v4z" fill="#2E3856"/><path d="M27 11a3 3 0 0 1 6 0z" fill="#E8B758"/><path d="M30 8V5M29 6.5h2" stroke="#FFD889" stroke-width=".6"/>`+[21,25,35,39].map(x=>`<rect x="${x}" y="22" width="1.6" height="3" rx=".8" fill="#FFC96A"/>`).join('')+`<rect y="35" width="60" height="5" fill="url(#gWater)"/>`,
+ g_akhaltsikhe:()=>sky('gWarm')+stars(52,8,12)+`<path d="M0 34Q30 28 60 34V40H0z" fill="url(#gHill)"/><path d="M8 32V18h3v-2h2v2h3v-2h2v2h3v14z" fill="#8A6A3A"/><path d="M34 32V14h14v18z" fill="#9A7A44"/><path d="M33 14h16l-8-6z" fill="#B8862B"/><path d="M41 8V4" stroke="#FFD889" stroke-width=".6"/><path d="M22 32V24h10v8z" fill="#7A5A30"/>`+glow(41,20,10),
+ g_vardzia:()=>sky()+stars(53,10)+`<path d="M0 8Q30 2 60 6V40H0z" fill="#5A4A3A"/><path d="M0 8Q30 2 60 6" stroke="#7A6450" stroke-width="1" fill="none"/>`+(()=>{const r=rng(53);let h='';for(let j=0;j<4;j++)for(let i=0;i<7;i++)if(r()<.75)h+=`<path d="M${4+i*8+j%2*3} ${14+j*6}v-2.4a1.6 1.6 0 0 1 3.2 0V${14+j*6}z" fill="${r()<.3?'#FFC96A':'#1A120C'}"/>`;return h})()+`<rect y="37" width="60" height="3" fill="#1F4A3A"/>`,
+ g_borjomi:()=>sky()+stars(54,12)+`<path d="M0 30L10 18 20 28 30 16 42 28 52 20 60 26V40H0z" fill="#16301F"/><path d="M0 34Q30 30 60 34V40H0z" fill="#0E2016"/>`+`<path d="M22 34V27h16v7z" fill="#2E3856"/><path d="M21 27h18l-9-5z" fill="#3A4366"/><path d="M30 22v-3" stroke="#E8B758" stroke-width=".6"/>`+[25,30,35].map(x=>`<rect x="${x-.6}" y="28" width="1.2" height="6" fill="#C9C2A8" opacity=".7"/>`).join('')+`<path d="M44 34q0-4 2-4t2 4" stroke="#7FD4E8" stroke-width=".8" fill="none"/>`,
+ g_rustavi:()=>sky()+stars(55,12)+[[2,14,10,26,'#1C2338',61],[14,8,11,32,'#232B45',62],[27,12,9,28,'#1C2338',63],[38,6,10,34,'#232B45',64],[50,15,9,25,'#1C2338',65]].map(([x,y,w,h,c,s])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"/>`+wins(x+1.5,y+2,Math.floor((w-2)/2.6),Math.floor((h-3)/3),2.6,3,1.4,1.6,s,.5)).join(''),
+ g_gori:()=>sky()+stars(56,12)+moon(10,9)+`<path d="M8 40Q22 10 36 12T56 40z" fill="#1A2238"/><path d="M24 16V10h3V8h2v2h2V8h2v2h3v6z" fill="#8A6A3A"/><path d="M20 16h20" stroke="#6A5230" stroke-width="1"/>`+glow(30,12,9)+vhouse(4,31,7,6)+vhouse(46,32,7,6)+ground(),
+ g_mtskheta:()=>sky()+stars(57,12)+glow(30,20,15)+`<path d="M0 30Q30 26 60 30V40H0z" fill="url(#gHill)"/><path d="M14 30V20h32v10z" fill="#3A3A50"/><path d="M12 20h36" stroke="#5A5A70"/><path d="M24 20v-7h12v7z" fill="#44445E"/><path d="M26 13l4-5 4 5z" fill="#55557A"/><path d="M30 8V4M28.6 5.6h2.8" stroke="#FFD889" stroke-width=".6"/>`+[18,22,38,42].map(x=>`<rect x="${x}" y="23" width="1.6" height="4" rx=".8" fill="#FFC96A"/>`).join('')+`<rect y="35" width="60" height="5" fill="url(#gWater)"/>`,
+ g_telavi:()=>sky('gWarm')+stars(58,8,12)+peaks(13,20,'#2A2F4A')+vines(28,3)+`<path d="M40 30V20h12v10z" fill="#5A3A2A"/><path d="M39 20h14l-7-4z" fill="#7A4A2E"/>`,
+ g_kvareli:()=>sky()+stars(59,12)+moon(48,8)+peaks(14,22)+vines(29,4)+`<path d="M8 31V24h10v7z" fill="#3A2A20"/><path d="M10 24a3 3 0 0 1 6 0" fill="#5A3A28"/><rect x="11.5" y="26" width="3" height="5" rx="1.5" fill="#FFC96A"/>`,
+ g_sighnaghi:()=>sky()+stars(60,12)+`<path d="M0 26Q30 20 60 26V40H0z" fill="#1A2238"/><path d="M2 30h56" stroke="#8A6A3A" stroke-width="3"/>`+[6,18,30,42,54].map(x=>`<path d="M${x-2.5} 30v-9h5v9z" fill="#9A7A44"/><path d="M${x-3} 21h6l-3-3z" fill="#B85A3A"/>`).join('')+vhouse(10,18,6,6)+vhouse(36,17,6,6)+vines(34,5),
+ g_mestia:()=>sky()+stars(61,14)+moon(50,7)+peaks(15,24,'#24304E')+`<path d="M0 34Q30 30 60 34V40H0z" fill="url(#gHill)"/>`+svan(10,34,14)+svan(18,33,11)+svan(30,34,15)+svan(42,33,12)+vhouse(46,28,8,6)+ground(),
+ g_gudauri:()=>sky()+stars(62,14)+peaks(16,22,'#2A3556')+`<path d="M0 26L60 38V40H0z" fill="#DDE6F5" opacity=".9"/><path d="M6 40L48 14" stroke="#8A93AE" stroke-width=".5"/>`+[[14,35],[24,29],[34,23]].map(([x,y])=>`<rect x="${x}" y="${y}" width="3.4" height="2.4" rx=".6" fill="#C23A4C"/><path d="M${x+1.7} ${y}v-1.5" stroke="#8A93AE" stroke-width=".4"/>`).join('')+`<path d="M44 34l3-6 3 6z" fill="#1F4A2C"/><path d="M50 36l3-6 3 6z" fill="#1F4A2C"/>`,
+ g_kazbegi:()=>sky()+stars(63,12)+`<path d="M8 40L34 4 60 40z" fill="#2A3556"/><path d="M28 12L34 4 40 12l-2 1.5-2-1-2 1.5-2-1z" fill="#EEF3FB"/><path d="M0 40Q14 24 28 28T44 40z" fill="#1A2238"/>`+church(20,27,.9,'#3A4566')+ground(),
+ g_kobuleti:()=>sky()+stars(64,12)+moon(12,9)+sea(28)+`<path d="M0 33Q30 30 60 34V40H0z" fill="#2E2A22"/>`+[[30,18,8,15],[40,14,9,19],[50,20,8,13]].map(([x,y,w,h],k)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#222A44"/>`+wins(x+1.4,y+2,2,Math.floor(h/3.4),3.4,3.4,1.6,1.8,70+k)).join('')+palm(8,34)+palm(18,35),
+ g_batumi:()=>sky()+stars(65,10,10)+sea(30)+`<path d="M6 30V12l4-6 4 6v18z" fill="#2A3352"/><circle cx="10" cy="9" r="1.4" fill="#FFD889"/><path d="M20 30V8h7v22z" fill="#232B45"/><path d="M33 30V16q4-10 8 0v14z" fill="#1E2640"/><path d="M47 30V4h2v26z" fill="#3E4A72"/><circle cx="48" cy="12" r="3.2" fill="none" stroke="#7FD4E8" stroke-width=".7"/>`+wins(21,10,2,6,3.2,3.2,1.4,1.6,66)+glow(48,12,8)+`<path d="M2 33h56" stroke="#E85D9C" stroke-opacity=".6" stroke-width=".6"/>`,
+ train:()=>`<rect width="60" height="40" fill="#0B0F1C"/>`+stars(67,8,10)+`<rect y="31" width="60" height="2" fill="#3A3F55"/><path d="M0 34h60" stroke="#5A5F75" stroke-width=".6"/>`+[3,9,15,21,27,33,39,45,51,57].map(x=>`<rect x="${x}" y="33" width="2.4" height="1" fill="#4A3A2A"/>`).join('')+`<path d="M6 30V18q0-4 4-4h30q8 0 10 8v8z" fill="#B8862B"/><path d="M6 22h44" stroke="#7A5A1A" stroke-width=".8"/>`+[10,17,24,31].map(x=>`<rect x="${x}" y="16" width="5" height="4.5" rx=".8" fill="#FFE2A0"/>`).join('')+`<rect x="40" y="16" width="6" height="5" rx="1" fill="#9FD8F0"/><circle cx="14" cy="30.5" r="2" fill="#1E2537"/><circle cx="26" cy="30.5" r="2" fill="#1E2537"/><circle cx="40" cy="30.5" r="2" fill="#1E2537"/>`+glow(52,26,6),
+});
+function panoramaGeo(){
+  const r=rng(91);let st='';for(let k=0;k<60;k++)st+=`<circle cx="${(r()*400).toFixed(1)}" cy="${(r()*90).toFixed(1)}" r="${(r()*.8+.3).toFixed(2)}" fill="#fff" opacity="${(r()*.6+.25).toFixed(2)}"/>`;
+  const pk=(seed,base,col,sc,snow)=>{const q=rng(seed);let x=-20,d=`M-20 170V${base}`,caps='';while(x<420){const w=40+q()*60,h=(30+q()*60)*sc,px=x+w/2,py=base-h;d+=`L${px.toFixed(0)} ${py.toFixed(0)}L${(x+w).toFixed(0)} ${base}`;if(snow&&h>45)caps+=`<path d="M${(px-w*.14).toFixed(0)} ${(py+h*.28).toFixed(0)}L${px.toFixed(0)} ${py.toFixed(0)}L${(px+w*.14).toFixed(0)} ${(py+h*.28).toFixed(0)}l-5 4-5-4-5 4z" fill="#DDE6F5" opacity=".8"/>`;x+=w*.65}return `<path d="${d}V170z" fill="${col}"/>`+caps};
+  let towers='';[[300,128],[312,124],[326,130],[340,126]].forEach(([x,y])=>{towers+=`<path d="M${x} ${y}V${y-26}l4-4 4 4V${y}z" fill="#1A2238"/><rect x="${x+2.5}" y="${y-21}" width="3" height="3" fill="#FFC96A"/>`});
+  return `<svg class="pano" viewBox="0 0 400 170" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><g class="pstars">${st}</g>
+  <g class="psun"><circle cx="70" cy="40" r="60" fill="url(#gSun)"/><circle cx="70" cy="40" r="14" fill="#FFE9A8"/></g>
+  <g class="pmoon"><circle cx="345" cy="34" r="46" fill="url(#gMoon)"/><circle cx="345" cy="34" r="11" fill="#FBF0CF"/></g>
+  ${pk(5,122,'#1B2442',.55,true)}${pk(9,130,'#141C36',.32,false)}
+  <path d="M0 132C60 118 120 120 180 130S300 126 400 122V170H0z" fill="#0F1529"/>
+  ${towers}
+  <g transform="translate(150 128)"><path d="M0 0V-14h22V0zM5-14v-8h12v8z" fill="#262F4B"/><path d="M7-22l4-5 4 5z" fill="#2E3856"/><path d="M11-27v-4M9.6-29.4h2.8" stroke="#FFD889" stroke-width="1"/><rect x="9.5" y="-10" width="3" height="5" rx="1.5" fill="#FFC96A"/></g>
+  <circle cx="161" cy="112" r="26" fill="url(#gGlow)" opacity=".55"/>
+  <rect x="200" y="140" width="200" height="30" fill="url(#gWater)"/><path d="M200 140Q230 134 260 140" stroke="#3BB3B0" stroke-width="1.6" fill="none" opacity=".6"/>
+  <path d="M362 140V96h5v44z" fill="#2A3352"/><circle cx="364.5" cy="104" r="7" fill="none" stroke="#7FD4E8" stroke-width="1.2"/><circle cx="364.5" cy="104" r="16" fill="url(#gGlow)" opacity=".5"/>
+  <path d="M230 150h22M290 152h18M330 148h26" stroke="#FFD27A" stroke-opacity=".45" stroke-width="1.2"/>
+  </svg>`;
+}
+const MAPS={
+ tb:{id:'tb',name:'თბილისი',sub:'36 უჯრა',cells:null,groups:null,cards:null,trN:'მეტრო',trI:'Ⓜ',trBy:'მეტროთი',jailIn:'გლდანის ციხეში',jailAt:'გლდანის ციხეს',restIn:'ბოტანიკურ ბაღში',orn:'✦ ქალაქი შენს ხელშია ✦',uk:1},
+ geo:{id:'geo',name:'საქართველო',sub:'48 უჯრა · 10 კუთხე',cells:CELLS_GEO,groups:GROUPS_GEO,cards:CARDS_GEO,trN:'რკინიგზა',trI:'🚆',trBy:'მატარებლით',jailIn:'ციხეში',jailAt:'ციხეს',restIn:'შავი ზღვის პლაჟზე',orn:'✦ საქართველოს კუთხეები ✦',uk:.8},
+};
+
+MAPS.tb.cells=CELLS_TB;MAPS.tb.groups=GROUPS_TB;MAPS.tb.cards=CARDS_TB;
+let MAP=MAPS.tb,NEWMAP=null;let SETUP_MAP='tb';try{const m=localStorage.getItem('tm-map');if(m&&MAPS[m])SETUP_MAP=m}catch(e){}
 
 /* ================= AUDIO ================= */
 const AU={ctx:null,music:false,sfx:true,mg:null,sg:null,timer:null,next:0,ix:0,drone:null,gen:0};
@@ -2197,6 +2368,7 @@ function tourForm(t){
     <div class="tf3"><label>მაქს. მოთამაშე<input class="ain" type="number" id="tf_max" min="2" max="7" value="${v.max}"></label>
       <label>პარტიები<input class="ain" type="number" id="tf_games" min="1" max="10" value="${v.games}"></label>
       <label>რაუნდი პარტიაში<input class="ain" type="number" id="tf_rounds" min="10" max="100" value="${v.rounds}"></label></div>
+    <label>რუკა<select class="ain" id="tf_map">${Object.values(MAPS).map(m=>`<option value="${m.id}" ${(v.map||'tb')===m.id?'selected':''}>${m.name} (${m.sub})</option>`).join('')}</select></label>
     ${TOUR.note?`<p class="tnote">${esc(TOUR.note)}</p>`:''}
     <div class="setup-acts"><button class="btn gold" data-act="toursave">${t.id?'შენახვა':'გამოცხადება 📢'}</button><button class="btn ghost" data-act="touredit0">გაუქმება</button></div>
     ${t.id?'':'<p class="note">გამოცხადებისთანავე ყველას, ვინც საიტზეა, ზარით ამოუვა შეტყობინება, დანარჩენები კი მთავარ მენიუში დაინახავენ.</p>'}</div>`;
@@ -2223,7 +2395,7 @@ function renderTour(){
     <div><small>რეგისტრაცია მთავრდება</small><b>${fmtDT(t.regEnd)}</b>${st==='reg'&&regLeft>0?`<em data-cd="${t.regEnd}" data-pre="დარჩა ">დარჩა ${fmtLeft(regLeft)}</em>`:st!=='reg'?'<em class="off">დასრულდა</em>':''}</div>
     <div><small>ტურნირი იწყება</small><b>${t.startAt?fmtDT(t.startAt):'მალე გამოცხადდება'}</b>${t.startAt&&startLeft>0&&st!=='done'?`<em data-cd="${t.startAt}" data-post="-ში">${fmtLeft(startLeft)}-ში</em>`:''}</div>
     <div><small>მონაწილეები</small><b>${n} / ${max}</b><em>${st==='reg'?`თავისუფალია ${Math.max(0,max-n)} ადგილი`:''}</em></div>
-    <div><small>ფორმატი</small><b>${t.games||3} პარტია × ${t.rounds||30} რაუნდი</b><em>მხოლოდ ადამიანები</em></div></div>`;
+    <div><small>ფორმატი</small><b>${t.games||3} პარტია × ${t.rounds||30} რაუნდი</b><em>🗺 ${(MAPS[t.map||'tb']||MAPS.tb).name} · მხოლოდ ადამიანები</em></div></div>`;
   h+=`<details class="trules" ${mine||st!=='reg'?'':'open'}><summary>📜 როგორ ტარდება</summary><ol>
     <li>რეგისტრაცია ღიაა <b>${fmtDT(t.regEnd)}</b>-მდე ან სანამ ${max} ადგილი არ შეივსება.</li>
     <li>${t.startAt?`ტურნირი იწყება <b>${fmtDT(t.startAt)}</b>-ზე.`:'დაწყების დრო მოგვიანებით გამოცხადდება.'} ყველა მონაწილეს ზარი და შეტყობინება მოუვა.</li>
@@ -2291,7 +2463,7 @@ async function tourAct(a,el){
   if(a==='toursave'){
     const g=id=>(document.getElementById(id)||{}).value||'';const tm=id=>{const v=g(id);return v?new Date(v).getTime():0};
     const data={title:g('tf_title').trim().slice(0,40)||'ტურნირი',prize:g('tf_prize').trim().slice(0,80),img:/^(https:\/\/|[\w.-]+\.(jpg|jpeg|png|webp)$)/i.test(g('tf_img').trim())?g('tf_img').trim().slice(0,400):'',link:/^https?:\/\//.test(g('tf_link').trim())?g('tf_link').trim().slice(0,400):'',desc:g('tf_desc').trim().slice(0,600),
-      regEnd:tm('tf_regEnd'),startAt:(document.getElementById('tf_nostart')||{}).checked?0:tm('tf_startAt'),max:Math.min(7,Math.max(2,+g('tf_max')||7)),games:Math.min(10,Math.max(1,+g('tf_games')||3)),rounds:Math.min(100,Math.max(10,+g('tf_rounds')||30))};
+      regEnd:tm('tf_regEnd'),startAt:(document.getElementById('tf_nostart')||{}).checked?0:tm('tf_startAt'),max:Math.min(7,Math.max(2,+g('tf_max')||7)),games:Math.min(10,Math.max(1,+g('tf_games')||3)),rounds:Math.min(100,Math.max(10,+g('tf_rounds')||30)),map:MAPS[g('tf_map')]?g('tf_map'):'tb'};
     if(!data.regEnd){TOUR.note='მიუთითე რეგისტრაციის დასრულების დრო.';return renderTour()}
     if(!data.startAt&&!(document.getElementById('tf_nostart')||{}).checked){TOUR.note='მიუთითე დაწყების დრო ან მონიშნე “დრო ჯერ უცნობია”.';return renderTour()}
     if(TOUR.edit==='new'&&data.regEnd<Date.now()+60000){TOUR.note='რეგისტრაციის დასრულება მომავალში უნდა იყოს.';return renderTour()}
@@ -2317,7 +2489,7 @@ async function tourAct(a,el){
 }
 /* ===== tournament play stage: start notice, room, auto-move, scoring ===== */
 const tourReg=uid=>!!TOUR.players.find(p=>p.uid===uid);
-function tourWorth(st,pi){const p=st.players[pi];let w=(p.cash||0)-(p.loan||0);for(const k in st.own){const o=st.own[k],c=CELLS[k];if(o.o===pi&&c)w+=(o.m?c.price/2:c.price)+(c.t==='p'?floorsValue(+k,o.h||0):0)}return p.out?0:w}
+function tourWorth(st,pi){const p=st.players[pi],M=MAPS[st.map||'tb']||MAPS.tb,CC=M.cells;let w=(p.cash||0)-(p.loan||0);for(const k in st.own){const o=st.own[k],c=CC[k];if(o.o===pi&&c){w+=o.m?c.price/2:c.price;if(c.t==='p')for(let q=0;q<(o.h||0);q++)w+=R5(M.groups[c.g].house*FLOOR_MULT[Math.min(3,q)])}}return p.out?0:w}
 function tourRank(st){
   const idx=st.players.map((p,i)=>i).filter(i=>!st.players[i].ai);
   const win=st.winner;
@@ -2402,7 +2574,7 @@ async function tourOpenRoom(g){
   const n=TOUR.players.length;if(n<2){TOUR.note='საჭიროა მინიმუმ 2 მონაწილე.';return renderTour()}
   let code=netCode();for(let k=0;k<4;k++){const x=await NET.db.doc('games/'+code).get();if(!x.exists)break;code=netCode()}
   const tour={id:t.id,g,games:t.games||3,title:(t.title||'ტურნირი').slice(0,40)};
-  await NET.db.doc('games/'+code).set({code,host:NET.uid,hostName:'🏆 '+tour.title,status:'lobby',max:Math.min(MAXP,n),fillAI:false,diff:'medium',rounds:t.rounds||30,created:Date.now(),ver:0,S:null,by:null,tour});
+  await NET.db.doc('games/'+code).set({code,host:NET.uid,hostName:'🏆 '+tour.title,status:'lobby',max:Math.min(MAXP,n),fillAI:false,diff:'medium',rounds:t.rounds||30,map:t.map||'tb',created:Date.now(),ver:0,S:null,by:null,tour});
   await NET.db.doc('tournaments/'+t.id).update({status:'play',room:code,g});
   toast2(`🏆 პარტია ${g}: ოთახი ${code} გაიხსნა`);
   tourEnter(code,!tourReg(NET.uid));
@@ -2436,14 +2608,14 @@ function tourPreview(){
   const others=tourPrevPlayers(),used=new Set([NET.myTok]);
   NET.code='DEMO';NET.spectating=true;NET.note='';
   NET.members=others.map((p,i)=>{let tk=p.tok||0;while(used.has(tk))tk=(tk+1)%TOKENS.length;used.add(tk);return {uid:p.uid,name:p.name,tok:tk,col:COLORS[(i+1)%COLORS.length],at:i}});
-  NET.lobby={code:'DEMO',host:NET.uid,status:'lobby',max:MAXP,fillAI:false,rounds:t.rounds||30,preview:true,tour:{id:t.id||'demo',g:1,games:t.games||3,title:t.title||'ტურნირი',preview:true}};
+  NET.lobby={code:'DEMO',host:NET.uid,status:'lobby',max:MAXP,fillAI:false,rounds:t.rounds||30,map:t.map||'tb',preview:true,tour:{id:t.id||'demo',g:1,games:t.games||3,title:t.title||'ტურნირი',preview:true}};
   APP.screen='online';render();
 }
 function tourPreviewGo(){
   const L=NET.lobby;if(!L||!L.preview)return;
   const T=Object.assign({},L.tour),mem=NET.members.slice(0,MAXP-1);
   SEATS=[{ai:false,name:NET.myName||'ადმინი',tok:NET.myTok||0,col:NET.myCol||COLORS[0]}].concat(mem.map(m=>({ai:true,name:m.name,tok:m.tok,col:m.col})));
-  const keepR=SETUP_ROUNDS;SETUP_ROUNDS=L.rounds||30;
+  const keepR=SETUP_ROUNDS;SETUP_ROUNDS=L.rounds||30;NEWMAP=L.map||'tb';
   NET.code=null;NET.lobby=null;NET.members=[];NET.spectating=false;
   let sv=null;try{sv=localStorage.getItem('tm-save-v7')}catch(e){}
   newGame();SETUP_ROUNDS=keepR;S.tour=T;
@@ -2603,7 +2775,7 @@ async function netStart(){
   const seats=hs.map(m=>({ai:false,name:m.name,tok:m.tok,col:m.col,uid:m.uid}));
   if(L.fillAI)while(seats.length<L.max){const used=new Set(seats.map(x=>x.tok));seats.push({ai:true,name:AIN[seats.length%AIN.length],tok:[...Array(TOKENS.length).keys()].find(k=>!used.has(k))})}
   if(seats.length<2){NET.note='საჭიროა მინიმუმ 2 მოთამაშე (ან ჩართე კომპიუტერი).';renderSide();return}
-  SEATS=seats;SETUP_DIFF=L.diff||'medium';const keepR=SETUP_ROUNDS;SETUP_ROUNDS=L.rounds??60;
+  SEATS=seats;SETUP_DIFF=L.diff||'medium';NEWMAP=L.map||'tb';const keepR=SETUP_ROUNDS;SETUP_ROUNDS=L.rounds??60;
   NET.on=true;NET.seat=0;
   netApplyingStart=true;newGame();netApplyingStart=false;SETUP_ROUNDS=keepR;
   if(L.tour)S.tour=Object.assign({},L.tour);
@@ -2623,6 +2795,7 @@ function netOnGame(snap){
 }
 function netApply(d){
   let ns;try{ns=migrateLayout(JSON.parse(d.S))}catch(e){return}
+  if(setMap(ns.map||'tb')){S=null}
   const first=!NET.on||!S;
   const old=S;
   NET.ver=d.ver;NET.lastJson=d.S;NET.on=true;NET.lastChange=Date.now();
@@ -2695,10 +2868,11 @@ function lobbyHTML(){
   if(isHost){
     h+=`<div class="diffbox"><span>ადგილები სულ</span><div class="seg">${[2,3,4,5,6,7].map(n=>`<button data-act="netmax" data-n="${n}" aria-pressed="${L.max===n}">${n}</button>`).join('')}</div>
       <span>ცარიელი ადგილები</span><div class="seg"><button data-act="netai" data-v="1" aria-pressed="${!!L.fillAI}">კომპიუტერი</button><button data-act="netai" data-v="0" aria-pressed="${!L.fillAI}">არავინ</button></div>
+      <span>რუკა</span><div class="seg mapseg">${Object.values(MAPS).map(m=>`<button data-act="netmap" data-m="${m.id}" aria-pressed="${(L.map||'tb')===m.id}"><b>${m.name}</b><small>${m.sub}</small></button>`).join('')}</div>
       <span>თამაშის ხანგრძლივობა</span><div class="seg">${[[0,'∞ ულიმიტო'],[30,'30 რ.'],[45,'45 რ.'],[60,'60 რ.']].map(([v,l])=>`<button data-act="netrounds" data-v="${v}" aria-pressed="${(L.rounds??60)===v}">${l}</button>`).join('')}</div>
       <span>კომპიუტერის სირთულე</span><div class="seg">${Object.entries(AIP).map(([k,v])=>`<button data-act="netdiff" data-d="${k}" aria-pressed="${(L.diff||'medium')===k}">${v.n}</button>`).join('')}</div></div>
       ${NET.note?`<p class="tnote">${esc(NET.note)}</p>`:''}<div class="setup-acts"><button class="btn gold" data-act="netstart">თამაშის დაწყება</button></div>`;
-  }else h+=`<p class="note">ელოდება მასპინძელს (${esc(L.hostName||'')}), რომ თამაში დაიწყოს…</p>`;
+  }else h+=`<p class="note">🗺 რუკა: <b>${(MAPS[L.map||'tb']||MAPS.tb).name}</b>. ელოდება მასპინძელს (${esc(L.hostName||'')}), რომ თამაში დაიწყოს…</p>`;
   return h+`</div></div>`;
 }
 function onlinePanelHTML(){
@@ -2805,6 +2979,7 @@ function snap(){try{UNDO.push(JSON.stringify(S));if(UNDO.length>25)UNDO.shift()}
 function clearUndo(){UNDO.length=0}
 function recordHist(){S.hist.push(S.players.map(p=>p.out?0:worth(p)))}
 function newGame(){
+  setMap(NEWMAP||SETUP_MAP);NEWMAP=null;
   START=GCFG.start||2000;PASS=GCFG.pass||250;CELLS[0].sub='+'+PASS+'₾';cellCache=[];
   const used=new Set(),usedC=new Set();
   const players=SEATS.map((s,i)=>{
@@ -2815,7 +2990,7 @@ function newGame(){
   });
   dedupe([...players.filter(q=>!q.ai),...players.filter(q=>q.ai)]);
   S={v:8,pot:0,diff:SETUP_DIFF,stats:players.map(newStat),cellRent:{},hist:[],players,own:{},turn:0,phase:'roll',dice:[3,5],dbl:0,again:false,log:[],deck:shuffle(CARDS.map((_,i)=>i)),deckI:0,round:1,pending:null,sel:null,modal:null,view:null,msg:'',exp:null,trade:null,auction:null,debtThen:null};
-  S.cfg={start:START,pass:PASS,spy:GCFG.spy||279};S.maxR=SETUP_ROUNDS||0;S.t0=Date.now();GT.anchor=S.t0;
+  S.cfg={start:START,pass:PASS,spy:GCFG.spy||279};S.maxR=SETUP_ROUNDS||0;S.map=MAP.id;S.t0=Date.now();GT.anchor=S.t0;
   lastCash=S.players.map(p=>p.cash);
   log(null,`ახალი თამაში · ${players.length} მოთამაშე · თითოს ${START}₾`);
   recordHist();clearUndo();
@@ -2867,8 +3042,8 @@ async function doFly(){
   clearUndo();S.phase='moving';S.again=false;S.dbl=0;renderDesk();
   const pi=pidx(p);
   if(F.fee>0){st(p).rentOut+=F.fee;S.stats[F.payee].rentIn+=F.fee;pay(p,F.fee,S.players[F.payee])}
-  log(p,`Ⓜ ${p.name} მეტროთი: ${CELLS[F.from].st} → ${CELLS[F.to].st}${F.fee?` (ბილეთი ${F.fee}₾${F.payee!=null?' → '+S.players[F.payee].name:''})`:' (საკუთარი სადგური)'}`);
-  say(`Ⓜ ${p.name} მეტროთი მიდის: <b>${CELLS[F.to].st}</b>`);sfx('card');
+  log(p,`${MAP.trI} ${p.name} ${MAP.trBy}: ${CELLS[F.from].st} → ${CELLS[F.to].st}${F.fee?` (ბილეთი ${F.fee}₾${F.payee!=null?' → '+S.players[F.payee].name:''})`:' (საკუთარი სადგური)'}`);
+  say(`${MAP.trI} ${p.name} ${MAP.trBy} მიდის: <b>${CELLS[F.to].st}</b>`);sfx('card');
   S.mv={id:((S.mv&&S.mv.id)||0)+1,p:pi,from:p.pos,n:0,k:'jump'};p.pos=F.to;p.metroAt=F.to;if(NET.on)netPushNow();
   try{await animatePath(pi,[F.to],{jump:true});say(`Ⓜ ${p.name} ჩავიდა: <b>${CELLS[F.to].st}</b>.${F.payee!=null?' ბილეთში ქირაც შედის.':''}`);render();afterLand()}
   catch(e){console.error(e);S.phase=p.ai?'end':'roll';render();if(p.ai)setTimeout(nextTurn,600)}
@@ -2986,6 +3161,11 @@ async function land(p){
     if(c.k==='police'){say(`საგზაო პოლიციამ ${p.name} დააჯარიმა: <b>${c.amt}₾</b>.`);log(p,`${p.name}: პოლიციის ჯარიმა ${c.amt}₾`);sfx('jail');st(p).taxes+=c.amt;fine(p,c.amt)}
     else if(c.k==='pothole'){say(`${p.name} ორმოში ჩავარდა და ${c.v} უჯრით უკან დაბრუნდა.`);log(p,`${p.name}: ორმო, ${c.v} უჯრა უკან`);sfx('pay');render();await sleep(450);{const cells=[];let q=p.pos;for(let k=0;k<c.v;k++){q=(q+N-1)%N;cells.push(q)}S.mv={id:((S.mv&&S.mv.id)||0)+1,p:pi,from:p.pos,n:c.v,k:'back'};p.pos=q;if(NET.on)netPushNow();await animatePath(pi,cells,{stepMs:260})}await sleep(150);await land(p);return}
     else if(c.k==='blocked'){p.skip=1;say(`ქუჩა გადაკეტილია! ${p.name} შემდეგ სვლას გამოტოვებს.`);log(p,`${p.name}: გადაკეტილი ქუჩა, ერთი სვლის გამოტოვება`);sfx('jail')}
+  }else if(c.t==='gift'){
+    if(c.k==='wine'){const n=propsOf(pi).length,amt=Math.min(300,Math.max(40,c.amt*n));say(`🍷 ${esc(p.name)} ღვინის მარანშია: <b>+${amt}₾</b> (${n} უბანი × ${c.amt}₾).`);log(p,`${p.name}: ღვინის მარანი +${amt}₾`);gain(p,amt)}
+    else if(c.k==='supra'){let got=0;S.players.forEach(q=>{if(q!==p&&!q.out){pay(q,c.amt,p);got+=c.amt}});say(`🍽 ${esc(p.name)} სუფრას შლის: ყველა უხდის ${c.amt}₾-ს (<b>+${got}₾</b>).`);log(p,`${p.name}: ქართული სუფრა +${got}₾`)}
+    else{say(`🧳 ტურისტული სეზონი! ${esc(p.name)} იღებს <b>+${c.amt}₾</b>.`);log(p,`${p.name}: ტურისტული სეზონი +${c.amt}₾`);gain(p,c.amt)}
+    sfx('buy');
   }else if(c.t==='card'){
     const card=CARDS[S.deck[S.deckI%S.deck.length]];S.deckI++;
     if(S.deckI%S.deck.length===0)shuffle(S.deck);
@@ -2996,13 +3176,13 @@ async function land(p){
     const handled=await card.f(p);render();
     if(handled)return;
   }else if(c.t==='gojam'){
-    say(`პოლიციამ ${p.name} დააკავა და გლდანის ციხეში გაგზავნა.`);log(p,`${p.name} → გლდანის ციხე`);await sleep(300);sendJam(p);
+    say(`პოლიციამ ${p.name} დააკავა და ${MAP.jailIn} გაგზავნა.`);log(p,`${p.name} → ${CELLS[JAM].n}`);await sleep(300);sendJam(p);
   }else if(c.t==='rest'){
     const amt=Math.min(S.pot||0,JACK_MAX);
-    if(amt>0){S.pot=(S.pot||0)-amt;p.cash+=amt;st(p).pass+=0;flyCoins('pot',pi,amt);say(`<b>ჯეკპოტი!</b> ${esc(p.name)} იღებს <b>${amt}₾</b>.`);log(p,`${p.name}-მა ბოტანიკურ ბაღში ჯეკპოტი მოიგო: +${amt}₾`);sfx('win');setTimeout(()=>{const el=document.getElementById('c'+REST);if(el&&!RM){const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,'#3DBE7C',30,140)}},120)}
-    else say(`${p.name} ისვენებს ბოტანიკურ ბაღში. ჯეკპოტი ჯერ ცარიელია.`);
+    if(amt>0){S.pot=(S.pot||0)-amt;p.cash+=amt;st(p).pass+=0;flyCoins('pot',pi,amt);say(`<b>ჯეკპოტი!</b> ${esc(p.name)} იღებს <b>${amt}₾</b>.`);log(p,`${p.name}-მა ${MAP.restIn} ჯეკპოტი მოიგო: +${amt}₾`);sfx('win');setTimeout(()=>{const el=document.getElementById('c'+REST);if(el&&!RM){const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,'#3DBE7C',30,140)}},120)}
+    else say(`${p.name} ისვენებს ${MAP.restIn}. ჯეკპოტი ჯერ ცარიელია.`);
   }
-  else if(c.t==='jam')say(`${p.name} სტუმრად ჩაუარა გლდანის ციხეს.`);
+  else if(c.t==='jam')say(`${p.name} სტუმრად ჩაუარა ${MAP.jailAt}.`);
   else if(c.t==='start')say(`${p.name} სტარტზე დადგა.`);
   afterLand();
 }
@@ -3014,7 +3194,7 @@ function buy(p,i){
 }
 /* Computer players sell and mortgage automatically and go bankrupt when they cannot pay.
    People may go below zero: they then get a debt phase to raise money themselves. */
-const REST=CELLS.findIndex(c=>c.t==='rest');
+let REST=CELLS.findIndex(c=>c.t==='rest');
 const JACK_MAX=600;
 let PAY_POT=false;
 function fine(p,amt){const before=Math.max(0,p.cash);PAY_POT=true;const ok=pay(p,amt,null);PAY_POT=false;if(ok&&amt>0){S.pot=(S.pot||0)+(p.ai?amt:Math.min(amt,before))}return ok}
@@ -3480,7 +3660,15 @@ function proposeTrade(){
 }
 
 /* ================= RENDER ================= */
-const GRID=SIDE+1;
+let GRID=SIDE+1;
+function setMap(id){
+  const M=MAPS[id]||MAPS.tb;if(MAP===M)return false;
+  MAP=M;CELLS=M.cells;GROUPS=M.groups;CARDS=M.cards;N=CELLS.length;SIDE=N/4;GRID=SIDE+1;
+  TRS=CELLS.map((c,i)=>c.t==='tr'?i:-1).filter(i=>i>=0);JAM=CELLS.findIndex(c=>c.t==='jam');REST=CELLS.findIndex(c=>c.t==='rest');
+  CELLS[0].sub='+'+PASS+'₾';cellCache=[];PREV_OWN=null;
+  if(document.getElementById('board'))buildBoard();
+  return true;
+}
 function rc(i){
   if(i<=SIDE)return[GRID,GRID-i];
   if(i<=2*SIDE)return[GRID-(i-SIDE),1];
@@ -3497,25 +3685,27 @@ function buildBoard(){
   let h='';
   CELLS.forEach((c,i)=>{const [r,col]=rc(i);
     h+=`<button class="cell${cornerCls(i)}" id="c${i}" style="grid-row:${r};grid-column:${col}" data-act="sel" data-i="${i}" aria-label="${esc(c.n)}${c.price?', '+c.price+' ლარი':''}"></button>`});
-  h+=`<div class="desk" id="desk"><div class="skyl sky-day"></div><div class="skyl sky-dusk"></div><div class="skyl sky-dawn"></div>${panorama()}${tourDeskHTML()}<div class="gclock" id="gclock" hidden title="თამაშის ხანგრძლივობა">⏱ <b class="gtime">0:00</b></div><div class="desk-in"><div class="brand">თბილისელი მაგნატი<span class="orn">✦ ქალაქი შენს ხელშია ✦</span><span class="orn orn-t">✦ ტურნირი ✦</span></div>
+  h+=`<div class="desk" id="desk"><div class="skyl sky-day"></div><div class="skyl sky-dusk"></div><div class="skyl sky-dawn"></div>${MAP.id==='geo'?panoramaGeo():panorama()}${tourDeskHTML()}<div class="gclock" id="gclock" hidden title="თამაშის ხანგრძლივობა">⏱ <b class="gtime">0:00</b></div><div class="desk-in"><div class="brand">თბილისელი მაგნატი<span class="orn">${MAP.orn}</span><span class="orn orn-t">✦ ტურნირი ✦</span></div>
     <div class="dice" id="dice">${dieHTML()}${dieHTML()}</div><div class="dsum num" id="dsum"></div><div class="msg" id="msg"></div><div class="actslot" id="actsSlot"></div><div class="glegend">${GROUPS.map(g=>`<span><i style="--gc:${g.c}"></i>${g.n}</span>`).join('')}</div><div class="round num" id="round"></div></div></div>
     <div class="tklayer" id="tk"></div>`;
   b.innerHTML=h;cellCache=[];setDice(false);
-  if(!b._ro&&window.ResizeObserver){b._ro=new ResizeObserver(()=>{b.style.setProperty('--u',(b.clientWidth/100).toFixed(2)+'px');positionHud()});b._ro.observe(b)}
-  b.style.setProperty('--u',(b.clientWidth/100).toFixed(2)+'px');
+  b.style.gridTemplateColumns=b.style.gridTemplateRows=`repeat(${GRID},minmax(0,1fr))`;b.classList.toggle('big',MAP.id!=='tb');b.dataset.map=MAP.id;
+  const dk=document.getElementById('desk');if(dk)dk.style.gridArea=`2/2/${GRID}/${GRID}`;
+  if(!b._ro&&window.ResizeObserver){b._ro=new ResizeObserver(()=>{b.style.setProperty('--u',(b.clientWidth/100*MAP.uk).toFixed(2)+'px');positionHud()});b._ro.observe(b)}
+  b.style.setProperty('--u',(b.clientWidth/100*MAP.uk).toFixed(2)+'px');
 }
 function cellHTML(i){
   const c=CELLS[i],o=S&&S.own[i],corner=['start','jam','rest','gojam'].includes(c.t),prop=c.t==='p'||c.t==='tr';
   const want=S&&prop&&c.t==='p'&&!S.players[viewer()].ai&&lastPieces(viewer()).has(i);
   const vi0=S?viewer():-1,mine=!!(o&&S&&o.o===vi0&&!S.players[vi0].ai);
-  let cls='cell'+cornerCls(i)+sideCls(i)+(want?' want':'')+(mine?' mine':'')+(mine&&NEWBUY[i]&&Date.now()-NEWBUY[i]<2600?' nb':'')+(corner?' corner':'')+(['card','tax','obs'].includes(c.t)?' special':'')+(c.t==='obs'?' obs':'')+(prop?' prop':'')+(o&&o.m?' m':'')+(o?' own':'')+(S&&S.sel===i?' sel':'');
+  let cls='cell'+cornerCls(i)+sideCls(i)+(want?' want':'')+(mine?' mine':'')+(mine&&NEWBUY[i]&&Date.now()-NEWBUY[i]<2600?' nb':'')+(corner?' corner':'')+(['card','tax','obs','gift'].includes(c.t)?' special':'')+(c.t==='gift'?' gift':'')+(c.t==='obs'?' obs':'')+(prop?' prop':'')+(o&&o.m?' m':'')+(o?' own':'')+(S&&S.sel===i?' sel':'');
   let style=`grid-row:${rc(i)[0]};grid-column:${rc(i)[1]};--gc:${gcol(c)};`+(corner?`--c1:${c.c1};--c2:${c.c2};`:'')+(o?`--pc:${S.players[o.o].col};`:'');
   let inner='';
   if(prop){
     const fl='';
     const price=o?(o.m?'—':`${rentOf(i)}₾`):`${c.price}₾`;
     inner=`<div class="band">${fl}</div><div class="scene">${scene(c.sc)}</div><div class="cname">${c.sn||c.n}</div><div class="cprice">${price}</div>${want?'<span class="wantb">აკლია</span>':''}${mine?`<span class="mineb">${tokSvg(S.players[o.o].tok)}</span><span class="minet">შენი</span>`:o?`<span class="mineb oth" title="${esc(S.players[o.o].name)}">${tokSvg(S.players[o.o].tok)}</span>`:''}`;
-  }else if(['card','tax','obs'].includes(c.t)){
+  }else if(['card','tax','obs','gift'].includes(c.t)){
     inner=`<div class="ico">${icon(c.ic)}</div><div class="cname">${c.sn||c.n}</div><div class="cprice">${c.t==='tax'?'−'+c.amt+'₾'+(c.rate||c.cashRate?'+':''):(c.sub||'')}</div>`;
   }else inner=`<div class="ico">${icon(c.ic)}</div><div class="cname">${c.n}</div><div class="cprice${c.t==='rest'&&S&&S.pot?' pot':''}">${c.t==='rest'&&S?`ჯეკპოტი ${S.pot||0}₾`:(c.sub||'')}</div>`;
   return [cls,style,inner];
@@ -3718,12 +3908,14 @@ function renderDesk(){
   if(!document.getElementById('msg'))buildBoard();
   const msg=document.getElementById('msg'),acts=document.getElementById('acts'),rd=document.getElementById('round');
   if(!S&&NET.code){
+    if(setMap(NET.lobby&&NET.lobby.map||'tb')){renderCells();return renderDesk()}
     const isHost=NET.lobby&&NET.lobby.host===NET.uid;
     msg.innerHTML=NET.lobby&&NET.lobby.tour?`🏆 <b>ტურნირი · პარტია ${NET.lobby.tour.g}/${NET.lobby.tour.games}</b> · ${NET.members.length} მოთამაშე.<br>${isHost?'როცა ყველა შემოვა, დაიწყე პარტია.':'ადმინი მალე დაიწყებს…'}`:`ონლაინ ოთახი <b>${NET.code}</b> · ${NET.members.length} მოთამაშე.<br>${isHost?'როცა ყველა შემოვა, დაიწყე.':'ელოდება მასპინძელს…'}`;
     acts.innerHTML=NET.lobby&&NET.lobby.preview?`<button class="btn gold" data-act="tourprevgo">▶ დაფის ნახვა</button>`:isHost?`<button class="btn gold" data-act="netstart">${NET.lobby&&NET.lobby.tour?'▶ პარტიის დაწყება':'თამაშის დაწყება'}</button>`:'';rd.textContent='';applyTod();positionHud();return;
   }
   if(!S&&APP.screen==='online'){msg.innerHTML='შექმენი ოთახი ან შედი მეგობრის ოთახში.';acts.innerHTML='';rd.textContent='';applyTod();positionHud();return}
   if(!S){
+    if(setMap(SETUP_MAP)){renderCells();return renderDesk()}
     msg.innerHTML='აირჩიე მოთამაშეები, ფიგურები და ფერები, შემდეგ დაიწყე.';
     acts.innerHTML=`<button class="btn gold" data-act="start">თამაშის დაწყება</button>`;rd.textContent='';applyTod();positionHud();return;
   }
@@ -3733,7 +3925,7 @@ function renderDesk(){
   if(S.phase==='over')h=`<button class="btn gold" data-act="setup">ახალი თამაში</button><button class="btn" data-act="showover">📊 შედეგები</button>`;
   else if(human&&S.phase==='roll'){
     h=`<button class="btn gold" data-act="roll">გააგორე კამათელი <span class="endcd" id="actcd">${actLeft()||15}</span></button>`;
-    {const F=flyInfo(p);if(F)h+=`<button class="btn fly" data-act="fly" ${F.ok?'':'disabled'} title="${esc(CELLS[F.to].n)}">Ⓜ მეტრო → ${CELLS[F.to].st} · ${F.fee?F.fee+'₾':'უფასო'}</button>`}
+    {const F=flyInfo(p);if(F)h+=`<button class="btn fly" data-act="fly" ${F.ok?'':'disabled'} title="${esc(CELLS[F.to].n)}">${MAP.trI} ${MAP.trN} → ${CELLS[F.to].st} · ${F.fee?F.fee+'₾':'უფასო'}</button>`}
     if(p.inJail)h+=`<button class="btn ghost" data-act="bail" ${p.cash<JAILFEE?'disabled':''}>გადაიხადე ${JAILFEE}₾</button>`;
   }else if(human&&S.phase==='end')h=`<button class="btn" data-act="next">სვლის დასრულება <span class="endcd" id="endcd">${endLeft()}</span></button>`;
   else if(human&&S.phase==='debt'){
@@ -3936,7 +4128,7 @@ function renderOverlay(){
     const T=S.trade;key='twait'+T.stage+T.from+T.to;h=`<div class="netwait">🤝 ${esc(S.players[T.from].name)} ${T.stage==='confirm'?`ელოდება ${esc(S.players[T.to].name)}-ის პასუხს…`:'ვაჭრობის შეთავაზებას ამზადებს…'}</div>`;
   }else if(S&&!cur().ai&&mine(S.turn)&&S.phase==='decide'&&S.pending!=null){
     const i=S.pending,c=CELLS[i],p=cur();key='deed'+i+p.cash;
-    h=`<div class="overlay"><div class="deed" style="--gc:${gcol(c)}"><div class="ph-scene">${scene(c.sc)}</div><div class="deed-h"><small>${c.t==='p'?GROUPS[c.g].n:'მეტრო'}</small><b>${c.n}</b></div><div class="deed-body">
+    h=`<div class="overlay"><div class="deed" style="--gc:${gcol(c)}"><div class="ph-scene">${scene(c.sc)}</div><div class="deed-h"><small>${c.t==='p'?GROUPS[c.g].n:MAP.trN}</small><b>${c.n}</b></div><div class="deed-body">
       <div class="price num">${c.price}₾</div>${rentRows(i,null)}
       <div class="acts"><button class="btn gold" data-act="buy" ${p.cash<c.price?'disabled':''}>იყიდე</button><button class="btn ghost" data-act="skip">გამოტოვე <span class="endcd" id="actcd">${actLeft()||8}</span></button></div>
       ${p.cash<c.price?`<p class="note">${esc(p.name)}-ს აქვს ${p.cash}₾. გაყიდე ან დააგირავე უბანი ინფორმაციის პანელში.</p>`:''}</div></div></div>`;
@@ -4142,7 +4334,7 @@ function rentRows3(i,lvl){
 function deedHTML(i,auto){
   const c=CELLS[i],o=S.own[i],isProp=c.t==='p'||c.t==='tr',vi=viewer(),me=S.players[vi];
   const myAct=myActNow();
-  const kind=c.t==='p'?GROUPS[c.g].n:c.t==='tr'?'მეტრო':c.t==='obs'?'დაბრკოლება':'დაფის უჯრა';
+  const kind=c.t==='p'?GROUPS[c.g].n:c.t==='tr'?MAP.trN:c.t==='obs'?'დაბრკოლება':c.t==='gift'?'🎁 ბონუსი':'დაფის უჯრა';
   let h=`<div class="sdeed cmp" style="--gc:${gcol(c)}">`;
   h+=`<div class="dhead${isProp?'':' ic'}" style="--c1:${c.c1||(c.t==='obs'?'#6E1428':'#1B2D66')};--c2:${c.c2||(c.t==='obs'?'#2A0610':'#0B1430')}">`+
      (isProp?`<div class="dbg">${scene(c.sc)}</div>`:`<div class="dic">${icon(c.ic)}</div>`)+
@@ -4150,7 +4342,7 @@ function deedHTML(i,auto){
      `${auto?'':`<button class="x" data-act="unsel" aria-label="დახურვა">✕</button>`}</div><div class="dbody">`;
   if(isProp){
     h+=rentRows3(i,o?rentLevel(i):null);
-    if(c.t==='tr'){const to=oppTr(i),lo=lineOwner(i);h+=`<p class="note">Ⓜ ხაზი ${CELLS[i].st} ↔ ${CELLS[to].st}: ${lo<0?'დაკეტილია. გაიხსნება, როცა ერთი მოთამაშე ორივე სადგურს იყიდის.':`ღიაა, მფლობელი <b>${esc(S.players[lo].name)}</b>. ის უფასოდ მგზავრობს, სხვები ${FLY.ride}₾-ს უხდიან.`} სადგურზე თუ სვლას იწყებ, კამათლის ნაცვლად გადასვლა შეგიძლია, მაგრამ ჩასვლის შემდეგ უკან ეგრევე ვერ დაბრუნდები.</p>`}
+    if(c.t==='tr'){const to=oppTr(i),lo=lineOwner(i);h+=`<p class="note">${MAP.trI} ხაზი ${CELLS[i].st} ↔ ${CELLS[to].st}: ${lo<0?'დაკეტილია. გაიხსნება, როცა ერთი მოთამაშე ორივე სადგურს იყიდის.':`ღიაა, მფლობელი <b>${esc(S.players[lo].name)}</b>. ის უფასოდ მგზავრობს, სხვები ${FLY.ride}₾-ს უხდიან.`} სადგურზე თუ სვლას იწყებ, კამათლის ნაცვლად გადასვლა შეგიძლია, მაგრამ ჩასვლის შემდეგ უკან ეგრევე ვერ დაბრუნდები.</p>`}
     h+=`<div class="dmeta"><span>ფასი <b>${c.price}₾</b></span><span>გირავნობა <b>${mortVal(i)}₾</b></span>${c.t==='p'?`<span>ბანკი <b>${R5(c.price*.6)}₾</b></span>`:''}</div>`;
     if(o&&o.o===vi&&!me.ai){
       const cost=c.t==='p'?floorCost(i,o.h):0,ref=c.t==='p'&&o.h>0?floorRefund(i,o.h):0,tr=canTransfer(vi,i);
@@ -4174,6 +4366,7 @@ function deedHTML(i,auto){
     }
   }else{
     const D={start:`ყოველი გავლისას ბანკი გაძლევს ${PASS}₾-ს.`,jam:`ციხეში მოხვედრილი ელოდება დუბლს ან იხდის ${JAILFEE}₾-ს. მესამე ცდაზე გადახდა ავტომატურია. თუ უბრალოდ ჩაუარე, არაფერი ხდება.`,rest:`აქ გროვდება ყველა ჯარიმა და გადასახადი. ვინც დადგება, იღებს მაქსიმუმ ${JACK_MAX}₾-ს. ახლა ჯეკპოტში: ${S.pot||0}₾.`,gojam:`პირდაპირ ციხეში, სტარტის გავლის და ${PASS}₾-ის გარეშე.`,card:'შემთხვევითი ბარათი: საჩუქარი, ჯარიმა ან მოულოდნელი მგზავრობა ქალაქში.',tax:`იხდი ${taxRule(c)}${c.rate||c.cashRate?', რომელიც მეტია':''}. შენთვის ახლა: <b>${taxOf(me,c)}₾</b>. თანხა ჯეკპოტში მიდის.`,
+      gift:c.k==='wine'?`ღვინის მარანი: იღებ ${c.amt}₾-ს ყოველ შენს უბანზე (მინ. 40₾, მაქს. 300₾).`:c.k==='supra'?`ქართული სუფრა: ყველა მოთამაშე გიხდის ${c.amt}₾-ს.`:`ტურისტული სეზონი: ბანკი გაძლევს ${c.amt}₾-ს.`,
       obs:c.k==='police'?`საგზაო პოლიცია გაჩერებს და ${c.amt}₾-ით დაგაჯარიმებს. ჯარიმა ჯეკპოტში მიდის.`:c.k==='pothole'?`ორმოში ჩავარდები და ${c.v} უჯრით უკან დაბრუნდები. იქაც იხდი ან ყიდულობ.`:'ქუჩა გადაკეტილია: შემდეგ სვლას გამოტოვებ.'};
     h+=`<p class="desc">${D[c.t]}</p>`;
   }
@@ -4229,7 +4422,7 @@ function renderSide0(){
         <div class="tokname">ფიგურა: <b>${TOKENS[st.tok].n}</b></div>
         <div class="tokpick">${TOKENS.map((t,k)=>`<button class="tp" data-act="tok" data-i="${i}" data-k="${k}" aria-pressed="${st.tok===k}" aria-label="${t.n}" title="${t.n}" ${taken(k)&&st.tok!==k?'disabled':''}>${tokSvg(k)}</button>`).join('')}</div><div class="colpick">${COLORS.map(c=>`<button class="cp" data-act="col" data-i="${i}" data-c="${c}" style="--c:${c}" aria-pressed="${st.col===c}" aria-label="ფერი" ${SEATS.some((x,k)=>k!==i&&x.col===c)?"disabled":""}></button>`).join("")}</div></div>`;
     });
-    h+=`</div><div class="diffbox"><span>თამაშის ხანგრძლივობა</span><div class="seg">${[[0,'∞ ულიმიტო'],[30,'30 რ.'],[45,'45 რ.'],[60,'60 რ.']].map(([v,l])=>`<button data-act="rounds" data-v="${v}" aria-pressed="${SETUP_ROUNDS===v}">${l}</button>`).join('')}</div><span>კომპიუტერის სირთულე</span><div class="seg">${Object.entries(AIP).map(([k,v])=>`<button data-act="diff" data-d="${k}" aria-pressed="${SETUP_DIFF===k}">${v.n}</button>`).join('')}</div><p class="note">${SETUP_DIFF==='hard'?'რთული: იყიდის აგრესიულად, დაბლოკავს შენს ფერებს, აიღებს სესხს და თავად შემოგთავაზებს გარიგებებს.':SETUP_DIFF==='easy'?'მარტივი: ფრთხილად ყიდულობს, ცოტას აშენებს და ვაჭრობას არ იწყებს.':'საშუალო: დაბალანსებული თამაში, ხანდახან შემოგთავაზებს გარიგებას.'}</p></div><div class="setup-acts">${(()=>{try{return localStorage.getItem('tm-save-v7')?'<button class="btn" data-act="resume">შენახული თამაშის გაგრძელება</button>':''}catch(e){return ''}})()}<button class="btn ghost" data-act="rules">როგორ ვითამაშო?</button>${SEATS.length<MAXP?`<button class="btn ghost" data-act="addseat">+ მოთამაშე</button>`:''}<button class="btn gold" data-act="start">დაწყება</button></div></div></div>`;
+    h+=`</div><div class="diffbox"><span>რუკა</span><div class="seg mapseg">${Object.values(MAPS).map(m=>`<button data-act="mapsel" data-m="${m.id}" aria-pressed="${SETUP_MAP===m.id}"><b>${m.name}</b><small>${m.sub}</small></button>`).join('')}</div><span>თამაშის ხანგრძლივობა</span><div class="seg">${[[0,'∞ ულიმიტო'],[30,'30 რ.'],[45,'45 რ.'],[60,'60 რ.']].map(([v,l])=>`<button data-act="rounds" data-v="${v}" aria-pressed="${SETUP_ROUNDS===v}">${l}</button>`).join('')}</div><span>კომპიუტერის სირთულე</span><div class="seg">${Object.entries(AIP).map(([k,v])=>`<button data-act="diff" data-d="${k}" aria-pressed="${SETUP_DIFF===k}">${v.n}</button>`).join('')}</div><p class="note">${SETUP_DIFF==='hard'?'რთული: იყიდის აგრესიულად, დაბლოკავს შენს ფერებს, აიღებს სესხს და თავად შემოგთავაზებს გარიგებებს.':SETUP_DIFF==='easy'?'მარტივი: ფრთხილად ყიდულობს, ცოტას აშენებს და ვაჭრობას არ იწყებს.':'საშუალო: დაბალანსებული თამაში, ხანდახან შემოგთავაზებს გარიგებას.'}</p></div><div class="setup-acts">${(()=>{try{return localStorage.getItem('tm-save-v7')?'<button class="btn" data-act="resume">შენახული თამაშის გაგრძელება</button>':''}catch(e){return ''}})()}<button class="btn ghost" data-act="rules">როგორ ვითამაშო?</button>${SEATS.length<MAXP?`<button class="btn ghost" data-act="addseat">+ მოთამაშე</button>`:''}<button class="btn gold" data-act="start">დაწყება</button></div></div></div>`;
     L.innerHTML=h;
     R.innerHTML=`<div class="panel grow"><div class="ph"><h2>თამაში კომპიუტერთან</h2></div><div class="scroll"><ul class="rules">
       <li><b>მოთამაშეები.</b> თითოეულ ადგილზე აირჩიე ადამიანი ან კომპიუტერი, ფიგურა და ფერი.</li>
@@ -4269,7 +4462,7 @@ function renderSide0(){
     <div class="scroll" id="ownbody" data-k="o">`;
   if(!mine.length)l+=`<p class="empty">ჯერ არაფერი გაქვს. დადექი თავისუფალ უბანზე და იყიდე. ნაყიდი უბნები აქ ჯგუფებად გამოჩნდება.</p>`;
   else{
-    const groups=[...GROUPS.map((g,gi)=>({n:g.n,c:g.c,cells:groupCells(gi)})),{n:'მეტრო',c:TRC,cells:TRS}];
+    const groups=[...GROUPS.map((g,gi)=>({n:g.n,c:g.c,cells:groupCells(gi)})),{n:MAP.trN,c:TRC,cells:TRS}];
     groups.forEach(g=>{
       const owned=g.cells.filter(i=>S.own[i]&&S.own[i].o===vi);if(!owned.length)return;
       const full=owned.length===g.cells.length,isTr=g.cells===TRS,missN=g.cells.length-owned.length;
@@ -4392,7 +4585,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=380;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=390;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 const IS_SITE=!!document.querySelector('script[src="config.js"]');
 function applyUpdate(){try{if(S&&!NET.on&&!(S.tour&&S.tour.preview)&&S.phase!=='moving')localStorage.setItem('tm-save-v7',JSON.stringify(S));sessionStorage.setItem('tm-after-upd',JSON.stringify({code:NET.code||null,local:!!(S&&!NET.on)}))}catch(e){}location.replace(location.pathname+'?v='+Date.now())}
@@ -4418,6 +4611,7 @@ function turnChime(){
   const p=cur();if(p&&!p.ai&&!p.out&&mine(S.turn)&&S.phase!=='over')sfx('myturn');
 }
 function render(){
+  if(S&&(S.map||'tb')!==MAP.id)setMap(S.map||'tb');
   syncCfg();turnChime();if(document.body.classList.contains('nogame')&&S&&isPhone()){const c=document.getElementById('colL');if(c)c.scrollTop=0}document.body.classList.toggle('nogame',!S);document.body.classList.toggle('tourmode',!!(S&&S.tour));
   if(isPhone()){const L=document.querySelector('#mtabs [data-s=L]');if(L&&SHEET!=='R'&&L.getAttribute('aria-pressed')!=='true')setSheet(SHEET||'L')}
   renderCells();renderDesk();placeTokens();renderOverlay();renderSide();
@@ -4520,10 +4714,12 @@ document.addEventListener('click',e=>{
   if(a==='netai'){netLobbySet({fillAI:el.dataset.v==='1'});return}
   if(a==='netdiff'){netLobbySet({diff:el.dataset.d});return}
   if(a==='netrounds'){netLobbySet({rounds:+el.dataset.v});return}
+  if(a==='netmap'){netLobbySet({map:el.dataset.m});return}
   if(a==='netstart'){if(NET.lobby&&NET.lobby.preview){tourPreviewGo();return}netStart();return}
   if(!S){
     if(a==='stype'){SEATS[+el.dataset.i].ai=el.dataset.ai==='1';const st=SEATS[+el.dataset.i];if(st.ai&&!st.name)st.name=AIN[+el.dataset.i%AIN.length];sfx('pick');renderSide();return}
     if(a==='tok'){SEATS[+el.dataset.i].tok=+el.dataset.k;sfx('pick');renderSide();return}
+    if(a==='mapsel'){SETUP_MAP=MAPS[el.dataset.m]?el.dataset.m:'tb';try{localStorage.setItem('tm-map',SETUP_MAP)}catch(e){}sfx('pick');if(!S)setMap(SETUP_MAP);render();return}
     if(a==='rounds'){SETUP_ROUNDS=+el.dataset.v;try{localStorage.setItem('tm-rounds',SETUP_ROUNDS)}catch(e){}sfx('pick');renderSide();return}
     if(a==='diff'){SETUP_DIFF=el.dataset.d;try{localStorage.setItem('tm-diff',SETUP_DIFF)}catch(e){}sfx('pick');renderSide();return}
     if(a==='addseat'&&SEATS.length<MAXP){const used=new Set(SEATS.map(x=>x.tok)),uc=new Set(SEATS.map(x=>x.col));SEATS.push({ai:true,name:AIN[SEATS.length%AIN.length],tok:[...Array(TOKENS.length).keys()].find(k=>!used.has(k)),col:freeOf(uc,COLORS)});renderSide();return}
@@ -4635,6 +4831,7 @@ function afterUpdate(){
 function fixState(s){
   try{
     s=migrateLayout(s);
+    if(s)setMap(s.map||'tb');
     if(!s||s.v!==8||!Array.isArray(s.players)||!s.players.length||typeof s.own!=='object')return null;
     s.players.forEach((p,i)=>{if(!p.col)p.col=PCOL[i%PCOL.length];if(typeof p.skip!=='number')p.skip=0});
     if(!Array.isArray(s.dice)||!DROT[s.dice[0]]||!DROT[s.dice[1]])s.dice=[3,5];
