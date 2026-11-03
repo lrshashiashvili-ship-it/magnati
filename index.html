@@ -1495,7 +1495,7 @@ const GROUPS_TB=[
 ];
 const TRC='#8FA3C8';
 const R5=x=>Math.round(x/5)*5;
-const rents=p=>[R5(p*.1),R5(p*.5),R5(p*1.35),R5(p*2.8),R5(p*3.6)];
+const rents=p=>[R5(p*.1),R5(p*.5),R5(p*1.25),R5(p*2.4),R5(p*3.0)];
 const PRICE_MULT=1.5;const R10=x=>Math.round(x/10)*10;
 const P=(n,g,base,sc)=>{const price=R10(base*PRICE_MULT);return {t:'p',n,g,price,r:rents(price),sc}};
 const CARD={t:'card',n:'ბედის ბარათი',sn:'ბედი',ic:'card'};
@@ -1505,7 +1505,7 @@ const CELLS_TB=[
  {...CARD},
  P('ვაზისუბანი',0,90,'samgori'),
  {t:'tr',n:'მეტრო „სამგორი“',sn:'Ⓜ სამგორი',st:'სამგორი',price:330,sc:'metro'},
- {t:'tax',n:'კომუნალური',amt:150,rate:.04,ic:'tax'},
+ {t:'tax',n:'კომუნალური',amt:150,rate:.05,ic:'tax'},
  P('ისანი',0,100,'isani'),
  {t:'tax',n:'დასუფთავების მოსაკრებელი',sn:'დასუფთავება',amt:80,ic:'trash'},
  P('ავლაბარი',1,140,'avlabari'),
@@ -1515,7 +1515,7 @@ const CELLS_TB=[
  {t:'obs',k:'police',n:'საგზაო პოლიცია',sn:'პოლიცია',amt:75,sub:'−75₾',ic:'police'},
  {t:'tr',n:'მეტრო „თავისუფლების მოედანი“',sn:'Ⓜ თავისუფლ.',st:'თავისუფლების მოედანი',price:330,sc:'metro'},
  P('ძველი თბილისი',2,260,'narikala'),
- {t:'tax',n:'მიწის გადასახადი',sn:'მიწის გად.',amt:120,rate:.02,ic:'land'},
+ {t:'tax',n:'მიწის გადასახადი',sn:'მიწის გად.',amt:120,rate:.04,ic:'land'},
  P('სოლოლაკი',2,280,'sololaki'),
  {...CARD},
  {t:'rest',n:'ბოტანიკური ბაღი',sub:'დასვენება',c1:'#24884F',c2:'#0A3320',ic:'garden'},
@@ -1524,7 +1524,7 @@ const CELLS_TB=[
  P('ვერა',3,280,'vera'),
  P('ჩუღურეთი',3,260,'chughureti'),
  {t:'tr',n:'მეტრო „მარჯანიშვილი“',sn:'Ⓜ მარჯანიშვ.',st:'მარჯანიშვილი',price:330,sc:'metro'},
- {t:'tax',n:'საშემოსავლო გადასახადი',sn:'საშემოსავლო',amt:150,cashRate:.10,ic:'income'},
+ {t:'tax',n:'საშემოსავლო გადასახადი',sn:'საშემოსავლო',amt:150,cashRate:.12,ic:'income'},
  P('ნაძალადევი',4,200,'nadzaladevi'),
  P('დიდუბე',4,220,'didube'),
  {t:'gojam',n:'დაგაკავეს',sub:'→ ციხე',c1:'#2C4E9A',c2:'#0E1D45',ic:'police'},
@@ -1533,9 +1533,9 @@ const CELLS_TB=[
  {t:'obs',k:'blocked',n:'გადაკეტილი ქუჩა',sn:'გადაკეტილი',sub:'−1 სვლა',ic:'blocked'},
  P('საბურთალო',6,400,'saburtalo'),
  {t:'tr',n:'მეტრო „უნივერსიტეტი“',sn:'Ⓜ უნივერს.',st:'უნივერსიტეტი',price:330,sc:'metro'},
- {t:'tax',n:'ფუფუნების გადასახადი',sn:'ფუფუნება',amt:250,rate:.07,ic:'lux'},
+ {t:'tax',n:'ფუფუნების გადასახადი',sn:'ფუფუნება',amt:250,rate:.09,ic:'lux'},
  P('ვაკე',6,460,'vake'),
- {t:'tax',n:'ქონების გადასახადი',sn:'ქონება',amt:200,rate:.05,ic:'house'},
+ {t:'tax',n:'ქონების გადასახადი',sn:'ქონება',amt:200,rate:.07,ic:'house'},
 ];
 let CELLS=CELLS_TB,GROUPS=GROUPS_TB;
 let N=CELLS.length;
@@ -1657,32 +1657,58 @@ const tokSvg=(k,cls='')=>`<svg viewBox="0 0 40 48" aria-hidden="true"${cls?` cla
 
 /* ================= CARDS ================= */
 const IDX=sc=>CELLS.findIndex(c=>c.sc===sc);
+/* card helpers: progressive costs hit the rich harder, so nobody runs away with the game */
+const cPct=(p,r,mn,mx)=>{const v=Math.min(mx,Math.max(mn,R5(Math.max(0,p.cash)*r)));fine(p,v);log(p,`${p.name} იხდის ${v}₾`)};
+const cPerProp=(p,each,mn,mx)=>{const n=propsOf(pidx(p)).length;const v=Math.min(mx,Math.max(mn,each*n));fine(p,v);log(p,`${p.name} იხდის ${v}₾ (${n} უბანი)`)};
+const cPerFloor=(p,each,mx)=>{const n=floorsOf(p);if(n){const v=Math.min(mx,each*n);fine(p,v);log(p,`${p.name} იხდის ${v}₾ (${n} სართული)`)}else log(p,`${p.name}: სართულები არ აქვს, არაფერს იხდის`)};
+const cAll=(p,amt)=>{S.players.forEach(q=>{if(q!==p&&!q.out&&!p.out)pay(p,amt,q)})};
+const cFromAll=(p,amt)=>{S.players.forEach(q=>{if(q!==p&&!q.out)pay(q,amt,p)})};
+const cBack=async(p,n)=>{const cells=[];let q=p.pos;for(let k=0;k<n;k++){q=(q+N-1)%N;cells.push(q)}S.mv={id:((S.mv&&S.mv.id)||0)+1,p:pidx(p),from:p.pos,n,k:'back'};render();await animatePath(pidx(p),cells,{stepMs:260});p.pos=q;await land(p);return true};
+const cGo=async(p,i)=>{if(i<0)return;await walkTo(p,i);await land(p);return true};
 const CARDS_TB=[
- {x:'ტურისტების ტალღა ძველ თბილისში. მიიღე 150₾.',f:p=>{gain(p,150)}},
- {x:'მეზობელმა ვალი დაგიბრუნა. მიიღე 75₾.',f:p=>{gain(p,75)}},
- {x:'პარკირების ჯარიმა რუსთაველზე. გადაიხადე 60₾.',f:p=>{fine(p,60)}},
+ /* ---- კარგი (12 / 40 = 30%) ---- */
+ {x:'ტურისტების ტალღა ძველ თბილისში. მიიღე 100₾.',f:p=>{gain(p,100)}},
+ {x:'მეზობელმა ვალი დაგიბრუნა. მიიღე 60₾.',f:p=>{gain(p,60)}},
  {x:'ტაქსით პირდაპირ სტარტზე.',f:async p=>{await walkTo(p,0)}},
- {x:'მეგობარი თავისუფლების მოედანზე გელოდება. ჩადი მეტროში.',f:async p=>{await walkTo(p,CELLS.findIndex(c=>c.st==='თავისუფლების მოედანი'));await land(p);return true}},
+ {x:'დაბადების დღეა! ყველა მოთამაშე გჩუქნის 25₾-ს.',f:p=>{cFromAll(p,25)}},
+ {x:'მშრალ ხიდზე ძველი ფოტოაპარატი გაყიდე. მიიღე 70₾.',f:p=>{gain(p,70)}},
+ {x:'შემოსავლების სამსახურმა ზედმეტობა დაგიბრუნა. მიიღე 90₾.',f:p=>{gain(p,90)}},
+ {x:'ბანკის დივიდენდი. მიიღე 50₾.',f:p=>{gain(p,50)}},
+ {x:'თბილისობაზე შენი ხაჭაპური ყველაზე გემრიელი აღმოჩნდა. მიიღე 80₾.',f:p=>{gain(p,80)}},
+ {x:'რთველიდან დაბრუნდი და კახური ღვინო გაყიდე. მიიღე 100₾.',f:p=>{gain(p,100)}},
+ {x:'ლატარიაში მოიგე! მიიღე 150₾.',f:p=>{gain(p,150)}},
+ {x:'ბებიამ სოფლიდან ფული გამოგიგზავნა. მიიღე 50₾.',f:p=>{gain(p,50)}},
+ {x:'ფილარმონიაში კონცერტი ჩაატარე. მიიღე 70₾.',f:p=>{gain(p,70)}},
+ /* ---- ცუდი (28 / 40 = 70%) ---- */
+ {x:'პარკირების ჯარიმა რუსთაველზე. გადაიხადე 60₾.',f:p=>{fine(p,60)}},
  {x:'ქუჩაში ჩხუბში გაეხვიე. წადი გლდანის ციხეში.',f:p=>{sendJam(p)}},
- {x:'დაბადების დღეა! ყველა მოთამაშე გჩუქნის 40₾-ს.',f:p=>{S.players.forEach(q=>{if(q!==p&&!q.out)pay(q,40,p)})}},
- {x:'სუფრა გაშალე. გადაუხადე ყველა მოთამაშეს 35₾.',f:p=>{S.players.forEach(q=>{if(q!==p&&!q.out&&!p.out)pay(p,35,q)})}},
- {x:'აივნების შეკეთება: 25₾ თითო სართულზე (მაქს. 250₾).',f:p=>{const n=floorsOf(p);if(n)fine(p,Math.min(250,25*n));else log(p,`${p.name}: სართულები არ აქვს, არაფერს იხდის`)}},
- {x:'მშრალ ხიდზე ძველი ფოტოაპარატი გაყიდე. მიიღე 90₾.',f:p=>{gain(p,90)}},
- {x:'რაღაც სახლში დაგრჩა. დაბრუნდი 3 უჯრით.',f:async p=>{const cells=[];let q=p.pos;for(let k=0;k<3;k++){q=(q+N-1)%N;cells.push(q)}S.mv={id:((S.mv&&S.mv.id)||0)+1,p:pidx(p),from:p.pos,n:3,k:'back'};p.pos=q;if(NET.on)netPushNow();await animatePath(pidx(p),cells,{stepMs:300});await sleep(150);await land(p);return true}},
- {x:'ვაკის პარკში გასეირნება. წადი ვაკეში.',f:async p=>{await walkTo(p,IDX('vake'));await land(p);return true}},
- {x:'აბანოთუბანში გოგირდის აბანოში წადი.',f:async p=>{await walkTo(p,IDX('baths'));await land(p);return true}},
+ {x:'სუფრა გაშალე. გადაუხადე ყველა მოთამაშეს 30₾.',f:p=>{cAll(p,30)}},
+ {x:'აივნების შეკეთება: 30₾ თითო სართულზე (მაქს. 300₾).',f:p=>{cPerFloor(p,30,300)}},
+ {x:'რაღაც სახლში დაგრჩა. დაბრუნდი 3 უჯრით.',f:p=>cBack(p,3)},
  {x:'მეტროს ბარათი დაკარგე. გადაიხადე 30₾.',f:p=>{fine(p,30)}},
- {x:'შემოსავლების სამსახურმა ზედმეტობა დაგიბრუნა. მიიღე 120₾.',f:p=>{gain(p,120)}},
- {x:'ბანკის დივიდენდი. მიიღე 75₾.',f:p=>{gain(p,75)}},
  {x:'სუფრისთვის კახური ღვინო იყიდე. გადაიხადე 45₾.',f:p=>{fine(p,45)}},
  {x:'მეტროში ბარათი დაგავიწყდა, ტაქსით წახვედი. გადაიხადე 50₾.',f:p=>{fine(p,50)}},
- {x:'თბილისობაზე შენი ხაჭაპური ყველაზე გემრიელი აღმოჩნდა. მიიღე 100₾.',f:p=>{gain(p,100)}},
- {x:'რთველიდან დაბრუნდი და კახური ღვინო გაყიდე. მიიღე 130₾.',f:p=>{gain(p,130)}},
- {x:'ნარიყალადან გადაღებული შენი ფოტო ვირუსული გახდა. რეკლამიდან მიიღე 80₾.',f:p=>{gain(p,80)}},
- {x:'ლატარიაში მოიგე! მიიღე 200₾.',f:p=>{gain(p,200)}},
- {x:'ბებიამ სოფლიდან ფული გამოგიგზავნა. მიიღე 60₾.',f:p=>{gain(p,60)}},
- {x:'ბინა ტურისტებს დღიურად მიაქირავე. მიიღე 110₾.',f:p=>{gain(p,110)}},
- {x:'ფილარმონიაში კონცერტი ჩაატარე. მიიღე 90₾.',f:p=>{gain(p,90)}},
+ {x:'საგადასახადო შემოწმება! გადაიხადე ნაღდი ფულის 10% (მინ. 50₾, მაქს. 400₾).',f:p=>{cPct(p,.10,50,400)}},
+ {x:'ქონების დაზღვევა: 20₾ ყოველ შენს უბანზე (მინ. 30₾, მაქს. 300₾).',f:p=>{cPerProp(p,20,30,300)}},
+ {x:'წყალი ჩამოგივიდა მეზობელთან. რემონტი 120₾.',f:p=>{fine(p,120)}},
+ {x:'ტელეფონი მტკვარში ჩაგივარდა. ახალი იყიდე: 90₾.',f:p=>{fine(p,90)}},
+ {x:'მანქანა ევაკუატორმა წაიყვანა. გადაიხადე 80₾.',f:p=>{fine(p,80)}},
+ {x:'კომუნალურის ვალი დაგიგროვდა. გადაიხადე 70₾.',f:p=>{fine(p,70)}},
+ {x:'ქორწილში მეჯვარე ხარ. საჩუქარი და ხარჯი: 150₾.',f:p=>{fine(p,150)}},
+ {x:'სტომატოლოგთან მოგიწია წასვლა. გადაიხადე 100₾.',f:p=>{fine(p,100)}},
+ {x:'ფუფუნების შემოწმება: ნაღდის 6% (მინ. 40₾, მაქს. 300₾).',f:p=>{cPct(p,.06,40,300)}},
+ {x:'სამშენებლო ინსპექცია: 25₾ თითო სართულზე (მაქს. 250₾).',f:p=>{cPerFloor(p,25,250)}},
+ {x:'საცობში დაიგვიანე და ჯარიმა მიიღე. 40₾.',f:p=>{fine(p,40)}},
+ {x:'ორმოში ჩავარდი. დაბრუნდი 2 უჯრით.',f:p=>cBack(p,2)},
+ {x:'ჯიბგირმა ფული მოგპარა თავისუფლების მოედანზე. დაკარგე 70₾.',f:p=>{fine(p,70)}},
+ {x:'მეგობრებს ვახშამზე დაპატიჟე. გადაუხადე ყველას 20₾.',f:p=>{cAll(p,20)}},
+ {x:'სახურავი ჩამოგეშალა თოვლის გამო. 110₾.',f:p=>{fine(p,110)}},
+ {x:'უბნის კეთილმოწყობის მოსაკრებელი: 15₾ ყოველ უბანზე (მინ. 25₾, მაქს. 200₾).',f:p=>{cPerProp(p,15,25,200)}},
+ {x:'იურისტის მომსახურება: ნაღდის 5% (მინ. 40₾, მაქს. 250₾).',f:p=>{cPct(p,.05,40,250)}},
+ {x:'ვაკის პარკში გასეირნება. წადი ვაკეში.',f:p=>cGo(p,IDX('vake'))},
+ {x:'აბანოთუბანში გოგირდის აბანოში წადი.',f:p=>cGo(p,IDX('baths'))},
+ {x:'საბურთალოზე საქმე გაქვს. წადი საბურთალოზე.',f:p=>cGo(p,IDX('saburtalo'))},
+ {x:'პოლიციამ საბუთების გარეშე გაგაჩერა. წადი გლდანის ციხეში.',f:p=>{sendJam(p)}},
 ];
 let CARDS=CARDS_TB;
 /* ================= MAP 2: საქართველოს კუთხეები (48 უჯრა) ================= */
@@ -1705,11 +1731,11 @@ const CELLS_GEO=[
  P('ონი',0,70,'g_oni'),
  {...GCARD},
  P('ამბროლაური',0,80,'g_ambrolauri'),
- {t:'tax',n:'კომუნალური',amt:150,rate:.04,ic:'tax'},
+ {t:'tax',n:'კომუნალური',amt:150,rate:.05,ic:'tax'},
  P('ლანჩხუთი',1,90,'g_lanchkhuti'),
  TRN('სადგური „სამტრედია“','🚆 სამტრედია','სამტრედია'),
  P('ოზურგეთი',1,100,'g_ozurgeti'),
- {t:'gift',k:'tour',n:'ტურისტული სეზონი',sn:'ტურისტები',amt:120,sub:'+120₾',ic:'tour'},
+ {t:'gift',k:'tour',n:'ტურისტული სეზონი',sn:'ტურისტები',amt:100,sub:'+100₾',ic:'tour'},
  P('ურეკი',1,110,'g_ureki'),
  {t:'obs',k:'police',n:'საგზაო პოლიცია',sn:'პოლიცია',amt:75,sub:'−75₾',ic:'police'},
  P('სენაკი',2,120,'g_senaki'),
@@ -1717,7 +1743,7 @@ const CELLS_GEO=[
  P('ზუგდიდი',2,130,'g_zugdidi'),
  {...GCARD},
  P('ფოთი',2,140,'g_poti'),
- {t:'tax',n:'მიწის გადასახადი',sn:'მიწის გად.',amt:120,rate:.02,ic:'land'},
+ {t:'tax',n:'მიწის გადასახადი',sn:'მიწის გად.',amt:120,rate:.04,ic:'land'},
  P('ზესტაფონი',3,150,'g_zestaponi'),
  TRN('სადგური „ხაშური“','🚆 ხაშური','ხაშური'),
  P('წყალტუბო',3,160,'g_tskaltubo'),
@@ -1729,7 +1755,7 @@ const CELLS_GEO=[
  P('ვარძია',4,200,'g_vardzia'),
  {...GCARD},
  P('ბორჯომი',4,220,'g_borjomi'),
- {t:'tax',n:'საშემოსავლო გადასახადი',sn:'საშემოსავლო',amt:150,cashRate:.10,ic:'income'},
+ {t:'tax',n:'საშემოსავლო გადასახადი',sn:'საშემოსავლო',amt:150,cashRate:.12,ic:'income'},
  P('რუსთავი',5,230,'g_rustavi'),
  TRN('თბილისის ცენტრალური სადგური','🚆 თბილისი','თბილისი'),
  P('გორი',5,240,'g_gori'),
@@ -1740,7 +1766,7 @@ const CELLS_GEO=[
  {t:'gojam',n:'დაგაკავეს',sub:'→ ციხე',c1:'#2C4E9A',c2:'#0E1D45',ic:'police'},
  P('ყვარელი',6,280,'g_kvareli'),
  P('სიღნაღი',6,300,'g_sighnaghi'),
- {t:'tax',n:'ფუფუნების გადასახადი',sn:'ფუფუნება',amt:250,rate:.07,ic:'lux'},
+ {t:'tax',n:'ფუფუნების გადასახადი',sn:'ფუფუნება',amt:250,rate:.09,ic:'lux'},
  P('მესტია',7,310,'g_mestia'),
  P('გუდაური',7,330,'g_gudauri'),
  TRN('სადგური „ბათუმი“','🚆 ბათუმი','ბათუმი'),
@@ -1752,31 +1778,49 @@ const CELLS_GEO=[
 ];
 const IDXG=sc=>CELLS_GEO.findIndex(c=>c.sc===sc);
 const CARDS_GEO=[
- {x:'ბათუმის ბულვარზე ტურისტებს ფოტოები გადაუღე. მიიღე 150₾.',f:p=>{gain(p,150)}},
- {x:'მეზობელმა ვალი დაგიბრუნა. მიიღე 75₾.',f:p=>{gain(p,75)}},
- {x:'ქუთაისის ცენტრში არასწორად გააჩერე. ჯარიმა 60₾.',f:p=>{fine(p,60)}},
+ /* ---- კარგი (12 / 40 = 30%) ---- */
+ {x:'ბათუმის ბულვარზე ტურისტებს ფოტოები გადაუღე. მიიღე 100₾.',f:p=>{gain(p,100)}},
+ {x:'მეზობელმა ვალი დაგიბრუნა. მიიღე 60₾.',f:p=>{gain(p,60)}},
  {x:'ტაქსით პირდაპირ სტარტზე.',f:async p=>{await walkTo(p,0)}},
- {x:'მატარებლის ბილეთი აიღე. წადი ხაშურის სადგურზე.',f:async p=>{await walkTo(p,Math.max(0,CELLS.findIndex(c=>c.st==='ხაშური')));await land(p);return true}},
+ {x:'დაბადების დღეა! ყველა მოთამაშე გჩუქნის 25₾-ს.',f:p=>{cFromAll(p,25)}},
+ {x:'შემოსავლების სამსახურმა ზედმეტობა დაგიბრუნა. მიიღე 90₾.',f:p=>{gain(p,90)}},
+ {x:'ბანკის დივიდენდი. მიიღე 50₾.',f:p=>{gain(p,50)}},
+ {x:'რთველზე კახეთში დაეხმარე. მიიღე 100₾.',f:p=>{gain(p,100)}},
+ {x:'ვარძიიდან გადაღებული შენი ვიდეო ვირუსული გახდა. მიიღე 70₾.',f:p=>{gain(p,70)}},
+ {x:'ლატარიაში მოიგე! მიიღე 150₾.',f:p=>{gain(p,150)}},
+ {x:'ბებიამ რაჭიდან ლობიანი და ფული გამოგიგზავნა. მიიღე 50₾.',f:p=>{gain(p,50)}},
+ {x:'ურეკში სახლი ზაფხულისთვის მიაქირავე. მიიღე 90₾.',f:p=>{gain(p,90)}},
+ {x:'მეგრული ხაჭაპურის კონკურსში გაიმარჯვე. მიიღე 80₾.',f:p=>{gain(p,80)}},
+ /* ---- ცუდი (28 / 40 = 70%) ---- */
+ {x:'ქუთაისის ცენტრში არასწორად გააჩერე. ჯარიმა 60₾.',f:p=>{fine(p,60)}},
  {x:'მთაში გზა აგებნა და პოლიციამ დაგაკავა. წადი ციხეში.',f:p=>{sendJam(p)}},
- {x:'დაბადების დღეა! ყველა მოთამაშე გჩუქნის 40₾-ს.',f:p=>{S.players.forEach(q=>{if(q!==p&&!q.out)pay(q,40,p)})}},
- {x:'იმერული სუფრა გაშალე. გადაუხადე ყველა მოთამაშეს 35₾.',f:p=>{S.players.forEach(q=>{if(q!==p&&!q.out&&!p.out)pay(p,35,q)})}},
- {x:'სახლების სახურავის შეკეთება: 25₾ თითო სართულზე (მაქს. 250₾).',f:p=>{const n=floorsOf(p);if(n)fine(p,Math.min(250,25*n));else log(p,`${p.name}: სართულები არ აქვს, არაფერს იხდის`)}},
- {x:'გუდაურში თხილამურებით სრიალი ისწავლე. წადი გუდაურში.',f:async p=>{await walkTo(p,IDX('g_gudauri'));await land(p);return true}},
- {x:'წყალტუბოს აბანოებში დასვენება. წადი წყალტუბოში.',f:async p=>{await walkTo(p,IDX('g_tskaltubo'));await land(p);return true}},
- {x:'რაღაც სახლში დაგრჩა. დაბრუნდი 3 უჯრით.',f:async p=>{const cells=[];let q=p.pos;for(let k=0;k<3;k++){q=(q+N-1)%N;cells.push(q)}S.mv={id:((S.mv&&S.mv.id)||0)+1,p:pidx(p),from:p.pos,n:3,k:'back'};render();await animatePath(pidx(p),cells,{stepMs:260});p.pos=q;await land(p);return true}},
+ {x:'იმერული სუფრა გაშალე. გადაუხადე ყველა მოთამაშეს 30₾.',f:p=>{cAll(p,30)}},
+ {x:'სახლების სახურავის შეკეთება: 30₾ თითო სართულზე (მაქს. 300₾).',f:p=>{cPerFloor(p,30,300)}},
+ {x:'რაღაც სახლში დაგრჩა. დაბრუნდი 3 უჯრით.',f:p=>cBack(p,3)},
  {x:'მატარებელში ბილეთი დაკარგე. გადაიხადე 30₾.',f:p=>{fine(p,30)}},
- {x:'შემოსავლების სამსახურმა ზედმეტობა დაგიბრუნა. მიიღე 120₾.',f:p=>{gain(p,120)}},
- {x:'ბანკის დივიდენდი. მიიღე 75₾.',f:p=>{gain(p,75)}},
  {x:'მანქანას საბურავი გაუსკდა სერპანტინზე. გადაიხადე 45₾.',f:p=>{fine(p,45)}},
  {x:'ყაზბეგში ზვავის გამო გზა დაიკეტა, სასტუმროში დარჩი. გადაიხადე 50₾.',f:p=>{fine(p,50)}},
- {x:'რთველზე კახეთში დაეხმარე. მიიღე 130₾.',f:p=>{gain(p,130)}},
- {x:'ვარძიიდან გადაღებული შენი ვიდეო ვირუსული გახდა. მიიღე 80₾.',f:p=>{gain(p,80)}},
- {x:'ლატარიაში მოიგე! მიიღე 200₾.',f:p=>{gain(p,200)}},
- {x:'ბებიამ რაჭიდან ლობიანი და ფული გამოგიგზავნა. მიიღე 60₾.',f:p=>{gain(p,60)}},
- {x:'ურეკში სახლი ზაფხულისთვის მიაქირავე. მიიღე 110₾.',f:p=>{gain(p,110)}},
- {x:'ქუთაისის ოპერაში კონცერტი ჩაატარე. მიიღე 90₾.',f:p=>{gain(p,90)}},
- {x:'მეგრული ხაჭაპურის კონკურსში გაიმარჯვე. მიიღე 100₾.',f:p=>{gain(p,100)}},
- {x:'სვანეთში მთის გიდად იმუშავე. მიიღე 90₾.',f:p=>{gain(p,90)}},
+ {x:'საგადასახადო შემოწმება! გადაიხადე ნაღდი ფულის 10% (მინ. 50₾, მაქს. 400₾).',f:p=>{cPct(p,.10,50,400)}},
+ {x:'ქონების დაზღვევა: 20₾ ყოველ შენს უბანზე (მინ. 30₾, მაქს. 300₾).',f:p=>{cPerProp(p,20,30,300)}},
+ {x:'წყალდიდობამ ზუგდიდში სარდაფი დაგიტბორა. რემონტი 120₾.',f:p=>{fine(p,120)}},
+ {x:'ტელეფონი ზღვაში ჩაგივარდა ბათუმში. ახალი იყიდე: 90₾.',f:p=>{fine(p,90)}},
+ {x:'გორში მანქანა ევაკუატორმა წაიყვანა. გადაიხადე 80₾.',f:p=>{fine(p,80)}},
+ {x:'სეტყვამ კახეთში ვენახი დააზიანა. 100₾.',f:p=>{fine(p,100)}},
+ {x:'ქორწილში მეჯვარე ხარ. საჩუქარი და ხარჯი: 150₾.',f:p=>{fine(p,150)}},
+ {x:'გუდაურში ფეხი იღრძე. ექიმი: 100₾.',f:p=>{fine(p,100)}},
+ {x:'ფუფუნების შემოწმება: ნაღდის 6% (მინ. 40₾, მაქს. 300₾).',f:p=>{cPct(p,.06,40,300)}},
+ {x:'სამშენებლო ინსპექცია: 25₾ თითო სართულზე (მაქს. 250₾).',f:p=>{cPerFloor(p,25,250)}},
+ {x:'რიკოთის უღელტეხილზე საცობში დაიგვიანე. 40₾.',f:p=>{fine(p,40)}},
+ {x:'ორმოში ჩავარდი. დაბრუნდი 2 უჯრით.',f:p=>cBack(p,2)},
+ {x:'ბაზარში საფულე დაკარგე. დაკარგე 70₾.',f:p=>{fine(p,70)}},
+ {x:'მეგობრებს სუფრაზე დაპატიჟე. გადაუხადე ყველას 20₾.',f:p=>{cAll(p,20)}},
+ {x:'მესტიაში თოვლმა სახურავი დააზიანა. 110₾.',f:p=>{fine(p,110)}},
+ {x:'რეგიონის განვითარების მოსაკრებელი: 15₾ ყოველ უბანზე (მინ. 25₾, მაქს. 200₾).',f:p=>{cPerProp(p,15,25,200)}},
+ {x:'ნოტარიუსის მომსახურება: ნაღდის 5% (მინ. 40₾, მაქს. 250₾).',f:p=>{cPct(p,.05,40,250)}},
+ {x:'გუდაურში თხილამურებით სრიალი ისწავლე. წადი გუდაურში.',f:p=>cGo(p,IDX('g_gudauri'))},
+ {x:'წყალტუბოს აბანოებში დასვენება. წადი წყალტუბოში.',f:p=>cGo(p,IDX('g_tskaltubo'))},
+ {x:'მატარებლის ბილეთი აიღე. წადი ხაშურის სადგურზე.',f:p=>cGo(p,CELLS.findIndex(c=>c.st==='ხაშური'))},
+ {x:'ბათუმში საქმე გაქვს. წადი ბათუმში.',f:p=>cGo(p,IDX('g_batumi'))},
 ];
 /* extra line icons */
 Object.assign(IC,{
@@ -2928,7 +2972,8 @@ const unmortCost=i=>R5(CELLS[i].price*.55);
 const bankVal=i=>S.own[i]&&S.own[i].m?R5(CELLS[i].price*.1):R5(CELLS[i].price*.6);
 /* balance: taxes grow with wealth; players far behind get help at START */
 const AID={amt:150,share:.5,from:3};
-const TAX_CAP=3;
+const TAX_CAP=5;
+const RICH_K=3.5;const passAmt=p=>worth(p)>START*RICH_K?R5(PASS/2):PASS;
 const taxOf=(p,c)=>Math.max(c.amt,Math.min(c.amt*TAX_CAP,Math.max(R5(worth(p)*(c.rate||0)),R5(Math.max(0,p.cash)*(c.cashRate||0)))));
 const taxRule=c=>c.rate?`${c.amt}₾ ან ქონების ${Math.round(c.rate*100)}% (მაქს. ${c.amt*TAX_CAP}₾)`:c.cashRate?`${c.amt}₾ ან ნაღდი ფულის ${Math.round(c.cashRate*100)}% (მაქს. ${c.amt*TAX_CAP}₾)`:`${c.amt}₾`;
 function needsAid(p){if(S.round<AID.from)return false;const top=Math.max(...S.players.filter(q=>!q.out&&q!==p).map(worth),0);return worth(p)<top*AID.share}
@@ -3125,7 +3170,7 @@ async function walk(p,n){
   S.mv={id:((S.mv&&S.mv.id)||0)+1,p:pi,from:p.pos,n,k:'walk'};
   p.pos=cells[cells.length-1];if(NET.on)netPushNow();
   cells.forEach((c,k)=>setTimeout(()=>sfx('step'),RM?0:Math.max(0,stepMs*(k+.9))));
-  let paid=false;const passGo=()=>{if(paid)return;paid=true;gain(p,PASS);st(p).pass+=PASS;log(p,`${p.name} გაიარა სტარტი: +${PASS}₾`);renderSide()};
+  let paid=false;const passGo=()=>{if(paid)return;paid=true;const pa=passAmt(p);gain(p,pa);st(p).pass+=pa;log(p,`${p.name} გაიარა სტარტი: +${pa}₾${pa<PASS?' (მდიდარს ნახევარი ეძლევა)':''}`);renderSide()};
   if(z>=0)setTimeout(passGo,RM?0:stepMs*(z+1)-40);
   await animatePath(pi,cells,{stepMs});
   if(z>=0)passGo();
@@ -3172,7 +3217,7 @@ async function land(p){
     else if(c.k==='pothole'){say(`${p.name} ორმოში ჩავარდა და ${c.v} უჯრით უკან დაბრუნდა.`);log(p,`${p.name}: ორმო, ${c.v} უჯრა უკან`);sfx('pay');render();await sleep(450);{const cells=[];let q=p.pos;for(let k=0;k<c.v;k++){q=(q+N-1)%N;cells.push(q)}S.mv={id:((S.mv&&S.mv.id)||0)+1,p:pi,from:p.pos,n:c.v,k:'back'};p.pos=q;if(NET.on)netPushNow();await animatePath(pi,cells,{stepMs:260})}await sleep(150);await land(p);return}
     else if(c.k==='blocked'){p.skip=1;say(`ქუჩა გადაკეტილია! ${p.name} შემდეგ სვლას გამოტოვებს.`);log(p,`${p.name}: გადაკეტილი ქუჩა, ერთი სვლის გამოტოვება`);sfx('jail')}
   }else if(c.t==='gift'){
-    if(c.k==='wine'){const n=propsOf(pi).length,amt=Math.min(300,Math.max(40,c.amt*n));say(`🍷 ${esc(p.name)} ღვინის მარანშია: <b>+${amt}₾</b> (${n} უბანი × ${c.amt}₾).`);log(p,`${p.name}: ღვინის მარანი +${amt}₾`);gain(p,amt)}
+    if(c.k==='wine'){const n=propsOf(pi).length,amt=Math.min(200,Math.max(40,c.amt*n));say(`🍷 ${esc(p.name)} ღვინის მარანშია: <b>+${amt}₾</b> (${n} უბანი × ${c.amt}₾).`);log(p,`${p.name}: ღვინის მარანი +${amt}₾`);gain(p,amt)}
     else if(c.k==='supra'){let got=0;S.players.forEach(q=>{if(q!==p&&!q.out){pay(q,c.amt,p);got+=c.amt}});say(`🍽 ${esc(p.name)} სუფრას შლის: ყველა უხდის ${c.amt}₾-ს (<b>+${got}₾</b>).`);log(p,`${p.name}: ქართული სუფრა +${got}₾`)}
     else{say(`🧳 ტურისტული სეზონი! ${esc(p.name)} იღებს <b>+${c.amt}₾</b>.`);log(p,`${p.name}: ტურისტული სეზონი +${c.amt}₾`);gain(p,c.amt)}
     sfx('buy');
@@ -4379,8 +4424,8 @@ function deedHTML(i,auto){
       h+=`<div class="dacts"><button class="btn sm wide" data-act="tradewith" data-i="${o.o}">ვაჭრობის შეთავაზება ${esc(S.players[o.o].name)}-ს</button></div>`;
     }
   }else{
-    const D={start:`ყოველი გავლისას ბანკი გაძლევს ${PASS}₾-ს.`,jam:`ციხეში მოხვედრილი ელოდება დუბლს ან იხდის ${JAILFEE}₾-ს. მესამე ცდაზე გადახდა ავტომატურია. თუ უბრალოდ ჩაუარე, არაფერი ხდება.`,rest:`აქ გროვდება ყველა ჯარიმა და გადასახადი. ვინც დადგება, იღებს მაქსიმუმ ${JACK_MAX}₾-ს. ახლა ჯეკპოტში: ${S.pot||0}₾.`,gojam:`პირდაპირ ციხეში, სტარტის გავლის და ${PASS}₾-ის გარეშე.`,card:'შემთხვევითი ბარათი: საჩუქარი, ჯარიმა ან მოულოდნელი მგზავრობა ქალაქში.',tax:`იხდი ${taxRule(c)}${c.rate||c.cashRate?', რომელიც მეტია':''}. შენთვის ახლა: <b>${taxOf(me,c)}₾</b>. თანხა ჯეკპოტში მიდის.`,
-      gift:c.k==='wine'?`ღვინის მარანი: იღებ ${c.amt}₾-ს ყოველ შენს უბანზე (მინ. 40₾, მაქს. 300₾).`:c.k==='supra'?`ქართული სუფრა: ყველა მოთამაშე გიხდის ${c.amt}₾-ს.`:`ტურისტული სეზონი: ბანკი გაძლევს ${c.amt}₾-ს.`,
+    const D={start:`ყოველი გავლისას ბანკი გაძლევს ${PASS}₾-ს. ვისაც ${START*RICH_K}₾-ზე მეტი ქონება აქვს, ნახევარს (${R5(PASS/2)}₾) იღებს.`,jam:`ციხეში მოხვედრილი ელოდება დუბლს ან იხდის ${JAILFEE}₾-ს. მესამე ცდაზე გადახდა ავტომატურია. თუ უბრალოდ ჩაუარე, არაფერი ხდება.`,rest:`აქ გროვდება ყველა ჯარიმა და გადასახადი. ვინც დადგება, იღებს მაქსიმუმ ${JACK_MAX}₾-ს. ახლა ჯეკპოტში: ${S.pot||0}₾.`,gojam:`პირდაპირ ციხეში, სტარტის გავლის და ${PASS}₾-ის გარეშე.`,card:'შემთხვევითი ბარათი: საჩუქარი, ჯარიმა ან მოულოდნელი მგზავრობა ქალაქში.',tax:`იხდი ${taxRule(c)}${c.rate||c.cashRate?', რომელიც მეტია':''}. შენთვის ახლა: <b>${taxOf(me,c)}₾</b>. თანხა ჯეკპოტში მიდის.`,
+      gift:c.k==='wine'?`ღვინის მარანი: იღებ ${c.amt}₾-ს ყოველ შენს უბანზე (მინ. 40₾, მაქს. 200₾).`:c.k==='supra'?`ქართული სუფრა: ყველა მოთამაშე გიხდის ${c.amt}₾-ს.`:`ტურისტული სეზონი: ბანკი გაძლევს ${c.amt}₾-ს.`,
       obs:c.k==='police'?`საგზაო პოლიცია გაჩერებს და ${c.amt}₾-ით დაგაჯარიმებს. ჯარიმა ჯეკპოტში მიდის.`:c.k==='pothole'?`ორმოში ჩავარდები და ${c.v} უჯრით უკან დაბრუნდები. იქაც იხდი ან ყიდულობ.`:'ქუჩა გადაკეტილია: შემდეგ სვლას გამოტოვებ.'};
     h+=`<p class="desc">${D[c.t]}</p>`;
   }
@@ -4600,7 +4645,7 @@ function chatAct(a,el){
 }
 document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const t=e.target;if(t&&t.id==='chatin'){e.preventDefault();chatAct('chatsend')}else if(t&&t.id==='chatgq'){e.preventDefault();chatAct('chatgsearch')}});
 setInterval(()=>{try{chatSync()}catch(e){}},1500);
-const APP_VER=400;const VER_LABEL=v=>(v/100).toFixed(1);
+const APP_VER=410;const VER_LABEL=v=>(v/100).toFixed(1);
 /* a newer version on the site? offer a one-tap reload (phones and home-screen apps keep old copies for long) */
 const IS_SITE=!!document.querySelector('script[src="config.js"]');
 function applyUpdate(){try{if(S&&!NET.on&&!(S.tour&&S.tour.preview)&&S.phase!=='moving')localStorage.setItem('tm-save-v7',JSON.stringify(S));sessionStorage.setItem('tm-after-upd',JSON.stringify({code:NET.code||null,local:!!(S&&!NET.on)}))}catch(e){}location.replace(location.pathname+'?v='+Date.now())}
